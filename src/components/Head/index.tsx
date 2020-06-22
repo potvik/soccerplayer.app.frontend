@@ -9,6 +9,7 @@ import { IStyledChildrenProps } from 'interfaces';
 import { Title } from '../Base/components/Title';
 import { Icon } from '../Base/components/Icons';
 import { useStores } from '../../stores';
+import { Button } from '../Base/components/Button';
 
 const MainLogo = styled.img`
   width: 62px;
@@ -62,12 +63,15 @@ export const Head: React.FC<IStyledChildrenProps<BoxProps>> = withTheme(
               align="center"
               style={{ flex: '1 0 auto' }}
             >
-              <Box>
-                {}
+              <Box dir="column">
+                <Text color="rgb(164, 168, 171)" size="small">
+                  You authorised with Math Wallet as:
+                </Text>
+                {user.address}
               </Box>
               <Box
                 onClick={() => {
-                  user.logoutEx().then(() => {
+                  user.signOut().then(() => {
                     history.push(`/${Routes.login}`);
                   });
                 }}
@@ -86,28 +90,16 @@ export const Head: React.FC<IStyledChildrenProps<BoxProps>> = withTheme(
               direction="row"
               justify="end"
               align="center"
-              style={{ flex: '1 0 auto' }}
+              style={{ flex: '1 0 auto', marginRight: 2 }}
             >
-              <Box>
-                <Text size="small" color="BlackTxt">
-                  Sign in
-                </Text>
-              </Box>
-              <Box
+              <Button
+                style={{ width: 120 }}
                 onClick={() => {
-                  user.logoutEx().then(() => {
-                    history.push(`/${Routes.login}`);
-                  });
+                  user.signIn();
                 }}
-                margin={{ left: 'medium' }}
               >
-                <Icon
-                  glyph="Logout"
-                  size="24px"
-                  style={{ opacity: 0.5 }}
-                  color="BlackTxt"
-                />
-              </Box>
+                Sign in
+              </Button>
             </Box>
           )}
         </Box>

@@ -209,7 +209,7 @@ export const baseTheme: any = {
   },
 
   fonts: {
-    title: 'Nunito'
+    title: 'Nunito',
   },
 
   container: {
@@ -260,8 +260,9 @@ export const baseTheme: any = {
     colors: {
       colorPrimary: palette.Purple500,
       colorSecondary: 'white',
-      buttonBgColor: palette.Red,
-      buttonHoverBgColor: '#4d46af',
+      buttonBgColor: '#1c2a5e',
+      // buttonBgColor: '#03ade8',
+      buttonHoverBgColor: '#03ade8',
       buttonColor: 'white',
     },
   },

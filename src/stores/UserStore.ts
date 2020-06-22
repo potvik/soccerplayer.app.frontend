@@ -1,70 +1,85 @@
-import * as _ from 'lodash';
 import { action, observable } from 'mobx';
 import { IStores } from 'stores';
-import { HttpResponseError, createError } from 'utils';
 import { statusFetching } from '../constants';
 
 const defaults = {};
 
 export class UserStoreEx {
   public stores: IStores;
-  public isAuthorized: boolean;
+  @observable public isAuthorized: boolean;
   public status: statusFetching;
+  redirectUrl: string;
 
-  @observable public isLogouting = false;
+  private mathwallet: any;
+  @observable public isMathWallet = false;
 
-  @observable public hasActiveRequests = false;
+  @observable public sessionType: 'mathwallet' | 'ledger' | 'wallet';
+  @observable public address: string;
 
-  @observable public redirectUrl: string = '';
+  constructor() {
+    setInterval(() => {
+      // @ts-ignore
+      this.isMathWallet = window.harmony && window.harmony.isMathWallet;
+      // @ts-ignore
+      this.mathwallet = window.harmony;
+    }, 1000);
 
-  @action.bound
-  public showErrorEx(error: HttpResponseError) {
-    this.status = 'error';
+    const session = localStorage.getItem('harmony_session');
 
-    const errorCode = _.get(error, 'response.body.error');
+    const sessionObj = JSON.parse(session);
 
-    if (errorCode) {
-      return Promise.reject(createError('AUTH_ERROR', errorCode));
+    if (sessionObj && sessionObj.address) {
+      this.address = sessionObj.address;
+      this.sessionType = sessionObj.sessionType;
+      this.isAuthorized = true;
     }
-
-    return Promise.reject(error);
   }
 
-  @action public loginEx(user: string, password: string): Promise<void> {
-    // return this.login(user, password)
-    //   .then(() => {
-    //     this.stores.routing.push('/temp');
-    //   })
-    //   .catch(this.showErrorEx);
-    return Promise.resolve()
+  @action public signIn() {
+    return this.mathwallet.getAccount().then(account => {
+      this.sessionType = `mathwallet`;
+      this.address = account.address;
+      this.isAuthorized = true;
+
+      this.syncLocalStorage();
+
+      return Promise.resolve();
+    });
   }
 
-  @action public logoutEx(): Promise<void> {
-    this.isLogouting = true;
-    this.redirectUrl = '';
+  @action public signOut() {
+    if (this.sessionType === 'mathwallet' && this.isMathWallet) {
+      return this.mathwallet
+        .forgetIdentity()
+        .then(() => {
+          this.sessionType = null;
+          this.address = null;
+          this.isAuthorized = false;
 
-    return Promise.resolve()
-    // return api
-    //   .post(ENDPOINTS.logout())
-    //   .finally(this.logout)
-    //   .then(() => {
-    //     this.isLogouting = false;
-    //
-    //     Object.values(stores).forEach(store => store.clear && store.clear());
-    //     clearAll();
-    //     clearProcessTracker();
-    //
-    //     return Promise.resolve();
-    //   })
-    //   .catch(this.showErrorEx);
+          this.syncLocalStorage();
+
+          return Promise.resolve();
+        })
+        .catch(err => {
+          console.error(err.message);
+        });
+    }
   }
 
-  @action public setUser(data: Partial<UserStoreEx>) {
-    Object.assign(this, data); // mobx set
+  private syncLocalStorage() {
+    localStorage.setItem(
+      'harmony_session',
+      JSON.stringify({
+        address: this.address,
+        sessionType: this.sessionType,
+      }),
+    );
   }
 
-  @action public reset() {
-    Object.assign(this, defaults);
+  @action public signTransaction(txn: any) {
+    if (this.sessionType === 'mathwallet' && this.isMathWallet) {
+      return this.mathwallet.signTransaction(txn);
+    }
   }
 
   public saveRedirectUrl(url: string) {
@@ -73,17 +88,7 @@ export class UserStoreEx {
     }
   }
 
-  private redirect() {
-    const url =
-      this.stores.routing.location.pathname +
-      this.stores.routing.location.search;
-    if (this.redirectUrl && url !== this.redirectUrl) {
-      this.stores.routing.push(this.redirectUrl);
-    }
+  @action public reset() {
+    Object.assign(this, defaults);
   }
-
-  @action.bound
-  public onAuthSuccess = async (userInfo: any) => {
-
-  };
 }

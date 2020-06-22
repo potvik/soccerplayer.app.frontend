@@ -15,7 +15,7 @@ export function PlayersMarketplace() {
 
         <Box direction="row" justify="between" wrap>
           {players.map(player => (
-            <PlayerCard {...player} />
+            <PlayerCard key={player.id + player.player_img} {...player} />
           ))}
         </Box>
       </PageContainer>
