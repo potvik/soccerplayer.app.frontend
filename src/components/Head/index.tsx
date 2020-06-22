@@ -90,7 +90,7 @@ export const Head: React.FC<IStyledChildrenProps<BoxProps>> = withTheme(
               direction="row"
               justify="end"
               align="center"
-              style={{ flex: '1 0 auto', marginRight: 2 }}
+              style={{ flex: '1 0 auto', marginRight: 2, marginTop: 2 }}
             >
               <Button
                 style={{ width: 120 }}
