@@ -12,7 +12,7 @@ A soccer player crypto game ported to [Harmony](http://harmony.one) blockchain
 * Fetch repo 
 
 ```
-git clone https://github.com/gupadhyaya/soccerplayers.git
+git clone git@github.com:potvik/soccerplayer.app.frontend.git
 ```
 
 * Install dependencies
