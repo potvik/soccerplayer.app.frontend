@@ -29,7 +29,7 @@ export const Head: React.FC<IStyledChildrenProps<BoxProps>> = withTheme(
         style={{
           background: palette.StandardWhite,
           overflow: 'visible',
-          position: 'fixed',
+          position: 'absolute',
           top: 0,
           width: '100%',
           zIndex: 100,
