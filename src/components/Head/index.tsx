@@ -10,6 +10,8 @@ import { Title } from '../Base/components/Title';
 import { Icon } from '../Base/components/Icons';
 import { useStores } from '../../stores';
 import { Button } from '../Base/components/Button';
+import { AuthWarning } from '../AuthWarning';
+import { ModalView } from '../Base/components/ModalView';
 
 const MainLogo = styled.img`
   width: 62px;
@@ -19,7 +21,7 @@ const MainLogo = styled.img`
 export const Head: React.FC<IStyledChildrenProps<BoxProps>> = withTheme(
   observer(({ theme }: IStyledChildrenProps<BoxProps>) => {
     const history = useHistory();
-    const { user } = useStores();
+    const { user, actionModals } = useStores();
     const { palette, container } = theme;
     const { minWidth, maxWidth } = container;
     return (
@@ -95,7 +97,19 @@ export const Head: React.FC<IStyledChildrenProps<BoxProps>> = withTheme(
               <Button
                 style={{ width: 120 }}
                 onClick={() => {
-                  user.signIn();
+                  if (!user.isMathWallet) {
+                    actionModals.open(() => <AuthWarning />, {
+                      title: '',
+                      applyText: 'Got it',
+                      closeText: '',
+                      noValidation: true,
+                      width: '500px',
+                      showOther: true,
+                      onApply: () => Promise.resolve(),
+                    });
+                  } else {
+                    user.signIn();
+                  }
                 }}
               >
                 Sign in

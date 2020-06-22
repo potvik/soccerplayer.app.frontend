@@ -4,6 +4,7 @@ import { GlobalStyle } from './GlobalStyle';
 import { Providers } from './Providers';
 import { Redirect, Route, Switch } from 'react-router';
 import { PlayersMarketplace } from './pages/PlayersMarketplace';
+import { ActionModals } from './components/ActionModals';
 
 export const App: React.FC = () => (
   <Providers>
@@ -13,6 +14,7 @@ export const App: React.FC = () => (
         <Redirect to="/" />
       </Switch>
     </React.Suspense>
+    <ActionModals />
     <GlobalStyle theme={...baseTheme as any} />
   </Providers>
 );
