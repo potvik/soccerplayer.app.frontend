@@ -58,7 +58,7 @@ export const Head: React.FC<IStyledChildrenProps<BoxProps>> = withTheme(
           </Box>
           <Box style={{ minWidth: 300, flex: '0 1 auto' }}>
             <Title size="small" color="BlackTxt" bold>
-              Harmony Soccer Players
+              Harmony Crypto Soccer
             </Title>
           </Box>
           <Box style={{ flex: '1 1 100%' }} />
