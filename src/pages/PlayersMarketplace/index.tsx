@@ -9,7 +9,15 @@ export function PlayersMarketplace() {
   return (
     <BaseContainer>
       <PageContainer>
-        <Title bold margin={{ vertical: '30px' }} size="large">
+        <Title
+          bold
+          margin={{ vertical: '30px' }}
+          size="large"
+          color="white"
+          style={{
+            boxShadow: 'box-shadow: 0 0 20px rgba(0,0,0,0.4)',
+          }}
+        >
           All cards / Top 10 cards / My team
         </Title>
 

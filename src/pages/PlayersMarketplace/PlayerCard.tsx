@@ -42,7 +42,7 @@ export const PlayerCard = observer<IPlayerCardProps>(
         align="center"
         background=""
       >
-        <img width="100%" src={props.player_img} />
+        <img width="100%" src={"/players/test--.jpg"} />
         <Box className={styles.infoBlock} fill={true} gap="10px" pad="medium">
           <DataItem
             icon="Price"
