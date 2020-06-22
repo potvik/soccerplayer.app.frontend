@@ -30,7 +30,7 @@ export const BaseContainer: React.FC<IStyledChildrenProps<
             style={{
               minWidth,
               maxWidth,
-              margin: '100px auto 20px',
+              margin: '120px auto 20px',
             }}
             {...props}
           >
