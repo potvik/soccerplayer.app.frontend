@@ -21,7 +21,12 @@ const DataItem = (props: {
   return (
     <Box direction="row" justify="between" gap="10px">
       <Box direction="row" justify="start" align="center" gap="5px">
-        <Icon glyph={props.icon} size={props.iconSize} color="#1c2a5e" style={{ marginBottom: 2, width: 20 }}/>
+        <Icon
+          glyph={props.icon}
+          size={props.iconSize}
+          color="#1c2a5e"
+          style={{ marginBottom: 2, width: 20 }}
+        />
         <Text color="#1c2a5e" size={'small'}>
           {props.label}
         </Text>
@@ -42,7 +47,7 @@ export const PlayerCard = observer<IPlayerCardProps>(
         align="center"
         background=""
       >
-        <img width="100%" src={"/players/test--.jpg"} />
+        <img width="100%" src={props.player_img} />
         <Box className={styles.infoBlock} fill={true} gap="10px" pad="medium">
           <DataItem
             icon="Price"
