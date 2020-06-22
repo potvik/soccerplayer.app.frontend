@@ -1,6 +1,20 @@
 import { IPlayerCardProps } from './PlayerCard';
 
 export const players: IPlayerCardProps[] = [
+  // {
+  //   id: '0', // blockchain id
+  //   player_img: '/players/scale_2400.webp', // link to player image
+  //   price: 100, // init price
+  //   transactions: 10,
+  //   owner: 'one1fx4...f4s9tl6',
+  // },
+  // {
+  //   id: '0', // blockchain id
+  //   player_img: '/players/310719.png', // link to player image
+  //   price: 100, // init price
+  //   transactions: 10,
+  //   owner: 'one1fx4...f4s9tl6',
+  // },
   {
     id: '1', // blockchain id
     player_img: '/players/001-Andrea_Pirlo_rev1.jpg', // link to player image

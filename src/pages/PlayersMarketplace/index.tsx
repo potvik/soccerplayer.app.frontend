@@ -10,7 +10,7 @@ export function PlayersMarketplace() {
     <BaseContainer>
       <PageContainer>
         <Title bold margin={{ vertical: '30px' }} size="large">
-          All cards
+          All cards / Top 10 cards / My team
         </Title>
 
         <Box direction="row" justify="between" wrap>
