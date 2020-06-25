@@ -29,6 +29,10 @@ export const Head: React.FC<IStyledChildrenProps<BoxProps>> = withTheme(
         style={{
           background: palette.StandardWhite,
           overflow: 'visible',
+          position: 'absolute',
+          top: 0,
+          width: '100%',
+          zIndex: 100,
           boxShadow: '0px 0px 20px rgba(0, 0, 0, 0.2)',
         }}
       >
@@ -54,7 +58,7 @@ export const Head: React.FC<IStyledChildrenProps<BoxProps>> = withTheme(
           </Box>
           <Box style={{ minWidth: 300, flex: '0 1 auto' }}>
             <Title size="small" color="BlackTxt" bold>
-              Harmony Soccer Players
+              Harmony Crypto Soccer
             </Title>
           </Box>
           <Box style={{ flex: '1 1 100%' }} />

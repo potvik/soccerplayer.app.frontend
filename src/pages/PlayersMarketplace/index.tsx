@@ -1,24 +1,44 @@
 import * as React from 'react';
 import { Box } from 'grommet';
-import { Title } from 'components/Base';
+import { Loader, Title } from 'components/Base';
 import { BaseContainer, PageContainer } from 'components';
 import { PlayerCard } from './PlayerCard';
-import { players } from './palyers_config';
+import { useStores } from 'stores';
+import { observer } from 'mobx-react-lite';
+import { useEffect } from 'react';
 
-export function PlayersMarketplace() {
+export const PlayersMarketplace = observer(() => {
+  const { soccerPlayers } = useStores();
+
+  useEffect(() => {
+    soccerPlayers.getList();
+  }, []);
+
   return (
     <BaseContainer>
       <PageContainer>
-        <Title bold margin={{ vertical: '30px' }} size="large">
+        <Title
+          bold
+          margin={{ vertical: '30px' }}
+          size="large"
+          color="white"
+          style={{
+            boxShadow: 'box-shadow: 0 0 20px rgba(0,0,0,0.4)',
+          }}
+        >
           All cards / Top 10 cards / My team
         </Title>
 
-        <Box direction="row" justify="between" wrap>
-          {players.map(player => (
-            <PlayerCard key={player.id + player.player_img} {...player} />
-          ))}
-        </Box>
+        {soccerPlayers.status !== 'success' ? (
+          <Loader />
+        ) : (
+          <Box direction="row" justify="between" wrap>
+            {soccerPlayers.list.map((item, idx) => (
+              <PlayerCard key={idx} player={item.player} emptyPlayer={item.emptyPlayer} />
+            ))}
+          </Box>
+        )}
       </PageContainer>
     </BaseContainer>
   );
-}
+});

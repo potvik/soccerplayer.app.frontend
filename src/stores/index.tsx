@@ -2,6 +2,8 @@ import RouterStore from 'stores/RouterStore';
 import { ModalsStore } from './ModalsStore';
 import { ActionModalsStore } from './ActionModalsStore';
 import { UserStoreEx } from './UserStore';
+import { SoccerPlayersList } from './SoccerPlayersList';
+import { BuySoccerPlayer } from './BuySoccerPlayer';
 import { createStoresContext } from './create-context';
 
 
@@ -10,6 +12,8 @@ export interface IStores {
   modal?: ModalsStore;
   actionModals?: ActionModalsStore;
   user?: UserStoreEx;
+  soccerPlayers?: SoccerPlayersList;
+  buyPlayer?: BuySoccerPlayer;
 }
 
 const stores: IStores = {};
@@ -18,6 +22,8 @@ stores.routing = new RouterStore();
 stores.modal = new ModalsStore();
 stores.actionModals = new ActionModalsStore();
 stores.user = new UserStoreEx();
+stores.soccerPlayers = new SoccerPlayersList(stores);
+stores.buyPlayer = new BuySoccerPlayer(stores);
 
 if (!process.env.production) {
   window.stores = stores;

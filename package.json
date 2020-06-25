@@ -35,7 +35,8 @@
     "react-router-dom": "5.1.2",
     "react-scrollbars-custom": "^4.0.21",
     "react-select": "^3.1.0",
-    "react-switch": "^5.0.1"
+    "react-switch": "^5.0.1",
+    "@harmony-js/core": "^0.1.46"
   },
   "devDependencies": {
     "@types/classnames": "^2.2.9",

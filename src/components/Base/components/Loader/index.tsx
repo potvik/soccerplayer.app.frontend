@@ -4,7 +4,7 @@ import { Layer, Box, Text } from 'grommet';
 export const Loader: React.FC = () => (
   <Layer position="center">
     <Box pad="small" gap="small">
-      <Text>Загрузка...</Text>
+      <Text>Loading...</Text>
     </Box>
   </Layer>
 );
