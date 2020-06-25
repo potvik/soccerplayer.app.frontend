@@ -1,6 +1,4 @@
-import { IPlayerCardProps } from './PlayerCard';
-
-export const players: IPlayerCardProps[] = [
+export const players: any[] = [
   // {
   //   id: '0', // blockchain id
   //   player_img: '/players/scale_2400.webp', // link to player image
