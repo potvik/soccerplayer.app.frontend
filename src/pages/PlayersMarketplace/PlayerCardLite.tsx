@@ -6,9 +6,6 @@ import * as styles from './card.styl';
 import { IEmptyPlayerCard, IPlayerCard } from 'stores/SoccerPlayersList';
 import { ones, truncateAddressString } from '../../utils';
 import { getBech32Address } from '../../blockchain';
-import { useCallback } from 'react';
-import { useStores } from 'stores';
-import { BuyPlayerModal } from './BuyPlayerModal';
 
 const DataItem = (props: {
   text: any;
@@ -41,32 +38,12 @@ export interface IPlayerCardProps {
   emptyPlayer?: IEmptyPlayerCard;
 }
 
-export const PlayerCard = observer<IPlayerCardProps>(props => {
-  const { actionModals, buyPlayer } = useStores();
-
+export const PlayerCardLite = observer<IPlayerCardProps>(props => {
   const bech32Owner = props.player ? getBech32Address(props.player.owner) : '';
-
-  const buyPlayerHandler = useCallback(async () => {
-    await buyPlayer.initPlayer(props.player)
-
-    actionModals.open(
-      () => <BuyPlayerModal id={props.player.internalPlayerId} />,
-      {
-        title: '',
-        applyText: 'Buy Player Card',
-        closeText: 'Cancel',
-        noValidation: true,
-        width: '800px',
-        showOther: true,
-        onApply: () => buyPlayer.buy(),
-        onClose: () => buyPlayer.clear(),
-      },
-    );
-  }, []);
 
   return (
     <Box
-      className={styles.cardContainer}
+      className={styles.cardContainerLite}
       height="100%"
       align="center"
       background=""
@@ -120,17 +97,11 @@ export const PlayerCard = observer<IPlayerCardProps>(props => {
         </Box>
       )}
 
-      <DisableWrap disabled={!props.player}>
-        <Box
-          className={styles.buyButton}
-          fill={true}
-          onClick={buyPlayerHandler}
-        >
-          <Text color="white" size={'medium'}>
-            Buy this contract
-          </Text>
-        </Box>
-      </DisableWrap>
+      <Box className={styles.buyButton} fill={true}>
+        <Text color="white" size={'medium'}>
+          {(props.player ? ones(props.player.sellingPrice) : '...') + ' ONEs'}
+        </Text>
+      </Box>
     </Box>
   );
 });

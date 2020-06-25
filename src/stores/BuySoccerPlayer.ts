@@ -2,86 +2,48 @@ import { action, observable } from 'mobx';
 import { IStores } from 'stores';
 import { statusFetching } from '../constants';
 import { StoreConstructor } from './core/StoreConstructor';
+import { IPlayerCard } from './SoccerPlayersList';
 import * as blockchain from '../blockchain';
 
-export interface IPlayerCard {
-  internalPlayerId: string;
-  owner: string;
-  playerName: string;
-  sellingPrice: string;
-  transactions?: number;
-  player_img?: string; // link to player image
-  empty?: false;
-}
-
-export interface IEmptyPlayerCard {
-  internalPlayerId: string;
-  empty: true;
-}
-
 export class BuySoccerPlayer extends StoreConstructor {
-  @observable public list: Array<{
-    emptyPlayer: IEmptyPlayerCard;
-    player?: IPlayerCard;
-  }> = [];
+  @observable public currentPlayer: IPlayerCard;
+
   @observable public status: statusFetching = 'init';
 
   constructor(stores: IStores) {
     super(stores);
-
-    this.list = [...new Array(Number(10))].map((raw, idx) => ({
-      emptyPlayer: {
-        internalPlayerId: String(idx),
-        empty: true,
-      },
-    }));
-
-    this.status = 'success';
   }
 
   @action.bound
-  getList() {
+  buy() {
     this.status = 'fetching';
 
-    blockchain.getList();
-
-    blockchain
-      .getTotalPlayers()
-      .then(async total => {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
         this.status = 'success';
 
-        this.list = [...new Array(Number(total))].map((raw, idx) => ({
-          emptyPlayer: {
-            internalPlayerId: String(idx),
-            empty: true,
-          },
-        }));
+        reject()
 
-        // this.list.forEach(async (player, idx) => {
-        //   const fullPlayerData = await blockchain.getPlayerById(
-        //     player.emptyPlayer.internalPlayerId,
-        //   );
-        //
-        //   this.list[idx] = {
-        //     ...this.list[idx],
-        //     player: fullPlayerData,
-        //   };
-        // });
+        // resolve()
+      }, 3000);
+    });
+  }
 
-        for (let i = 0; i < this.list.length; i++) {
-          const player = this.list[i];
+  @action.bound
+  initPlayer(player: IPlayerCard) {
+    this.currentPlayer = player;
+    this.status = 'success';
 
-          const fullPlayerData = await blockchain.getPlayerById(player.emptyPlayer.internalPlayerId);
+    return blockchain.getPlayerById(player.internalPlayerId).then(player => {
+      this.currentPlayer = player;
 
-          this.list[i] = {
-            ...player,
-            player: fullPlayerData,
-          };
-        }
-      })
-      .catch(e => {
-        console.error(e.message);
-        this.status = 'error';
-      });
+      return Promise.resolve(player);
+    });
+  }
+
+  @action.bound
+  clear() {
+    this.currentPlayer = null;
+    this.status = 'init';
   }
 }
