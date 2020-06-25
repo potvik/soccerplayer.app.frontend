@@ -4,7 +4,7 @@ import { DisableWrap, Icon, Text } from 'components/Base';
 import { observer } from 'mobx-react-lite';
 import * as styles from './card.styl';
 import { IEmptyPlayerCard, IPlayerCard } from 'stores/SoccerPlayersList';
-import { ones, truncateAddressString } from '../../utils';
+import {formatWithTwoDecimals, ones, truncateAddressString} from '../../utils';
 import { getBech32Address } from '../../blockchain';
 
 const DataItem = (props: {
@@ -63,7 +63,7 @@ export const PlayerCardLite = observer<IPlayerCardProps>(props => {
             icon="Price"
             iconSize="16px"
             text={
-              (props.player ? ones(props.player.sellingPrice) : '...') + ' ONEs'
+              (props.player ? formatWithTwoDecimals(ones(props.player.sellingPrice)) : '...') + ' ONEs'
             }
             label="Price:"
           />
@@ -99,7 +99,7 @@ export const PlayerCardLite = observer<IPlayerCardProps>(props => {
 
       <Box className={styles.buyButton} fill={true}>
         <Text color="white" size={'medium'}>
-          {(props.player ? ones(props.player.sellingPrice) : '...') + ' ONEs'}
+          {(props.player ? formatWithTwoDecimals(ones(props.player.sellingPrice)) : '...') + ' ONEs'}
         </Text>
       </Box>
     </Box>

@@ -4,7 +4,7 @@ import { DisableWrap, Icon, Text } from 'components/Base';
 import { observer } from 'mobx-react-lite';
 import * as styles from './card.styl';
 import { IEmptyPlayerCard, IPlayerCard } from 'stores/SoccerPlayersList';
-import { ones, truncateAddressString } from '../../utils';
+import {formatWithTwoDecimals, ones, truncateAddressString} from '../../utils';
 import { getBech32Address } from '../../blockchain';
 import { useCallback } from 'react';
 import { useStores } from 'stores';
@@ -105,10 +105,10 @@ export const PlayerCard = observer<IPlayerCardProps>(props => {
       {props.player ? (
         <Box className={styles.infoBlock} fill={true} gap="10px" pad="medium">
           <DataItem
-            icon="Price"
+            icon="ONE"
             iconSize="16px"
             text={
-              (props.player ? ones(props.player.sellingPrice) : '...') + ' ONEs'
+              (props.player ? formatWithTwoDecimals(ones(props.player.sellingPrice)) : '...') + ' ONEs'
             }
             label="Price:"
           />
