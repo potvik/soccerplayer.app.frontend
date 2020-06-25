@@ -1,13 +1,12 @@
 import React from 'react';
 import { Box } from 'grommet';
-import { Title, Text } from 'components/Base';
+import { Title, Text, Icon } from 'components/Base';
 import { observer } from 'mobx-react-lite';
 import { useStores } from 'stores';
 import { PlayerCardLite } from './PlayerCardLite';
+import * as styles from './card.styl';
 
-interface IBuyPlayerModalProps {
-  id: string;
-}
+interface IBuyPlayerModalProps {}
 
 export const BuyPlayerModal = observer<IBuyPlayerModalProps>(props => {
   const { buyPlayer, user } = useStores();
@@ -16,8 +15,36 @@ export const BuyPlayerModal = observer<IBuyPlayerModalProps>(props => {
     return <Text>Loading...</Text>;
   }
 
+  let icon = 'RightArrow';
+  let description = 'Approval';
+
+  switch (buyPlayer.actionStatus) {
+    case 'init':
+      icon = 'RightArrow';
+      description = 'To';
+      break;
+
+    case 'fetching':
+      icon = 'Refresh';
+      description = 'Sending';
+      break;
+
+    case 'error':
+      icon = 'Trash';
+      description = 'Error';
+      break;
+
+    case 'success':
+      icon = 'CheckMark';
+      description = 'Success';
+      break;
+  }
+
   return (
-    <Box pad={{ horizontal: 'large', top: 'large' }}>
+    <Box
+      pad={{ horizontal: 'large', top: 'large' }}
+      className={styles.modalContainer}
+    >
       <Title>Buy Player Card</Title>
       <Box
         margin={{ top: 'large' }}
@@ -26,8 +53,18 @@ export const BuyPlayerModal = observer<IBuyPlayerModalProps>(props => {
         justify="between"
       >
         <PlayerCardLite player={buyPlayer.currentPlayer} />
-        <Box>{buyPlayer.actionStatus}</Box>
-        <Box>{user.address}</Box>
+
+        <Box direction="row" align="end" justify="between" width="550px">
+          <Box direction="column" align="center" gap="20px">
+            <Icon style={{ width: 50 }} glyph={icon} />
+            {description}
+          </Box>
+
+          <Box direction="column" gap="15px" align="center">
+            <Text>Your address:</Text>
+            <Box className={styles.addressBlock}>{user.address}</Box>
+          </Box>
+        </Box>
       </Box>
     </Box>
   );

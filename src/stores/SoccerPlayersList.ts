@@ -9,9 +9,9 @@ export interface IPlayerCard {
   owner: string;
   playerName: string;
   sellingPrice: string;
-  transactions?: number;
   player_img?: string; // link to player image
   empty?: false;
+  transactionCount: number;
 }
 
 export interface IEmptyPlayerCard {
@@ -29,12 +29,12 @@ export class SoccerPlayersList extends StoreConstructor {
   constructor(stores: IStores) {
     super(stores);
 
-    this.list = [...new Array(Number(10))].map((raw, idx) => ({
-      emptyPlayer: {
-        internalPlayerId: String(idx),
-        empty: true,
-      },
-    }));
+    // this.list = [...new Array(Number(10))].map((raw, idx) => ({
+    //   emptyPlayer: {
+    //     internalPlayerId: String(idx + 1),
+    //     empty: true,
+    //   },
+    // }));
 
     // this.status = 'success';
   }
@@ -43,15 +43,21 @@ export class SoccerPlayersList extends StoreConstructor {
   async updatePlayerCard(id: string) {
     const fullPlayerData = await blockchain.getPlayerById(id);
 
-    // const player = this.list.find(item => item.player.internalPlayerId === id);
-    this.list[id] = {
-      ...this.list[id],
+    const playerIndex = this.list.findIndex(
+      item => item.player.internalPlayerId === id,
+    );
+    this.list[playerIndex] = {
+      ...this.list[playerIndex],
       player: fullPlayerData,
     };
 
+    debugger;
+
     this.list = this.list
       .slice()
-      .sort((a, b) => (a.player.sellingPrice < b.player.sellingPrice ? 1 : -1));
+      .sort((a, b) =>
+        a.player.sellingPrice <= b.player.sellingPrice ? 1 : -1,
+      );
   }
 
   @action.bound
@@ -110,7 +116,9 @@ export class SoccerPlayersList extends StoreConstructor {
         );
 
         this.list = this.list.sort((a, b) =>
-          a.player.sellingPrice < b.player.sellingPrice ? 1 : -1,
+          a.player && b.player && a.player.sellingPrice <= b.player.sellingPrice
+            ? 1
+            : -1,
         );
 
         this.status = 'success';

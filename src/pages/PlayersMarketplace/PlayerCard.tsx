@@ -72,7 +72,7 @@ export const PlayerCard = observer<IPlayerCardProps>(props => {
     await buyPlayer.initPlayer(props.player);
 
     actionModals.open(
-      () => <BuyPlayerModal id={props.player.internalPlayerId} />,
+      () => <BuyPlayerModal />,
       {
         title: '',
         applyText: 'Buy Player Card',
@@ -97,8 +97,8 @@ export const PlayerCard = observer<IPlayerCardProps>(props => {
         width="100%"
         src={`/players/${
           props.player
-            ? props.player.internalPlayerId
-            : props.emptyPlayer.internalPlayerId
+            ? +props.player.internalPlayerId + 1
+            : +props.emptyPlayer.internalPlayerId + 1
         }.jpg`}
       />
 
@@ -121,7 +121,7 @@ export const PlayerCard = observer<IPlayerCardProps>(props => {
           <DataItem
             icon="Refresh"
             iconSize="14px"
-            text={props.player ? props.player.transactions : '...'}
+            text={props.player ? props.player.transactionCount : '...'}
             label="Transactions:"
           />
         </Box>

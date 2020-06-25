@@ -31,6 +31,11 @@ export class UserStoreEx {
       }
     }, 3000);
 
+    // @ts-ignore
+    this.isMathWallet = window.harmony && window.harmony.isMathWallet;
+    // @ts-ignore
+    this.mathwallet = window.harmony;
+
     const session = localStorage.getItem('harmony_session');
 
     const sessionObj = JSON.parse(session);

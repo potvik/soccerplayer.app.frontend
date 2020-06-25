@@ -27,7 +27,7 @@ export class BuySoccerPlayer extends StoreConstructor {
           signer: this.stores.user.address,
         });
 
-        if (res.status === 'call') {
+        if (res.status === 'called' || res.status === 'call') {
           await this.stores.soccerPlayers.updatePlayerCard(
             this.currentPlayer.internalPlayerId,
           );
@@ -65,5 +65,6 @@ export class BuySoccerPlayer extends StoreConstructor {
   clear() {
     this.currentPlayer = null;
     this.status = 'init';
+    this.actionStatus = 'init'
   }
 }
