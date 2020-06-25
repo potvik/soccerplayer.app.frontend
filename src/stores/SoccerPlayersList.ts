@@ -37,6 +37,10 @@ export class SoccerPlayersList extends StoreConstructor {
     // }));
 
     // this.status = 'success';
+
+    setInterval(() => {
+      this.getList();
+    }, 15000);
   }
 
   @action.bound
@@ -46,12 +50,11 @@ export class SoccerPlayersList extends StoreConstructor {
     const playerIndex = this.list.findIndex(
       item => item.player.internalPlayerId === id,
     );
+
     this.list[playerIndex] = {
       ...this.list[playerIndex],
       player: fullPlayerData,
     };
-
-    debugger;
 
     this.list = this.list
       .slice()
@@ -62,21 +65,25 @@ export class SoccerPlayersList extends StoreConstructor {
 
   @action.bound
   getList() {
-    this.status = 'fetching';
-
-    blockchain.getList();
+    if (this.status === 'init') {
+      this.status = 'first_fetching';
+    } else {
+      this.status = 'fetching';
+    }
 
     blockchain
       .getTotalPlayers()
       .then(async total => {
         // this.status = 'success';
 
-        this.list = [...new Array(Number(total))].map((raw, idx) => ({
-          emptyPlayer: {
-            internalPlayerId: String(idx),
-            empty: true,
-          },
-        }));
+        if(this.status === 'first_fetching') {
+          this.list = [...new Array(Number(total))].map((raw, idx) => ({
+            emptyPlayer: {
+              internalPlayerId: String(idx),
+              empty: true,
+            },
+          }));
+        }
 
         // this.list.forEach(async (player, idx) => {
         //   const fullPlayerData = await blockchain.getPlayerById(

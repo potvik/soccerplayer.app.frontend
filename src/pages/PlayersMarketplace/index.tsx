@@ -29,12 +29,16 @@ export const PlayersMarketplace = observer(() => {
           All cards / Top 10 cards / My team
         </Title>
 
-        {soccerPlayers.status !== 'success' ? (
+        {soccerPlayers.status === 'first_fetching' ? (
           <Loader />
         ) : (
           <Box direction="row" justify="between" wrap>
             {soccerPlayers.list.map((item, idx) => (
-              <PlayerCard key={idx} player={item.player} emptyPlayer={item.emptyPlayer} />
+              <PlayerCard
+                key={idx}
+                player={item.player}
+                emptyPlayer={item.emptyPlayer}
+              />
             ))}
           </Box>
         )}
