@@ -54,7 +54,7 @@ export class BuySoccerPlayer extends StoreConstructor {
     this.currentPlayer = player;
     this.status = 'success';
 
-    return blockchain.getPlayerById(player.internalPlayerId).then(player => {
+    blockchain.getPlayerById(player.internalPlayerId).then(player => {
       this.currentPlayer = player;
 
       return Promise.resolve(player);

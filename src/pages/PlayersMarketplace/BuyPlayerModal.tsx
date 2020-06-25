@@ -10,7 +10,7 @@ interface IBuyPlayerModalProps {
 }
 
 export const BuyPlayerModal = observer<IBuyPlayerModalProps>(props => {
-  const { buyPlayer } = useStores();
+  const { buyPlayer, user } = useStores();
 
   if (buyPlayer.status !== 'success') {
     return <Text>Loading...</Text>;
@@ -19,9 +19,15 @@ export const BuyPlayerModal = observer<IBuyPlayerModalProps>(props => {
   return (
     <Box pad={{ horizontal: 'large', top: 'large' }}>
       <Title>Buy Player Card</Title>
-      <Box margin={{ top: 'large' }} direction="row">
+      <Box
+        margin={{ top: 'large' }}
+        direction="row"
+        align="center"
+        justify="between"
+      >
         <PlayerCardLite player={buyPlayer.currentPlayer} />
         <Box>{buyPlayer.actionStatus}</Box>
+        <Box>{user.address}</Box>
       </Box>
     </Box>
   );

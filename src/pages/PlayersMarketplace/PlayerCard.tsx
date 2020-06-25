@@ -9,12 +9,14 @@ import { getBech32Address } from '../../blockchain';
 import { useCallback } from 'react';
 import { useStores } from 'stores';
 import { BuyPlayerModal } from './BuyPlayerModal';
+import { AuthWarning } from '../../components/AuthWarning';
 
 const DataItem = (props: {
   text: any;
   label: string;
   icon: string;
   iconSize: string;
+  color?: string;
 }) => {
   return (
     <Box direction="row" justify="between" gap="10px">
@@ -22,14 +24,14 @@ const DataItem = (props: {
         <Icon
           glyph={props.icon}
           size={props.iconSize}
-          color="#1c2a5e"
+          color={props.color || '#1c2a5e'}
           style={{ marginBottom: 2, width: 20 }}
         />
         <Text color="#1c2a5e" size={'small'}>
           {props.label}
         </Text>
       </Box>
-      <Text color="#1c2a5e" size={'small'} bold={true}>
+      <Text color={props.color || '#1c2a5e'} size={'small'} bold={true}>
         {props.text}
       </Text>
     </Box>
@@ -42,12 +44,32 @@ export interface IPlayerCardProps {
 }
 
 export const PlayerCard = observer<IPlayerCardProps>(props => {
-  const { actionModals, buyPlayer } = useStores();
+  const { actionModals, buyPlayer, user } = useStores();
 
   const bech32Owner = props.player ? getBech32Address(props.player.owner) : '';
 
   const buyPlayerHandler = useCallback(async () => {
-    await buyPlayer.initPlayer(props.player)
+    if (!user.isAuthorized) {
+      if (!user.isMathWallet) {
+        return actionModals.open(() => <AuthWarning />, {
+          title: '',
+          applyText: 'Got it',
+          closeText: '',
+          noValidation: true,
+          width: '500px',
+          showOther: true,
+          onApply: () => Promise.resolve(),
+        });
+      } else {
+        await user.signIn();
+      }
+    }
+
+    if (user.address === bech32Owner) {
+      return;
+    }
+
+    await buyPlayer.initPlayer(props.player);
 
     actionModals.open(
       () => <BuyPlayerModal id={props.player.internalPlayerId} />,
@@ -56,7 +78,7 @@ export const PlayerCard = observer<IPlayerCardProps>(props => {
         applyText: 'Buy Player Card',
         closeText: 'Cancel',
         noValidation: true,
-        width: '800px',
+        width: '1000px',
         showOther: true,
         onApply: () => buyPlayer.buy(),
         onClose: () => buyPlayer.clear(),
@@ -121,15 +143,23 @@ export const PlayerCard = observer<IPlayerCardProps>(props => {
       )}
 
       <DisableWrap disabled={!props.player}>
-        <Box
-          className={styles.buyButton}
-          fill={true}
-          onClick={buyPlayerHandler}
-        >
-          <Text color="white" size={'medium'}>
-            Buy this contract
-          </Text>
-        </Box>
+        {user.address === bech32Owner ? (
+          <Box className={styles.buyButtonMy} fill={true}>
+            <Text color="white" size={'medium'}>
+              It is your card
+            </Text>
+          </Box>
+        ) : (
+          <Box
+            className={styles.buyButton}
+            fill={true}
+            onClick={buyPlayerHandler}
+          >
+            <Text color="white" size={'medium'}>
+              Buy this contract
+            </Text>
+          </Box>
+        )}
       </DisableWrap>
     </Box>
   );
