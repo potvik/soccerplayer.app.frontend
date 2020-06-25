@@ -19,8 +19,9 @@ export const BuyPlayerModal = observer<IBuyPlayerModalProps>(props => {
   return (
     <Box pad={{ horizontal: 'large', top: 'large' }}>
       <Title>Buy Player Card</Title>
-      <Box margin={{ top: 'large' }}>
+      <Box margin={{ top: 'large' }} direction="row">
         <PlayerCardLite player={buyPlayer.currentPlayer} />
+        <Box>{buyPlayer.actionStatus}</Box>
       </Box>
     </Box>
   );

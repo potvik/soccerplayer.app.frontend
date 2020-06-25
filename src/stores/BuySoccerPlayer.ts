@@ -9,6 +9,7 @@ export class BuySoccerPlayer extends StoreConstructor {
   @observable public currentPlayer: IPlayerCard;
 
   @observable public status: statusFetching = 'init';
+  @observable public actionStatus: statusFetching = 'init';
 
   constructor(stores: IStores) {
     super(stores);
@@ -16,16 +17,35 @@ export class BuySoccerPlayer extends StoreConstructor {
 
   @action.bound
   buy() {
-    this.status = 'fetching';
+    this.actionStatus = 'fetching';
 
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        this.status = 'success';
+    return new Promise(async (resolve, reject) => {
+      try {
+        const res = await blockchain.buyPlayerById({
+          id: Number(this.currentPlayer.internalPlayerId),
+          price: Number(this.currentPlayer.sellingPrice),
+          signer: this.stores.user.address,
+        });
 
-        reject()
+        if (res.status === 'call') {
+          await this.stores.soccerPlayers.updatePlayerCard(
+            this.currentPlayer.internalPlayerId,
+          );
 
-        // resolve()
-      }, 3000);
+          this.actionStatus = 'success';
+
+          return resolve();
+        }
+
+        this.actionStatus = 'error';
+        reject();
+      } catch (e) {
+        console.error(e);
+
+        this.actionStatus = 'error';
+
+        reject(e.message);
+      }
     });
   }
 

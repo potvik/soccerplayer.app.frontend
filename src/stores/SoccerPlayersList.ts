@@ -40,6 +40,21 @@ export class SoccerPlayersList extends StoreConstructor {
   }
 
   @action.bound
+  async updatePlayerCard(id: string) {
+    const fullPlayerData = await blockchain.getPlayerById(id);
+
+    // const player = this.list.find(item => item.player.internalPlayerId === id);
+    this.list[id] = {
+      ...this.list[id],
+      player: fullPlayerData,
+    };
+
+    this.list = this.list
+      .slice()
+      .sort((a, b) => (a.player.sellingPrice < b.player.sellingPrice ? 1 : -1));
+  }
+
+  @action.bound
   getList() {
     this.status = 'fetching';
 

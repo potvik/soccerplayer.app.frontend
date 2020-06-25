@@ -1,3 +1,5 @@
+import { computed } from 'mobx';
+
 const { Harmony } = require('@harmony-js/core');
 const { ChainID, ChainType } = require('@harmony-js/utils');
 
@@ -20,6 +22,10 @@ const soccerPlayers = hmy.contracts.createContract(
   contractJson.abi,
   contractAddr,
 );
+
+const a = soccerPlayers.wallet.createAccount();
+
+// soccerPlayers.wallet.signTransaction = () => { console.log('SIGN') }
 
 const options = {
   gasPrice: GAS_PRICE,
@@ -53,4 +59,47 @@ export const getTotalPlayers = async () => {
   return res;
 };
 
-export const getBech32Address = (address) => hmy.crypto.getAddress(address).bech32;
+export const buyPlayerById = (params: {
+  id: number;
+  price: number;
+  signer: string;
+}): Promise<{ status: string }> => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      soccerPlayers.wallet.defaultSigner = params.signer;
+
+      soccerPlayers.wallet.signTransaction = async tx => {
+        try {
+          tx.from = params.signer;
+          // @ts-ignore
+          const signTx = await window.harmony.signTransaction(tx);
+
+          // const [sentTx, txHash] = await signTx.sendTransaction();
+
+          // await sentTx.confirm(txHash);
+
+          // resolve(txHash);
+          return signTx;
+        } catch (e) {
+          console.error(e);
+          reject(e.message);
+        }
+
+        return null;
+      };
+
+      const res = await soccerPlayers.methods
+        .purchase(params.id)
+        .send({ ...options, value: params.price });
+
+      resolve(res);
+    } catch (e) {
+      console.error(e);
+
+      reject(e.message);
+    }
+  });
+};
+
+export const getBech32Address = address =>
+  hmy.crypto.getAddress(address).bech32;
