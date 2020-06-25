@@ -16,7 +16,7 @@ const hmy = new Harmony(
 );
 
 const contractJson = require('./SoccerPlayers.json');
-const contractAddr = '0x16B729874BD8d54A1a3b5d2B0Ff344d3C6604eE0';
+const contractAddr = '0x9B1714CADc6420f2Be1677BebfBCFca0e9be7Aa4';
 
 const soccerPlayers = hmy.contracts.createContract(
   contractJson.abi,
@@ -103,3 +103,7 @@ export const buyPlayerById = (params: {
 
 export const getBech32Address = address =>
   hmy.crypto.getAddress(address).bech32;
+
+export const getBalance = address => {
+  return hmy.blockchain.getBalance({ address });
+};

@@ -12,6 +12,7 @@ import { useStores } from '../../stores';
 import { Button } from '../Base/components/Button';
 import { AuthWarning } from '../AuthWarning';
 import { ModalView } from '../Base/components/ModalView';
+import { formatWithTwoDecimals, ones } from '../../utils';
 
 const MainLogo = styled.img`
   width: 62px;
@@ -74,6 +75,9 @@ export const Head: React.FC<IStyledChildrenProps<BoxProps>> = withTheme(
                   You authorised with Math Wallet as:
                 </Text>
                 {user.address}
+                <Text size="small">
+                  Balance: {formatWithTwoDecimals(ones(user.balance))} ONEs
+                </Text>
               </Box>
               <Box
                 onClick={() => {
