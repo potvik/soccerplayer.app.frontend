@@ -82,7 +82,6 @@ const customizeHOC = (Component: React.ElementType) => {
 };
 
 export const CloseIcon = customizeHOC(Icons.CloseIcon);
-export const LogoExIcon = customizeHOC(Icons.LogoExIcon);
 export const PlusIcon = customizeHOC(Icons.PlusIcon);
 export const RateIcon = customizeHOC(Icons.RateIcon);
 export const UnknownIcon = customizeHOC(Icons.UnknownIcon);
