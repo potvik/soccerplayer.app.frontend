@@ -103,3 +103,7 @@ export const buyPlayerById = (params: {
 
 export const getBech32Address = address =>
   hmy.crypto.getAddress(address).bech32;
+
+export const getBalance = address => {
+  return hmy.blockchain.getBalance({ address });
+};

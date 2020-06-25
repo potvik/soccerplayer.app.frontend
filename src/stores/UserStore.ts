@@ -1,6 +1,7 @@
 import { action, observable } from 'mobx';
 import { IStores } from 'stores';
 import { statusFetching } from '../constants';
+import * as blockchain from '../blockchain';
 
 const defaults = {};
 
@@ -15,14 +16,20 @@ export class UserStoreEx {
 
   @observable public sessionType: 'mathwallet' | 'ledger' | 'wallet';
   @observable public address: string;
+  @observable public balance: string = '0';
 
   constructor() {
-    setInterval(() => {
+    setInterval(async () => {
       // @ts-ignore
       this.isMathWallet = window.harmony && window.harmony.isMathWallet;
       // @ts-ignore
       this.mathwallet = window.harmony;
-    }, 1000);
+
+      if (this.address) {
+        const res = await blockchain.getBalance(this.address);
+        this.balance = res && res.result;
+      }
+    }, 3000);
 
     const session = localStorage.getItem('harmony_session');
 
@@ -32,6 +39,10 @@ export class UserStoreEx {
       this.address = sessionObj.address;
       this.sessionType = sessionObj.sessionType;
       this.isAuthorized = true;
+
+      blockchain
+        .getBalance(this.address)
+        .then(res => (this.balance = res && res.result));
     }
   }
 
@@ -42,6 +53,10 @@ export class UserStoreEx {
       this.isAuthorized = true;
 
       this.syncLocalStorage();
+
+      blockchain
+        .getBalance(this.address)
+        .then(res => (this.balance = res && res.result));
 
       return Promise.resolve();
     });
@@ -55,6 +70,7 @@ export class UserStoreEx {
           this.sessionType = null;
           this.address = null;
           this.isAuthorized = false;
+          this.balance = '0';
 
           this.syncLocalStorage();
 
