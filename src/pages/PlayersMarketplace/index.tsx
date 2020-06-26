@@ -12,6 +12,8 @@ export const PlayersMarketplace = observer(() => {
   const { soccerPlayers, user } = useStores();
 
   useEffect(() => {
+    soccerPlayers.setMaxDisplay(20);
+
     soccerPlayers.getList();
   }, []);
 
@@ -109,14 +111,46 @@ export const PlayersMarketplace = observer(() => {
             }
             align="center"
             wrap
-            gap={soccerPlayers.filteredList.length < 10 ? '20px' : "10x"}
+            gap={soccerPlayers.filteredList.length < 10 ? '20px' : '10x'}
             style={{ minHeight: 600 }}
           >
-            {soccerPlayers.filteredList.map(item => (
+            {soccerPlayers.filteredList.map((item, idx) => (
               <PlayerCard
                 key={item.player.internalPlayerId}
                 player={item.player}
                 emptyPlayer={item.emptyPlayer}
+                onEnterViewport={() => {
+                  if (idx + 10 > soccerPlayers.maxDisplay) {
+                    soccerPlayers.setMaxDisplay(soccerPlayers.maxDisplay + 20);
+                    return
+                  }
+
+                  // if (idx + 10 < 20) {
+                  //   soccerPlayers.setMaxDisplay(20);
+                  //   return
+                  // }
+                  //
+                  // if (idx + 10 < soccerPlayers.maxDisplay) {
+                  //   if (idx + 10 < 20) {
+                  //     soccerPlayers.setMaxDisplay(20);
+                  //     return
+                  //   }
+                  //
+                  //   if (idx + 10 < 40) {
+                  //     soccerPlayers.setMaxDisplay(40);
+                  //     return
+                  //   }
+                  // }
+                  //
+                  // if (idx + 10 < 60) {
+                  //   soccerPlayers.setMaxDisplay(60);
+                  //   return
+                  // }
+                  //
+                  // if (idx + 10 < 80) {
+                  //   soccerPlayers.setMaxDisplay(80);
+                  // }
+                }}
               />
             ))}
           </Box>

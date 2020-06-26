@@ -35,6 +35,7 @@ export class SoccerPlayersList extends StoreConstructor {
 
   @observable public filter: PLAYERS_FILTER = PLAYERS_FILTER.ALL;
   @observable public sort: keyof IPlayerCard = 'sellingPrice';
+  @observable public maxDisplay = 20;
 
   constructor(stores: IStores) {
     super(stores);
@@ -53,7 +54,7 @@ export class SoccerPlayersList extends StoreConstructor {
     }, 7000);
   }
 
-  sortFunction = (sort) => (itemA, itemB) => {
+  sortFunction = sort => (itemA, itemB) => {
     const a = itemA.player[sort];
     const b = itemB.player[sort];
 
@@ -71,7 +72,8 @@ export class SoccerPlayersList extends StoreConstructor {
         return this.list
           .slice()
           .filter(item => !!item.player)
-          .sort(this.sortFunction(this.sort));
+          .sort(this.sortFunction(this.sort))
+          .slice(0, this.maxDisplay);
       case PLAYERS_FILTER.TOP:
         const list = this.list
           .slice()
@@ -92,12 +94,17 @@ export class SoccerPlayersList extends StoreConstructor {
   }
 
   @action.bound
-  async setFilter(filter: PLAYERS_FILTER) {
+  setFilter(filter: PLAYERS_FILTER) {
     this.filter = filter;
   }
 
   @action.bound
-  async setSort(sort: keyof IPlayerCard) {
+  setMaxDisplay(max: number) {
+    this.maxDisplay = max;
+  }
+
+  @action.bound
+  setSort(sort: keyof IPlayerCard) {
     this.sort = sort;
   }
 

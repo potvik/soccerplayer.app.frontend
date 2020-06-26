@@ -4,6 +4,8 @@ import { DisableWrap, Icon, Text } from 'components/Base';
 import { observer } from 'mobx-react-lite';
 import * as styles from './card.styl';
 import { IEmptyPlayerCard, IPlayerCard } from 'stores/SoccerPlayersList';
+import handleViewport from 'react-in-viewport';
+
 import {
   formatWithTwoDecimals,
   ones,
@@ -54,9 +56,10 @@ const DataItem = (props: {
 export interface IPlayerCardProps {
   player?: IPlayerCard;
   emptyPlayer?: IEmptyPlayerCard;
+  forwardedRef: any
 }
 
-export const PlayerCard = observer<IPlayerCardProps>(props => {
+const PlayerCardEx = observer<IPlayerCardProps>(props => {
   const { actionModals, buyPlayer, user } = useStores();
 
   const bech32Owner = props.player ? getBech32Address(props.player.owner) : '';
@@ -102,6 +105,7 @@ export const PlayerCard = observer<IPlayerCardProps>(props => {
       height="100%"
       align="center"
       background=""
+      ref={props.forwardedRef}
     >
       <img
         width="100%"
@@ -177,3 +181,6 @@ export const PlayerCard = observer<IPlayerCardProps>(props => {
     </Box>
   );
 });
+
+
+export const PlayerCard = handleViewport(PlayerCardEx)
