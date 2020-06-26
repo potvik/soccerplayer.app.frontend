@@ -5,7 +5,7 @@ const styles = {
   banner: {
     fontFamily: 'Nunito',
     height: 80,
-    background: 'rgba(31, 39, 49, 0.9)',
+    background: 'rgba(31, 39, 49, 0.88)',
     backgroundSize: '30px 30px',
     backgroundColor: '',
     fontSize: '16px',
