@@ -1,23 +1,21 @@
-import { computed } from 'mobx';
-
 const { Harmony } = require('@harmony-js/core');
 const { ChainID, ChainType } = require('@harmony-js/utils');
 
-const GAS_LIMIT = 6721900;
+const GAS_LIMIT = 50000000;
 const GAS_PRICE = 1000000000;
 
 const hmy = new Harmony(
   // let's assume we deploy smart contract to this end-point URL
-  'https://api.s0.b.hmny.io',
+  'https://api.s0.t.hmny.io',
   {
     chainType: ChainType.Harmony,
-    chainId: ChainID.HmyTestnet,
+    chainId: ChainID.HmyMainnet,
   },
 );
 
 const contractJson = require('./SoccerPlayers.json');
 // const contractAddr = '0x9B1714CADc6420f2Be1677BebfBCFca0e9be7Aa4';
-const contractAddr = '0x7943381adde30f216cAEb9b9d1927522d7E5476f';
+const contractAddr = '0x3e37A9C5F2ec88B7566ae68A5D38707E5e25f243';
 
 const soccerPlayers = hmy.contracts.createContract(
   contractJson.abi,
