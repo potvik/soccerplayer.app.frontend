@@ -60,11 +60,15 @@ export class SoccerPlayersList extends StoreConstructor {
         return this.list
           .slice()
           .filter(item => !!item.player)
-          .sort((a, b) => {
+          .sort((itemA, itemB) => {
+            const a = itemA.player[this.sort];
+            const b = itemB.player[this.sort];
+
             if (this.sort === 'sellingPrice') {
-              return a.player[this.sort] <= b.player[this.sort] ? 1 : -1;
+              return Number(a) <= Number(b) ? 1 : -1;
             }
-            return a.player[this.sort] <= b.player[this.sort] ? -1 : 1;
+
+            return Number(a) <= Number(b) ? -1 : 1;
           });
       case PLAYERS_FILTER.TOP:
         const list = this.list
