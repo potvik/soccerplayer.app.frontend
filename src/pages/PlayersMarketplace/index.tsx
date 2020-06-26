@@ -109,7 +109,7 @@ export const PlayersMarketplace = observer(() => {
             }
             align="center"
             wrap
-            gap="10px"
+            gap={soccerPlayers.filteredList.length < 10 ? '20px' : "10x"}
             style={{ minHeight: 600 }}
           >
             {soccerPlayers.filteredList.map(item => (

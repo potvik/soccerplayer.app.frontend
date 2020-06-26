@@ -64,7 +64,7 @@ export const buyPlayerById = (params: {
   id: number;
   price: number;
   signer: string;
-}): Promise<{ status: string }> => {
+}): Promise<{ status: string; transaction: { id: string } }> => {
   return new Promise(async (resolve, reject) => {
     try {
       soccerPlayers.wallet.defaultSigner = params.signer;

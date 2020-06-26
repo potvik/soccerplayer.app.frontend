@@ -11,8 +11,9 @@ import { Icon } from '../Base/components/Icons';
 import { useStores } from '../../stores';
 import { Button } from '../Base/components/Button';
 import { AuthWarning } from '../AuthWarning';
-import { ModalView } from '../Base/components/ModalView';
 import { formatWithTwoDecimals, ones } from '../../utils';
+import * as styles from './styles.styl';
+import {Info} from "../Info";
 
 const MainLogo = styled.img`
   width: 62px;
@@ -29,7 +30,7 @@ export const Head: React.FC<IStyledChildrenProps<BoxProps>> = withTheme(
       <Box
         style={{
           // background: palette.StandardWhite,
-          background: "#f6f7fb",
+          background: '#f6f7fb',
           overflow: 'visible',
           position: 'absolute',
           top: 0,
@@ -41,6 +42,7 @@ export const Head: React.FC<IStyledChildrenProps<BoxProps>> = withTheme(
         <Box
           direction="row"
           align="center"
+          justify="between"
           style={{
             minWidth,
             maxWidth,
@@ -51,80 +53,100 @@ export const Head: React.FC<IStyledChildrenProps<BoxProps>> = withTheme(
             width: '100%',
           }}
         >
+          <Box direction="row" align="center">
+            <Box align="center" margin={{ right: 'small' }}>
+              <MainLogo src="main_logo.png" />
+            </Box>
+            <Box style={{ minWidth: 300 }}>
+              <Title size="small" color="BlackTxt" bold>
+                Harmony Soccer Players
+              </Title>
+            </Box>
+          </Box>
+
           <Box
+            direction="row"
             align="center"
-            margin={{ right: 'small' }}
-            style={{ flex: '1 0 auto' }}
+            onClick={() => {
+              actionModals.open(() => <Info />, {
+                title: '',
+                applyText: 'Close',
+                closeText: '',
+                noValidation: true,
+                width: '500px',
+                showOther: true,
+                onApply: () => Promise.resolve(),
+              });
+            }}
           >
-            <MainLogo src="main_logo.png" />
-          </Box>
-          <Box style={{ minWidth: 300, flex: '0 1 auto' }}>
-            <Title size="small" color="BlackTxt" bold>
-              Harmony Soccer Players
-            </Title>
-          </Box>
-          <Box style={{ flex: '1 1 100%' }} />
-          {user.isAuthorized ? (
-            <Box
-              direction="row"
-              justify="end"
-              align="center"
-              style={{ flex: '1 0 auto' }}
-            >
-              <Box dir="column">
-                <Text color="rgb(164, 168, 171)" size="small">
-                  You authorised with Math Wallet as:
-                </Text>
-                {user.address}
-                <Text size="small">
-                  Balance: {formatWithTwoDecimals(ones(user.balance))} ONEs
-                </Text>
-              </Box>
-              <Box
-                onClick={() => {
-                  user.signOut().then(() => {
-                    history.push(`/${Routes.login}`);
-                  });
-                }}
-                margin={{ left: 'medium' }}
-              >
-                <Icon
-                  glyph="Logout"
-                  size="24px"
-                  style={{ opacity: 0.5 }}
-                  color="BlackTxt"
-                />
-              </Box>
+            <Box direction="row" align="center" className={styles.howTo}>
+              <Text size="18px">About</Text>
+              <Icon
+                glyph="Info"
+                size="25px"
+                style={{ marginLeft: 4, marginTop: -26 }}
+              />
             </Box>
-          ) : (
-            <Box
-              direction="row"
-              justify="end"
-              align="center"
-              style={{ flex: '1 0 auto', marginRight: 2, marginTop: 2 }}
-            >
-              <Button
-                style={{ width: 120 }}
-                onClick={() => {
-                  if (!user.isMathWallet) {
-                    actionModals.open(() => <AuthWarning />, {
-                      title: '',
-                      applyText: 'Got it',
-                      closeText: '',
-                      noValidation: true,
-                      width: '500px',
-                      showOther: true,
-                      onApply: () => Promise.resolve(),
+
+            {/*<Box style={{ flex: '1 1 100%' }} />*/}
+
+            {user.isAuthorized ? (
+              <Box direction="row" justify="end" align="center">
+                <Box dir="column">
+                  <Text color="rgb(164, 168, 171)" size="small">
+                    You authorised with Math Wallet as:
+                  </Text>
+                  {user.address}
+                  <Text size="small">
+                    Balance: {formatWithTwoDecimals(ones(user.balance))} ONEs
+                  </Text>
+                </Box>
+                <Box
+                  onClick={() => {
+                    user.signOut().then(() => {
+                      history.push(`/${Routes.login}`);
                     });
-                  } else {
-                    user.signIn();
-                  }
-                }}
+                  }}
+                  margin={{ left: 'medium' }}
+                >
+                  <Icon
+                    glyph="Logout"
+                    size="24px"
+                    style={{ opacity: 0.5 }}
+                    color="BlackTxt"
+                  />
+                </Box>
+              </Box>
+            ) : (
+              <Box
+                direction="row"
+                justify="end"
+                align="center"
+                style={{ marginRight: 2, marginTop: 2 }}
               >
-                Sign in
-              </Button>
-            </Box>
-          )}
+                <Button
+                  style={{ width: 120 }}
+                  onClick={() => {
+                    if (!user.isMathWallet) {
+                      actionModals.open(() => <AuthWarning />, {
+                        title: '',
+                        applyText: 'Got it',
+                        closeText: '',
+                        noValidation: true,
+                        width: '500px',
+                        showOther: true,
+                        onApply: () => Promise.resolve(),
+                      });
+                    } else {
+                      user.signIn();
+                    }
+                  }}
+                >
+                  Sign in
+                </Button>
+              </Box>
+            )}
+          </Box>
         </Box>
       </Box>
     );

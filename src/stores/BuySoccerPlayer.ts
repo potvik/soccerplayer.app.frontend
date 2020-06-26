@@ -10,6 +10,7 @@ export class BuySoccerPlayer extends StoreConstructor {
 
   @observable public status: statusFetching = 'init';
   @observable public actionStatus: statusFetching = 'init';
+  @observable public txId: string;
 
   constructor(stores: IStores) {
     super(stores);
@@ -26,6 +27,8 @@ export class BuySoccerPlayer extends StoreConstructor {
           price: Number(this.currentPlayer.sellingPrice),
           signer: this.stores.user.address,
         });
+
+        this.txId = res.transaction.id;
 
         if (res.status === 'called' || res.status === 'call') {
           await this.stores.soccerPlayers.updatePlayerCard(
@@ -65,6 +68,7 @@ export class BuySoccerPlayer extends StoreConstructor {
   clear() {
     this.currentPlayer = null;
     this.status = 'init';
-    this.actionStatus = 'init'
+    this.actionStatus = 'init';
+    this.txId = '';
   }
 }
