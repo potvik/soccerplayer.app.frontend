@@ -1,14 +1,15 @@
 import * as React from 'react';
 import { Box } from 'grommet';
-import { Loader, Title } from 'components/Base';
+import { Button, DisableWrap, Loader, Select, Title } from 'components/Base';
 import { BaseContainer, PageContainer } from 'components';
 import { PlayerCard } from './PlayerCard';
 import { useStores } from 'stores';
 import { observer } from 'mobx-react-lite';
 import { useEffect } from 'react';
+import { PLAYERS_FILTER } from '../../stores/SoccerPlayersList';
 
 export const PlayersMarketplace = observer(() => {
-  const { soccerPlayers } = useStores();
+  const { soccerPlayers, user } = useStores();
 
   useEffect(() => {
     soccerPlayers.getList();
@@ -17,25 +18,81 @@ export const PlayersMarketplace = observer(() => {
   return (
     <BaseContainer>
       <PageContainer>
-        <Title
-          bold
+        <Box
+          direction="row"
+          justify="between"
+          align="center"
           margin={{ vertical: '30px' }}
-          size="large"
-          color="white"
-          style={{
-            boxShadow: 'box-shadow: 0 0 20px rgba(0,0,0,0.4)',
-          }}
         >
-          All cards / Top 10 cards / My team
-        </Title>
+          {/*<Title*/}
+          {/*  bold*/}
+          {/*  size="large"*/}
+          {/*  color="white"*/}
+          {/*  style={{*/}
+          {/*    boxShadow: 'box-shadow: 0 0 20px rgba(0,0,0,0.4)',*/}
+          {/*  }}*/}
+          {/*>*/}
+          {/*  Collect your team*/}
+          {/*</Title>*/}
+          <Box direction="row" gap="20px" justify="center">
+            <Button onClick={() => soccerPlayers.setFilter(PLAYERS_FILTER.ALL)}>
+              All cards
+            </Button>
+            <Button onClick={() => soccerPlayers.setFilter(PLAYERS_FILTER.TOP)}>
+              TOP 5 cards
+            </Button>
+            <Button
+              disabled={!user.isAuthorized}
+              onClick={() => soccerPlayers.setFilter(PLAYERS_FILTER.MY)}
+            >
+              My cards
+            </Button>
+          </Box>
+
+          <Box gap="20px" direction="row" align="end">
+            <Title
+              size="small"
+              color="white"
+              style={{
+                boxShadow: 'box-shadow: 0 0 20px rgba(0,0,0,0.4)',
+              }}
+            >
+              sort by
+            </Title>
+            <Select
+              size="medium"
+              onChange={soccerPlayers.setSort}
+              value={soccerPlayers.sort}
+              options={[
+                {
+                  text: 'price',
+                  value: 'sellingPrice',
+                },
+                {
+                  text: 'card number',
+                  value: 'internalPlayerId',
+                },
+              ]}
+            />
+          </Box>
+        </Box>
 
         {soccerPlayers.status === 'first_fetching' ? (
           <Loader />
         ) : (
-          <Box direction="row" justify="between" wrap>
-            {soccerPlayers.list.map((item, idx) => (
+          <Box
+            direction="row"
+            justify={
+              soccerPlayers.filteredList.length < 10 ? 'center' : 'between'
+            }
+            align="center"
+            wrap
+            gap="10px"
+            style={{ minHeight: 600 }}
+          >
+            {soccerPlayers.filteredList.map(item => (
               <PlayerCard
-                key={idx}
+                key={item.player.internalPlayerId}
                 player={item.player}
                 emptyPlayer={item.emptyPlayer}
               />

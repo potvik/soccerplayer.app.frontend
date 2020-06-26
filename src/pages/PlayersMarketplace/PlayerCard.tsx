@@ -156,7 +156,7 @@ export const PlayerCard = observer<IPlayerCardProps>(props => {
             onClick={buyPlayerHandler}
           >
             <Text color="white" size={'medium'}>
-              Buy this contract
+              Buy this card
             </Text>
           </Box>
         )}

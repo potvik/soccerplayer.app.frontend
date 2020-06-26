@@ -1,8 +1,9 @@
-import { action, observable } from 'mobx';
+import { action, computed, observable } from 'mobx';
 import { IStores } from 'stores';
 import { statusFetching } from '../constants';
 import { StoreConstructor } from './core/StoreConstructor';
 import * as blockchain from '../blockchain';
+import { getBech32Address } from '../blockchain';
 
 export interface IPlayerCard {
   internalPlayerId: string;
@@ -19,12 +20,21 @@ export interface IEmptyPlayerCard {
   empty: true;
 }
 
+export enum PLAYERS_FILTER {
+  TOP = 'TOP',
+  ALL = 'ALL',
+  MY = 'MY',
+}
+
 export class SoccerPlayersList extends StoreConstructor {
   @observable public list: Array<{
     emptyPlayer: IEmptyPlayerCard;
     player?: IPlayerCard;
   }> = [];
   @observable public status: statusFetching = 'init';
+
+  @observable public filter: PLAYERS_FILTER = PLAYERS_FILTER.ALL;
+  @observable public sort: keyof IPlayerCard = 'sellingPrice';
 
   constructor(stores: IStores) {
     super(stores);
@@ -43,6 +53,48 @@ export class SoccerPlayersList extends StoreConstructor {
     }, 15000);
   }
 
+  @computed
+  public get filteredList() {
+    switch (this.filter) {
+      case PLAYERS_FILTER.ALL:
+        return this.list
+          .slice()
+          .filter(item => !!item.player)
+          .sort((a, b) => {
+            if (this.sort === 'sellingPrice') {
+              return a.player[this.sort] <= b.player[this.sort] ? 1 : -1;
+            }
+            return a.player[this.sort] <= b.player[this.sort] ? -1 : 1;
+          });
+      case PLAYERS_FILTER.TOP:
+        const list = this.list
+          .slice()
+          .filter(item => !!item.player)
+          .sort((a, b) =>
+            a.player.sellingPrice <= b.player.sellingPrice ? 1 : -1,
+          );
+
+        return list.slice(0, 5);
+      case PLAYERS_FILTER.MY:
+        return this.list.filter(
+          item =>
+            getBech32Address(item.player.owner) === this.stores.user.address,
+        );
+      default:
+        return this.list;
+    }
+  }
+
+  @action.bound
+  async setFilter(filter: PLAYERS_FILTER) {
+    this.filter = filter;
+  }
+
+  @action.bound
+  async setSort(sort: keyof IPlayerCard) {
+    this.sort = sort;
+  }
+
   @action.bound
   async updatePlayerCard(id: string) {
     const fullPlayerData = await blockchain.getPlayerById(id);
@@ -55,12 +107,6 @@ export class SoccerPlayersList extends StoreConstructor {
       ...this.list[playerIndex],
       player: fullPlayerData,
     };
-
-    this.list = this.list
-      .slice()
-      .sort((a, b) =>
-        a.player.sellingPrice <= b.player.sellingPrice ? 1 : -1,
-      );
   }
 
   @action.bound
@@ -76,7 +122,7 @@ export class SoccerPlayersList extends StoreConstructor {
       .then(async total => {
         // this.status = 'success';
 
-        if(this.status === 'first_fetching') {
+        if (this.status === 'first_fetching') {
           this.list = [...new Array(Number(total))].map((raw, idx) => ({
             emptyPlayer: {
               internalPlayerId: String(idx),
@@ -120,12 +166,6 @@ export class SoccerPlayersList extends StoreConstructor {
               player: fullPlayerData,
             };
           }),
-        );
-
-        this.list = this.list.sort((a, b) =>
-          a.player && b.player && a.player.sellingPrice <= b.player.sellingPrice
-            ? 1
-            : -1,
         );
 
         this.status = 'success';
