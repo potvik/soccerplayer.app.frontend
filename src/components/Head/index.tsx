@@ -28,7 +28,8 @@ export const Head: React.FC<IStyledChildrenProps<BoxProps>> = withTheme(
     return (
       <Box
         style={{
-          background: palette.StandardWhite,
+          // background: palette.StandardWhite,
+          background: "#f6f7fb",
           overflow: 'visible',
           position: 'absolute',
           top: 0,

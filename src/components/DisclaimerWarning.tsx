@@ -5,17 +5,21 @@ const styles = {
   banner: {
     fontFamily: 'Nunito',
     height: 80,
-    background: 'rgba(52, 64, 81, 0.88) url(/cookie.png) 20px 50% no-repeat',
+    background: 'rgba(31, 39, 49, 0.9)',
     backgroundSize: '30px 30px',
     backgroundColor: '',
     fontSize: '16px',
     fontWeight: 600,
-    position: 'fixed',
+    position: 'relative',
     top: 0,
     display: 'flex',
     flexDirection: 'row',
-    justifyContent: 'space-around',
+    justifyContent: 'space-between',
     alignItems: 'center',
+    zIndex: 999,
+    borderRadius: 5,
+    // marginBottom: -10,
+    // marginTop: -10
   },
   button: {
     position: 'static',
@@ -32,14 +36,16 @@ const styles = {
     marginTop: 0,
     right: 0,
     marginLeft: 40,
-    marginRight: 40,
+    marginRight: 32,
   },
   message: {
     display: 'block',
     lineHeight: 1.5,
     textAlign: 'left',
     color: 'red',
-    marginLeft: 40,
+    marginLeft: 32,
+    // fontWeight: "bold"
+    fontSize: '17px',
   },
   link: {
     textDecoration: 'none',
@@ -52,7 +58,7 @@ export const Disclaimer = () => (
     styles={styles}
     message="DISCLAIMER: This site is for technology demonstration. We do NOT own or licence the trademarks of any of the following digital assets"
     onAccept={() => {}}
-    cookie="soccerplayers-accepted-disclaimer"
+    cookie="soccerplayers-accept-no-commerce"
     dismissOnScroll={false}
     dismissOnClick={false}
   />
