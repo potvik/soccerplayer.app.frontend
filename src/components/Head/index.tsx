@@ -13,7 +13,7 @@ import { Button } from '../Base/components/Button';
 import { AuthWarning } from '../AuthWarning';
 import { formatWithTwoDecimals, ones } from '../../utils';
 import * as styles from './styles.styl';
-import {Info} from "../Info";
+import { Info } from '../Info';
 
 const MainLogo = styled.img`
   width: 62px;
@@ -57,7 +57,7 @@ export const Head: React.FC<IStyledChildrenProps<BoxProps>> = withTheme(
             <Box align="center" margin={{ right: 'small' }}>
               <MainLogo src="main_logo.png" />
             </Box>
-            <Box style={{ minWidth: 300 }}>
+            <Box>
               <Title size="small" color="BlackTxt" bold>
                 Harmony Soccer Players
               </Title>
