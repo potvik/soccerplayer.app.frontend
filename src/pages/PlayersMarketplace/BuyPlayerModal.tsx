@@ -5,6 +5,7 @@ import { observer } from 'mobx-react-lite';
 import { useStores } from 'stores';
 import { PlayerCardLite } from './PlayerCardLite';
 import * as styles from './card.styl';
+import { EXPLORER_URL } from '../../blockchain';
 
 interface IBuyPlayerModalProps {}
 
@@ -62,7 +63,14 @@ export const BuyPlayerModal = observer<IBuyPlayerModalProps>(props => {
 
           <Box direction="column" gap="15px" align="center">
             <Text>Your address:</Text>
-            <Box className={styles.addressBlock}>{user.address}</Box>
+            <Box className={styles.addressBlock}>
+              <a
+                href={EXPLORER_URL + `/address/${user.address}`}
+                target="_blank"
+              >
+                {user.address}
+              </a>
+            </Box>
           </Box>
         </Box>
       </Box>

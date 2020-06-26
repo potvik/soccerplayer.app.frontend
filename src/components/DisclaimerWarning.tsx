@@ -11,7 +11,7 @@ const styles = {
     fontSize: '16px',
     fontWeight: 600,
     position: 'fixed',
-    bottom: 0,
+    top: 0,
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'space-around',
@@ -38,7 +38,7 @@ const styles = {
     display: 'block',
     lineHeight: 1.5,
     textAlign: 'left',
-    color: 'white',
+    color: 'red',
     marginLeft: 40,
   },
   link: {
@@ -52,7 +52,7 @@ export const Disclaimer = () => (
     styles={styles}
     message="DISCLAIMER: This site is for technology demonstration. We do NOT own or licence the trademarks of any of the following digital assets"
     onAccept={() => {}}
-    cookie="soccerplayers-accepted-cookies"
+    cookie="soccerplayers-accepted-disclaimer"
     dismissOnScroll={false}
     dismissOnClick={false}
   />

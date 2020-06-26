@@ -4,14 +4,20 @@ import { DisableWrap, Icon, Text } from 'components/Base';
 import { observer } from 'mobx-react-lite';
 import * as styles from './card.styl';
 import { IEmptyPlayerCard, IPlayerCard } from 'stores/SoccerPlayersList';
-import {formatWithTwoDecimals, ones, truncateAddressString} from '../../utils';
-import { getBech32Address } from '../../blockchain';
+import {
+  formatWithTwoDecimals,
+  ones,
+  truncateAddressString,
+} from '../../utils';
+import { EXPLORER_URL, getBech32Address } from '../../blockchain';
 
 const DataItem = (props: {
   text: any;
   label: string;
   icon: string;
   iconSize: string;
+  color?: string;
+  link?: string;
 }) => {
   return (
     <Box direction="row" justify="between" gap="10px">
@@ -19,16 +25,28 @@ const DataItem = (props: {
         <Icon
           glyph={props.icon}
           size={props.iconSize}
-          color="#1c2a5e"
+          color={props.color || '#1c2a5e'}
           style={{ marginBottom: 2, width: 20 }}
         />
         <Text color="#1c2a5e" size={'small'}>
           {props.label}
         </Text>
       </Box>
-      <Text color="#1c2a5e" size={'small'} bold={true}>
-        {props.text}
-      </Text>
+      {props.link ? (
+        <a
+          href={props.link}
+          target="_blank"
+          style={{ color: props.color || '#1c2a5e' }}
+        >
+          <Text color={props.color || '#1c2a5e'} size={'small'} bold={true}>
+            {props.text}
+          </Text>
+        </a>
+      ) : (
+        <Text color={props.color || '#1c2a5e'} size={'small'} bold={true}>
+          {props.text}
+        </Text>
+      )}
     </Box>
   );
 };
@@ -63,7 +81,9 @@ export const PlayerCardLite = observer<IPlayerCardProps>(props => {
             icon="Price"
             iconSize="16px"
             text={
-              (props.player ? formatWithTwoDecimals(ones(props.player.sellingPrice)) : '...') + ' ONEs'
+              (props.player
+                ? formatWithTwoDecimals(ones(props.player.sellingPrice))
+                : '...') + ' ONEs'
             }
             label="Price:"
           />
@@ -72,6 +92,7 @@ export const PlayerCardLite = observer<IPlayerCardProps>(props => {
             iconSize="16px"
             text={props.player ? truncateAddressString(bech32Owner) : '...'}
             label="Owner:"
+            link={EXPLORER_URL + `/address/${bech32Owner}`}
           />
           <DataItem
             icon="Refresh"
@@ -99,7 +120,9 @@ export const PlayerCardLite = observer<IPlayerCardProps>(props => {
 
       <Box className={styles.buyButton} fill={true}>
         <Text color="white" size={'medium'}>
-          {(props.player ? formatWithTwoDecimals(ones(props.player.sellingPrice)) : '...') + ' ONEs'}
+          {(props.player
+            ? formatWithTwoDecimals(ones(props.player.sellingPrice))
+            : '...') + ' ONEs'}
         </Text>
       </Box>
     </Box>

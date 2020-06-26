@@ -4,8 +4,12 @@ import { DisableWrap, Icon, Text } from 'components/Base';
 import { observer } from 'mobx-react-lite';
 import * as styles from './card.styl';
 import { IEmptyPlayerCard, IPlayerCard } from 'stores/SoccerPlayersList';
-import {formatWithTwoDecimals, ones, truncateAddressString} from '../../utils';
-import { getBech32Address } from '../../blockchain';
+import {
+  formatWithTwoDecimals,
+  ones,
+  truncateAddressString,
+} from '../../utils';
+import { EXPLORER_URL, getBech32Address } from '../../blockchain';
 import { useCallback } from 'react';
 import { useStores } from 'stores';
 import { BuyPlayerModal } from './BuyPlayerModal';
@@ -17,6 +21,7 @@ const DataItem = (props: {
   icon: string;
   iconSize: string;
   color?: string;
+  link?: string;
 }) => {
   return (
     <Box direction="row" justify="between" gap="10px">
@@ -31,9 +36,17 @@ const DataItem = (props: {
           {props.label}
         </Text>
       </Box>
-      <Text color={props.color || '#1c2a5e'} size={'small'} bold={true}>
-        {props.text}
-      </Text>
+      {props.link ? (
+        <a href={props.link} target="_blank" style={{ color: props.color || '#1c2a5e' }}>
+          <Text color={props.color || '#1c2a5e'} size={'small'} bold={true}>
+            {props.text}
+          </Text>
+        </a>
+      ) : (
+        <Text color={props.color || '#1c2a5e'} size={'small'} bold={true}>
+          {props.text}
+        </Text>
+      )}
     </Box>
   );
 };
@@ -71,19 +84,16 @@ export const PlayerCard = observer<IPlayerCardProps>(props => {
 
     await buyPlayer.initPlayer(props.player);
 
-    actionModals.open(
-      () => <BuyPlayerModal />,
-      {
-        title: '',
-        applyText: 'Buy Player Card',
-        closeText: 'Cancel',
-        noValidation: true,
-        width: '1000px',
-        showOther: true,
-        onApply: () => buyPlayer.buy(),
-        onClose: () => buyPlayer.clear(),
-      },
-    );
+    actionModals.open(() => <BuyPlayerModal />, {
+      title: '',
+      applyText: 'Buy Player Card',
+      closeText: 'Cancel',
+      noValidation: true,
+      width: '1000px',
+      showOther: true,
+      onApply: () => buyPlayer.buy(),
+      onClose: () => buyPlayer.clear(),
+    });
   }, []);
 
   return (
@@ -108,7 +118,9 @@ export const PlayerCard = observer<IPlayerCardProps>(props => {
             icon="ONE"
             iconSize="16px"
             text={
-              (props.player ? formatWithTwoDecimals(ones(props.player.sellingPrice)) : '...') + ' ONEs'
+              (props.player
+                ? formatWithTwoDecimals(ones(props.player.sellingPrice))
+                : '...') + ' ONEs'
             }
             label="Price:"
           />
@@ -117,6 +129,7 @@ export const PlayerCard = observer<IPlayerCardProps>(props => {
             iconSize="16px"
             text={props.player ? truncateAddressString(bech32Owner) : '...'}
             label="Owner:"
+            link={EXPLORER_URL + `/address/${bech32Owner}`}
           />
           <DataItem
             icon="Refresh"

@@ -53,6 +53,17 @@ export class SoccerPlayersList extends StoreConstructor {
     }, 7000);
   }
 
+  sortFunction = (sort) => (itemA, itemB) => {
+    const a = itemA.player[sort];
+    const b = itemB.player[sort];
+
+    if (sort === 'sellingPrice') {
+      return Number(a) <= Number(b) ? 1 : -1;
+    }
+
+    return Number(a) <= Number(b) ? -1 : 1;
+  };
+
   @computed
   public get filteredList() {
     switch (this.filter) {
@@ -60,30 +71,21 @@ export class SoccerPlayersList extends StoreConstructor {
         return this.list
           .slice()
           .filter(item => !!item.player)
-          .sort((itemA, itemB) => {
-            const a = itemA.player[this.sort];
-            const b = itemB.player[this.sort];
-
-            if (this.sort === 'sellingPrice') {
-              return Number(a) <= Number(b) ? 1 : -1;
-            }
-
-            return Number(a) <= Number(b) ? -1 : 1;
-          });
+          .sort(this.sortFunction(this.sort));
       case PLAYERS_FILTER.TOP:
         const list = this.list
           .slice()
           .filter(item => !!item.player)
-          .sort((a, b) =>
-            a.player.sellingPrice <= b.player.sellingPrice ? 1 : -1,
-          );
+          .sort(this.sortFunction(this.sort));
 
         return list.slice(0, 5);
       case PLAYERS_FILTER.MY:
-        return this.list.filter(
-          item =>
-            getBech32Address(item.player.owner) === this.stores.user.address,
-        );
+        return this.list
+          .filter(
+            item =>
+              getBech32Address(item.player.owner) === this.stores.user.address,
+          )
+          .sort(this.sortFunction(this.sort));
       default:
         return this.list;
     }
