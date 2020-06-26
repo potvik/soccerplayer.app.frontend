@@ -50,7 +50,7 @@ export class SoccerPlayersList extends StoreConstructor {
 
     setInterval(() => {
       this.getList();
-    }, 15000);
+    }, 7000);
   }
 
   @computed
