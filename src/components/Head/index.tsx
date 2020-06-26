@@ -73,7 +73,7 @@ export const Head: React.FC<IStyledChildrenProps<BoxProps>> = withTheme(
                 applyText: 'Close',
                 closeText: '',
                 noValidation: true,
-                width: '500px',
+                width: '700px',
                 showOther: true,
                 onApply: () => Promise.resolve(),
               });
