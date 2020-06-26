@@ -16,6 +16,7 @@
     "url": "https://github.com/potvik/soccerplayer.app.frontend"
   },
   "dependencies": {
+    "@harmony-js/core": "^0.1.46",
     "@types/react-outside-click-handler": "^1.3.0",
     "async-validator": "1.11.5",
     "classnames": "^2.2.6",
@@ -29,14 +30,14 @@
     "query-string": "^6.10.1",
     "rc-tooltip": "^4.2.1",
     "react": "16.12.0",
+    "react-cookie-banner": "^4.1.0",
     "react-dom": "16.12.0",
     "react-outside-click-handler": "^1.3.0",
     "react-router": "5.1.2",
     "react-router-dom": "5.1.2",
     "react-scrollbars-custom": "^4.0.21",
     "react-select": "^3.1.0",
-    "react-switch": "^5.0.1",
-    "@harmony-js/core": "^0.1.46"
+    "react-switch": "^5.0.1"
   },
   "devDependencies": {
     "@types/classnames": "^2.2.9",

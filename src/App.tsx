@@ -5,6 +5,7 @@ import { Providers } from './Providers';
 import { Redirect, Route, Switch } from 'react-router';
 import { PlayersMarketplace } from './pages/PlayersMarketplace';
 import { ActionModals } from './components/ActionModals';
+import { Disclaimer } from './components/DisclaimerWarning';
 
 export const App: React.FC = () => (
   <Providers>
@@ -16,5 +17,6 @@ export const App: React.FC = () => (
     </React.Suspense>
     <ActionModals />
     <GlobalStyle theme={...baseTheme as any} />
+    <Disclaimer />
   </Providers>
 );
