@@ -35,13 +35,35 @@ export const PlayersMarketplace = observer(() => {
           {/*  Collect your team*/}
           {/*</Title>*/}
           <Box direction="row" gap="20px" justify="center">
-            <Button onClick={() => soccerPlayers.setFilter(PLAYERS_FILTER.ALL)}>
+            <Button
+              style={{
+                background:
+                  soccerPlayers.filter === PLAYERS_FILTER.ALL
+                    ? '#03ade8'
+                    : '#1c2a5e',
+              }}
+              onClick={() => soccerPlayers.setFilter(PLAYERS_FILTER.ALL)}
+            >
               All cards
             </Button>
-            <Button onClick={() => soccerPlayers.setFilter(PLAYERS_FILTER.TOP)}>
+            <Button
+              style={{
+                background:
+                  soccerPlayers.filter === PLAYERS_FILTER.TOP
+                    ? '#03ade8'
+                    : '#1c2a5e',
+              }}
+              onClick={() => soccerPlayers.setFilter(PLAYERS_FILTER.TOP)}
+            >
               TOP 5 cards
             </Button>
             <Button
+              style={{
+                background:
+                  soccerPlayers.filter === PLAYERS_FILTER.MY
+                    ? '#03ade8'
+                    : '#1c2a5e',
+              }}
               disabled={!user.isAuthorized}
               onClick={() => soccerPlayers.setFilter(PLAYERS_FILTER.MY)}
             >
