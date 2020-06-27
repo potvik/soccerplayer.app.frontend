@@ -11,6 +11,7 @@ export class BuySoccerPlayer extends StoreConstructor {
   @observable public status: statusFetching = 'init';
   @observable public actionStatus: statusFetching = 'init';
   @observable public txId: string;
+  @observable public error: string;
 
   constructor(stores: IStores) {
     super(stores);
@@ -22,6 +23,13 @@ export class BuySoccerPlayer extends StoreConstructor {
 
     return new Promise(async (resolve, reject) => {
       try {
+        if (
+          Number(this.stores.user.balance) <
+          Number(this.currentPlayer.sellingPrice)
+        ) {
+          throw new Error('Your balance is not enough to buy');
+        }
+
         const res = await blockchain.buyPlayerById({
           id: Number(this.currentPlayer.internalPlayerId),
           price: Number(this.currentPlayer.sellingPrice),
@@ -31,19 +39,24 @@ export class BuySoccerPlayer extends StoreConstructor {
         this.txId = res.transaction.id;
 
         if (res.status === 'called' || res.status === 'call') {
-          await this.stores.soccerPlayers.updatePlayerCard(
+          this.stores.soccerPlayers.updatePlayerCard(
             this.currentPlayer.internalPlayerId,
           );
 
           this.actionStatus = 'success';
 
-          return resolve();
+          setTimeout(() => resolve(), 2000);
+
+          return;
         }
+
+        this.error = 'Transaction failed';
 
         this.actionStatus = 'error';
         reject();
       } catch (e) {
         console.error(e);
+        this.error = e.message;
 
         this.actionStatus = 'error';
 
@@ -70,5 +83,6 @@ export class BuySoccerPlayer extends StoreConstructor {
     this.status = 'init';
     this.actionStatus = 'init';
     this.txId = '';
+    this.error = '';
   }
 }

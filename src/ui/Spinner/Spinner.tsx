@@ -6,16 +6,22 @@ export const Spinner: React.FC<React.SVGAttributes<SVGElement>> = props => {
   const radius = boxSize / 2 - 1;
   const middle = boxSize / 2;
   return (
-    <svg viewBox={`0 0 ${boxSize} ${boxSize}`} className={s.spinner} {...props}>
-      <circle
-        r={radius}
-        cx={middle}
-        cy={middle}
-        strokeWidth="1"
-        fill="none"
-        stroke={ props.color || 'black'}
-        strokeDasharray={Math.floor(2 * radius * Math.PI - 6)}
-      />
-    </svg>
+    <div className={s.spinnerContainer}>
+      <svg
+        viewBox={`0 0 ${boxSize} ${boxSize}`}
+        className={s.spinner}
+        {...props}
+      >
+        <circle
+          r={radius}
+          cx={middle}
+          cy={middle}
+          strokeWidth="1"
+          fill="none"
+          stroke={props.color || 'black'}
+          strokeDasharray={Math.floor(2 * radius * Math.PI - 6)}
+        />
+      </svg>
+    </div>
   );
 };

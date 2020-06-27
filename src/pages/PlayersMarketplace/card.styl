@@ -102,15 +102,44 @@
 
 
 .modalContainer {
+  a {
+    color: #1c2a5e
+    font-size 16px
+  }
+
   .addressBlock {
-    padding: 15px 20px;
+    padding: 5px 20px;
     border: 2px solid #1c2a5e;
-    // background: #1c2a5e;
-    border-radius 5px
+    border-radius: 5px;
+    width: 100%;
+    text-align: center;
     a {
       color: #1c2a5e
       font-size 16px
       text-decoration none
     }
   }
+
+  .description {
+    background: #f6f7fb;
+    border-radius: 5px;
+    padding: 15px 20px;
+    margin-top 20px
+    text-align center
+  }
+}
+
+
+@keyframes move {
+  from {
+      transform: translateX(-150px)
+  }
+  to {
+      transform: translateX(150px)
+  }
+}
+
+.sendArrow{
+  // animation: move 2s linear infinite;
+  margin-bottom -20px
 }

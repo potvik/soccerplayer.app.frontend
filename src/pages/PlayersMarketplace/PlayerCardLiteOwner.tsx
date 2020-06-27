@@ -10,6 +10,7 @@ import {
   truncateAddressString,
 } from '../../utils';
 import { EXPLORER_URL, getBech32Address } from '../../blockchain';
+import { useStores } from '../../stores';
 
 const DataItem = (props: {
   text: any;
@@ -56,8 +57,12 @@ export interface IPlayerCardProps {
   emptyPlayer?: IEmptyPlayerCard;
 }
 
-export const PlayerCardLite = observer<IPlayerCardProps>(props => {
+export const PlayerCardLiteOwner = observer<IPlayerCardProps>(props => {
   const bech32Owner = props.player ? getBech32Address(props.player.owner) : '';
+
+  const { user } = useStores();
+
+  const newPrice = value => value + value * 0.13 + value * 0.02;
 
   return (
     <Box
@@ -75,7 +80,7 @@ export const PlayerCardLite = observer<IPlayerCardProps>(props => {
         }.jpg`}
       />
 
-      {props.player ? (
+      {!props.player ? (
         <Box className={styles.infoBlock} fill={true} gap="10px" pad="medium">
           <DataItem
             icon="ONE"
@@ -109,19 +114,26 @@ export const PlayerCardLite = observer<IPlayerCardProps>(props => {
           pad="medium"
           justify="center"
         >
-          <DataItem
-            icon="Refresh"
-            iconSize="14px"
-            text={''}
-            label="Loading data from blockchain..."
-          />
+          <Box direction="column" gap="15px" align="center">
+            <Text color={'#1c2a5e'}>Your address:</Text>
+            <Box className={styles.addressBlock}>
+              <a
+                href={EXPLORER_URL + `/address/${user.address}`}
+                target="_blank"
+              >
+                {truncateAddressString(user.address)}
+              </a>
+            </Box>
+          </Box>
         </Box>
       )}
 
       <Box className={styles.buyButton} fill={true}>
         <Text color="white" size={'medium'}>
           {(props.player
-            ? formatWithTwoDecimals(ones(props.player.sellingPrice))
+            ? formatWithTwoDecimals(
+                ones(newPrice(Number(props.player.sellingPrice))),
+              )
             : '...') + ' ONEs'}
         </Text>
       </Box>

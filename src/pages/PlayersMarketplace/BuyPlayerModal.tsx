@@ -6,6 +6,9 @@ import { useStores } from 'stores';
 import { PlayerCardLite } from './PlayerCardLite';
 import * as styles from './card.styl';
 import { EXPLORER_URL } from '../../blockchain';
+import { Spinner } from 'ui';
+import { truncateAddressString } from '../../utils';
+import {PlayerCardLiteOwner} from "./PlayerCardLiteOwner";
 
 interface IBuyPlayerModalProps {}
 
@@ -16,27 +19,34 @@ export const BuyPlayerModal = observer<IBuyPlayerModalProps>(props => {
     return <Text>Loading...</Text>;
   }
 
-  let icon = 'RightArrow';
+  let icon = () => <Icon style={{ width: 50 }} glyph="RightArrow" />;
   let description = 'Approval';
 
   switch (buyPlayer.actionStatus) {
     case 'init':
-      icon = 'RightArrow';
-      description = 'To';
+      icon = () => (
+        <Icon
+          style={{ height: '110px', width: 'auto' }}
+          className={styles.sendArrow}
+          glyph="SendArrow"
+        />
+      );
+      description =
+        'Receive 13% reward if someone buys your player smart contract and 2% is allocated in the mint account for service and maintenance';
       break;
 
     case 'fetching':
-      icon = 'Refresh';
+      icon = () => <Spinner />;
       description = 'Sending';
       break;
 
     case 'error':
-      icon = 'Trash';
-      description = 'Error';
+      icon = () => <Icon size="50" style={{ width: 50 }} glyph="Alert" />;
+      description = buyPlayer.error;
       break;
 
     case 'success':
-      icon = 'CheckMark';
+      icon = () => <Icon size="50" style={{ width: 50 }} glyph="CheckMark" />;
       description = 'Success';
       break;
   }
@@ -46,7 +56,7 @@ export const BuyPlayerModal = observer<IBuyPlayerModalProps>(props => {
       pad={{ horizontal: 'large', top: 'large' }}
       className={styles.modalContainer}
     >
-      <Title>Buy Player Card</Title>
+      <Title style={{ textAlign: 'center' }}>Buy Player Card</Title>
       <Box
         margin={{ top: 'large' }}
         direction="row"
@@ -55,25 +65,48 @@ export const BuyPlayerModal = observer<IBuyPlayerModalProps>(props => {
       >
         <PlayerCardLite player={buyPlayer.currentPlayer} />
 
-        <Box direction="row" align="end" justify="between" width="550px">
-          <Box direction="column" align="center" gap="20px">
-            <Icon style={{ width: 50 }} glyph={icon} />
-            {description}
-          </Box>
-
-          <Box direction="column" gap="15px" align="center">
-            <Text>Your address:</Text>
-            <Box className={styles.addressBlock}>
+        <Box
+          direction="column"
+          align="center"
+          justify="center"
+          style={{ maxWidth: 340, marginTop: -20 }}
+        >
+          {icon()}
+          <Box className={styles.description}>
+            <Text>{description}</Text>
+            {buyPlayer.txId ? (
               <a
-                href={EXPLORER_URL + `/address/${user.address}`}
+                style={{ marginTop: 10 }}
+                href={EXPLORER_URL + `/tx/${buyPlayer.txId}`}
                 target="_blank"
               >
-                {user.address}
+                Tx id: {truncateAddressString(buyPlayer.txId)}
               </a>
-            </Box>
+            ) : null}
           </Box>
         </Box>
+
+        <PlayerCardLiteOwner player={buyPlayer.currentPlayer} />
+        {/*<Box direction="column" gap="15px" align="center">*/}
+        {/*  <Text>Your address:</Text>*/}
+        {/*  <Box className={styles.addressBlock}>*/}
+        {/*    <a href={EXPLORER_URL + `/address/${user.address}`} target="_blank">*/}
+        {/*      {truncateAddressString(user.address)}*/}
+        {/*    </a>*/}
+        {/*  </Box>*/}
+        {/*</Box>*/}
       </Box>
+      {/*<Box*/}
+      {/*  className={styles.description}*/}
+      {/*  margin={{ bottom: 'medium' }}*/}
+      {/*  justify="center"*/}
+      {/*  align="center"*/}
+      {/*>*/}
+      {/*  <Text size="medium" color="black">*/}
+      {/*    Receive 13% reward if someone buys your player smart contract and 2%*/}
+      {/*    is allocated in the mint account for service and maintenance*/}
+      {/*  </Text>*/}
+      {/*</Box>*/}
     </Box>
   );
 });
