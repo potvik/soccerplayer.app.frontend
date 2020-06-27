@@ -64,22 +64,23 @@ export const Head: React.FC<IStyledChildrenProps<BoxProps>> = withTheme(
             </Box>
           </Box>
 
-          <Box
-            direction="row"
-            align="center"
-            onClick={() => {
-              actionModals.open(() => <Info />, {
-                title: '',
-                applyText: 'Close',
-                closeText: '',
-                noValidation: true,
-                width: '700px',
-                showOther: true,
-                onApply: () => Promise.resolve(),
-              });
-            }}
-          >
-            <Box direction="row" align="center" className={styles.howTo}>
+          <Box direction="row" align="center">
+            <Box
+              direction="row"
+              align="center"
+              className={styles.howTo}
+              onClick={() => {
+                actionModals.open(() => <Info />, {
+                  title: '',
+                  applyText: 'Close',
+                  closeText: '',
+                  noValidation: true,
+                  width: '700px',
+                  showOther: true,
+                  onApply: () => Promise.resolve(),
+                });
+              }}
+            >
               <Text size="18px">About</Text>
               <Icon
                 glyph="Info"
