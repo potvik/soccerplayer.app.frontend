@@ -6,18 +6,18 @@ export const EXPLORER_URL = 'https://explorer.harmony.one/#';
 const GAS_LIMIT = 50000000;
 const GAS_PRICE = 1000000000;
 
-const hmy = new Harmony('https://api.s0.b.hmny.io', {
+const hmy = new Harmony('https://api.s0.t.hmny.io', {
   chainType: ChainType.Harmony,
-  chainId: ChainID.HmyTestnet,
+  chainId: ChainID.HmyMainnet,
 });
 
 const contractJson = require('./SoccerPlayers.json');
-const contractAddrTestnet = '0x7943381adde30f216cAEb9b9d1927522d7E5476f';
-// const contractAddr = '0x3e37A9C5F2ec88B7566ae68A5D38707E5e25f243';
+// const contractAddrTestnet = '0x7943381adde30f216cAEb9b9d1927522d7E5476f';
+const contractAddr = '0x3e37A9C5F2ec88B7566ae68A5D38707E5e25f243';
 
 const soccerPlayers = hmy.contracts.createContract(
   contractJson.abi,
-  contractAddrTestnet,
+  contractAddr,
 );
 
 const a = soccerPlayers.wallet.createAccount();
