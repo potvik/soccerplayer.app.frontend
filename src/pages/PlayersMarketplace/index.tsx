@@ -89,8 +89,12 @@ export const PlayersMarketplace = observer(() => {
               value={soccerPlayers.sort}
               options={[
                 {
-                  text: 'price',
-                  value: 'sellingPrice',
+                  text: 'high price',
+                  value: 'highPrice',
+                },
+                {
+                  text: 'low price',
+                  value: 'lowPrice',
                 },
                 {
                   text: 'card number',
@@ -122,7 +126,7 @@ export const PlayersMarketplace = observer(() => {
                 onEnterViewport={() => {
                   if (idx + 10 > soccerPlayers.maxDisplay) {
                     soccerPlayers.setMaxDisplay(soccerPlayers.maxDisplay + 20);
-                    return
+                    return;
                   }
 
                   // if (idx + 10 < 20) {

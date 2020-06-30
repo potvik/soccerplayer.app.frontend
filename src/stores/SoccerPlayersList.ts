@@ -34,7 +34,7 @@ export class SoccerPlayersList extends StoreConstructor {
   @observable public status: statusFetching = 'init';
 
   @observable public filter: PLAYERS_FILTER = PLAYERS_FILTER.ALL;
-  @observable public sort: keyof IPlayerCard = 'sellingPrice';
+  @observable public sort: keyof IPlayerCard | 'highPrice' | 'lowPrice' = 'highPrice';
   @observable public maxDisplay = 20;
 
   constructor(stores: IStores) {
@@ -55,12 +55,22 @@ export class SoccerPlayersList extends StoreConstructor {
   }
 
   sortFunction = sort => (itemA, itemB) => {
-    const a = itemA.player[sort];
-    const b = itemB.player[sort];
+    if (sort === 'highPrice') {
+      const a = itemA.player.sellingPrice;
+      const b = itemB.player.sellingPrice;
 
-    if (sort === 'sellingPrice') {
       return Number(a) <= Number(b) ? 1 : -1;
     }
+
+    if (sort === 'lowPrice') {
+      const a = itemA.player.sellingPrice;
+      const b = itemB.player.sellingPrice;
+
+      return Number(a) <= Number(b) ? -1 : 1;
+    }
+
+    const a = itemA.player[sort];
+    const b = itemB.player[sort];
 
     return Number(a) <= Number(b) ? -1 : 1;
   };
