@@ -31,8 +31,8 @@ export class BuySoccerPlayer extends StoreConstructor {
         }
 
         const res = await blockchain.buyPlayerById({
-          id: Number(this.currentPlayer.internalPlayerId),
-          price: Number(this.currentPlayer.sellingPrice),
+          id: this.currentPlayer.internalPlayerId,
+          price: this.currentPlayer.sellingPrice,
           signer: this.stores.user.address,
         });
 

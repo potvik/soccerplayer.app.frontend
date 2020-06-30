@@ -57,8 +57,8 @@ export const getTotalPlayers = async () => {
 };
 
 export const buyPlayerById = (params: {
-  id: number;
-  price: number;
+  id: string;
+  price: string;
   signer: string;
 }): Promise<{ status: string; transaction: { id: string } }> => {
   return new Promise(async (resolve, reject) => {
