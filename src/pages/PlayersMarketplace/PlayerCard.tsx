@@ -16,6 +16,7 @@ import { useCallback } from 'react';
 import { useStores } from 'stores';
 import { BuyPlayerModal } from './BuyPlayerModal';
 import { AuthWarning } from '../../components/AuthWarning';
+import { SendPlayerModal } from './SendPlayerModal';
 
 const DataItem = (props: {
   text: any;
@@ -39,7 +40,11 @@ const DataItem = (props: {
         </Text>
       </Box>
       {props.link ? (
-        <a href={props.link} target="_blank" style={{ color: props.color || '#1c2a5e' }}>
+        <a
+          href={props.link}
+          target="_blank"
+          style={{ color: props.color || '#1c2a5e' }}
+        >
           <Text color={props.color || '#1c2a5e'} size={'small'} bold={true}>
             {props.text}
           </Text>
@@ -56,11 +61,11 @@ const DataItem = (props: {
 export interface IPlayerCardProps {
   player?: IPlayerCard;
   emptyPlayer?: IEmptyPlayerCard;
-  forwardedRef: any
+  forwardedRef: any;
 }
 
 const PlayerCardEx = observer<IPlayerCardProps>(props => {
-  const { actionModals, buyPlayer, user } = useStores();
+  const { actionModals, buyPlayer, sendPlayer, user } = useStores();
 
   const bech32Owner = props.player ? getBech32Address(props.player.owner) : '';
 
@@ -82,21 +87,32 @@ const PlayerCardEx = observer<IPlayerCardProps>(props => {
     }
 
     if (user.address === bech32Owner) {
-      return;
+      await sendPlayer.initPlayer(props.player);
+
+      actionModals.open(() => <SendPlayerModal />, {
+        title: '',
+        applyText: 'Send Player Card',
+        closeText: 'Cancel',
+        noValidation: true,
+        width: '1000px',
+        showOther: true,
+        onApply: () => sendPlayer.send(),
+        onClose: () => sendPlayer.clear(),
+      });
+    } else {
+      await buyPlayer.initPlayer(props.player);
+
+      actionModals.open(() => <BuyPlayerModal />, {
+        title: '',
+        applyText: 'Buy Player Card',
+        closeText: 'Cancel',
+        noValidation: true,
+        width: '1000px',
+        showOther: true,
+        onApply: () => buyPlayer.buy(),
+        onClose: () => buyPlayer.clear(),
+      });
     }
-
-    await buyPlayer.initPlayer(props.player);
-
-    actionModals.open(() => <BuyPlayerModal />, {
-      title: '',
-      applyText: 'Buy Player Card',
-      closeText: 'Cancel',
-      noValidation: true,
-      width: '1000px',
-      showOther: true,
-      onApply: () => buyPlayer.buy(),
-      onClose: () => buyPlayer.clear(),
-    });
   }, []);
 
   return (
@@ -161,10 +177,23 @@ const PlayerCardEx = observer<IPlayerCardProps>(props => {
 
       <DisableWrap disabled={!props.player}>
         {user.address === bech32Owner ? (
-          <Box className={styles.buyButtonMy} fill={true}>
+          <Box
+            className={styles.buyButtonMy}
+            fill={true}
+            direction="row"
+            justify="center"
+          >
             <Text color="white" size={'medium'}>
               It is your card
             </Text>
+            <Box onClick={buyPlayerHandler}>
+              <Icon
+                glyph="Send"
+                size="20px"
+                color={'white'}
+                style={{ marginLeft: 10, width: 25 }}
+              />
+            </Box>
           </Box>
         ) : (
           <Box
@@ -182,5 +211,4 @@ const PlayerCardEx = observer<IPlayerCardProps>(props => {
   );
 });
 
-
-export const PlayerCard = handleViewport(PlayerCardEx)
+export const PlayerCard = handleViewport(PlayerCardEx);
