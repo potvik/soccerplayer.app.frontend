@@ -3,7 +3,7 @@ import { IStores } from 'stores';
 import { statusFetching } from '../constants';
 import { StoreConstructor } from './core/StoreConstructor';
 import { IPlayerCard } from './SoccerPlayersList';
-import * as blockchain from '../blockchain';
+import * as blockchain from '../blockchain/index-legacy';
 
 export class BuySoccerPlayer extends StoreConstructor {
   @observable public currentPlayer: IPlayerCard;

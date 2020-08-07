@@ -13,7 +13,7 @@ export const OpenVault = observer(() => {
 
   const openVaultHandler = useCallback(async () => {
     if (!user.isAuthorized) {
-      if (!user.isAuthorized) {
+      if (!user.isOneWallet) {
         return actionModals.open(() => <AuthWarning />, {
           title: '',
           applyText: 'Got it',

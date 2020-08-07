@@ -16,7 +16,9 @@ export class UserStoreEx {
 
   @observable public sessionType: 'mathwallet' | 'ledger' | 'wallet';
   @observable public address: string;
+
   @observable public balance: string = '0';
+  @observable public balanceDai: string = '0';
 
   constructor() {
     setInterval(async () => {
@@ -25,10 +27,7 @@ export class UserStoreEx {
       // @ts-ignore
       this.onewallet = window.onewallet;
 
-      if (this.address) {
-        const res = await blockchain.getBalance(this.address);
-        this.balance = res && res.result;
-      }
+      await this.getBalances();
     }, 3000);
 
     // @ts-ignore
@@ -45,9 +44,7 @@ export class UserStoreEx {
       this.sessionType = sessionObj.sessionType;
       this.isAuthorized = true;
 
-      blockchain
-        .getBalance(this.address)
-        .then(res => (this.balance = res && res.result));
+      this.getBalances();
     }
   }
 
@@ -59,13 +56,25 @@ export class UserStoreEx {
 
       this.syncLocalStorage();
 
-      blockchain
-        .getBalance(this.address)
-        .then(res => (this.balance = res && res.result));
+      this.getBalances();
 
       return Promise.resolve();
     });
   }
+
+  @action public getBalances = async () => {
+    if (this.address) {
+      try {
+        let res = await blockchain.getBalance(this.address);
+        this.balance = res && res.result;
+
+        res = await blockchain.getBalanceDai(this.address);
+        this.balanceDai = res;
+      } catch (e) {
+        console.error(e);
+      }
+    }
+  };
 
   @action public signOut() {
     if (this.sessionType === 'mathwallet' && this.isOneWallet) {

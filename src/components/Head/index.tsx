@@ -70,7 +70,7 @@ export const Head: React.FC<IStyledChildrenProps<BoxProps>> = withTheme(
               <Box direction="row" justify="end" align="center">
                 <Box dir="column">
                   <Text color="rgb(164, 168, 171)" size="small">
-                    You authorised with Math Wallet as:
+                    You authorised with ONE Wallet as:
                   </Text>
                   {user.address}
                   <Text size="small">

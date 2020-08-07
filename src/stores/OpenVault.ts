@@ -29,61 +29,6 @@ export class OpenVault extends StoreConstructor {
   @action.bound
   open() {
     this.actionStatus = 'fetching';
-
-    return new Promise(async (resolve, reject) => {
-      try {
-        if (
-          Number(this.stores.user.balance) <
-          Number(this.currentPlayer.sellingPrice)
-        ) {
-          throw new Error('Your balance is not enough to buy');
-        }
-
-        const res = await blockchain.buyPlayerById({
-          id: this.currentPlayer.internalPlayerId,
-          price: this.currentPlayer.sellingPrice,
-          signer: this.stores.user.address,
-        });
-
-        this.txId = res.transaction.id;
-
-        if (res.status === 'called' || res.status === 'call') {
-          this.stores.soccerPlayers.updatePlayerCard(
-            this.currentPlayer.internalPlayerId,
-          );
-
-          this.actionStatus = 'success';
-
-          setTimeout(() => resolve(), 2000);
-
-          return;
-        }
-
-        this.error = 'Transaction failed';
-
-        this.actionStatus = 'error';
-        reject();
-      } catch (e) {
-        console.error(e);
-        this.error = e.message;
-
-        this.actionStatus = 'error';
-
-        reject(e.message);
-      }
-    });
-  }
-
-  @action.bound
-  initPlayer(player: IPlayerCard) {
-    this.currentPlayer = player;
-    this.status = 'success';
-
-    blockchain.getPlayerById(player.internalPlayerId).then(player => {
-      this.currentPlayer = player;
-
-      return Promise.resolve(player);
-    });
   }
 
   @action.bound

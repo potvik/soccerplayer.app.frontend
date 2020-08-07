@@ -5,17 +5,18 @@ import { Title, Text, Button } from 'components/Base';
 import cn from 'classnames';
 import * as styles from './wallet-balances.styl';
 import { formatWithTwoDecimals, ones } from 'utils';
+import { useStores } from '../../stores';
 
 const AssetRow = props => {
   return (
     <Box className={cn(styles.walletBalancesRow, styles.underline)}>
       <Box>
-        <Text bold={true}>{props.asset}</Text>
+        <Text bold={false}>{props.asset}</Text>
       </Box>
 
       <Box direction="row">
         <Box className={styles.priceColumn} margin={{ right: '10px' }}>
-          <Text>{props.value}</Text>
+          <Text bold={true}>{props.value}</Text>
         </Box>
 
         <Button style={{ width: '60px' }} transparent={true} onClick={() => {}}>
@@ -27,14 +28,18 @@ const AssetRow = props => {
 };
 
 export const WalletBalances = observer(() => {
+  const { user } = useStores();
+
   return (
     <Box direction="column" className={styles.walletBalances}>
       <Title>Wallet Balances</Title>
 
       <Box className={styles.container}>
-        <AssetRow asset="ONE" value={formatWithTwoDecimals(ones(0))} />
-        <AssetRow asset="DAI" value={formatWithTwoDecimals(ones(0))} />
-        <AssetRow asset="GEM" value={formatWithTwoDecimals(ones(0))} />
+        <AssetRow
+          asset="ONE"
+          value={formatWithTwoDecimals(ones(user.balance))}
+        />
+        <AssetRow asset="DAI" value={formatWithTwoDecimals(user.balanceDai)} />
       </Box>
     </Box>
   );

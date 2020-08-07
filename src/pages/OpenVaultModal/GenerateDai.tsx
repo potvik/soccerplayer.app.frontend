@@ -35,7 +35,7 @@ export class GenerateDai extends React.Component<IStores> {
     return (
       <Box direction="column" pad="xlarge">
         <Box direction="column" align="center">
-          <Title bold={true}>Deposit GEM and Generate Dai</Title>
+          <Title bold={true}>Deposit ONE and Generate Dai</Title>
           <Box margin={{ vertical: 'medium' }}>
             <Text>
               Different collateral types have different risk parameters and
@@ -57,23 +57,23 @@ export class GenerateDai extends React.Component<IStores> {
             >
               <Box direction="column" gap="10px">
                 <Text bold={true}>
-                  How much GEM would you like to lock in your Vault?
+                  How much ONE would you like to lock in your Vault?
                 </Text>
                 <Text>
-                  The amount of GEM you lock up determines how much Dai you can
+                  The amount of ONE you lock up determines how much Dai you can
                   generate.
                 </Text>
                 <Box direction="row" align="baseline">
                   <NumberInput
                     name="amountOne"
                     style={{ width: '260px', marginRight: 12 }}
-                    placeholder="0 GEM"
+                    placeholder="0 ONE"
                     rules={[isRequired, moreThanZero]}
                   />
-                  <Text bold={true}>GEM</Text>
+                  <Text bold={true}>ONE</Text>
                 </Box>
                 <Text size="small" bold={true}>
-                  YOUR BALANCE {formatWithTwoDecimals(ones(user.balance))} GEMs
+                  YOUR BALANCE {formatWithTwoDecimals(ones(user.balance))} ONEs
                 </Text>
               </Box>
 

@@ -2,7 +2,7 @@ import { action, computed, observable } from 'mobx';
 import { IStores } from 'stores';
 import { statusFetching } from '../constants';
 import { StoreConstructor } from './core/StoreConstructor';
-import * as blockchain from '../blockchain';
+import * as blockchain from '../blockchain/index-legacy';
 import { getBech32Address } from '../blockchain';
 
 export interface IPlayerCard {

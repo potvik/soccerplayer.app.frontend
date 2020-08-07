@@ -32,7 +32,7 @@ export const Feeds = observer(() => {
           value={'$' + openVault.feeds.liquidationPrice}
         />
         <AssetRow
-          label="Current GEM Price"
+          label="Current ONE Price"
           value={'$' + openVault.feeds.currentPrice}
         />
         <AssetRow

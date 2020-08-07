@@ -6,26 +6,34 @@ import { WalletBalances } from './WalletBalances';
 import { OpenVault } from './OpenVault';
 import { Dashboard } from './Dashboard';
 import { useStores } from 'stores';
+import { DisableWrap } from '../../components/Base/components/DisableWrap';
 
 export const Overview = observer(() => {
-  const { openVault } = useStores()
+  const { openVault, user } = useStores();
   const hasVault = openVault.hasVault;
 
   return (
     <BaseContainer>
       <PageContainer>
-        <Box
-          direction="row"
-          align="start"
-          justify="between"
-          fill={true}
-        >
-          <Box direction="column" fill={true} justify="center">
-            {!hasVault ? <OpenVault /> : <Dashboard />}
+        <Box direction="row" align="start" justify="between" fill={true}>
+          <Box direction="column" fill={true} justify="center" wrap>
+            {hasVault ? (
+              <DisableWrap disabled={true}>
+                <Dashboard />
+              </DisableWrap>
+            ) : null}
           </Box>
 
-          <WalletBalances />
+          <Box
+            margin={{ left: 'large', top: '60px' }}
+            style={{ minWidth: 300 }}
+          >
+            <DisableWrap disabled={!user.isAuthorized}>
+              <WalletBalances />
+            </DisableWrap>
+          </Box>
         </Box>
+        {!hasVault && <OpenVault />}
       </PageContainer>
     </BaseContainer>
   );
