@@ -6,9 +6,9 @@ export const EXPLORER_URL = 'https://explorer.harmony.one/#';
 const GAS_LIMIT = 103802;
 const GAS_PRICE = 1000000000;
 
-const hmy = new Harmony('https://api.s0.t.hmny.io', {
+const hmy = new Harmony('https://api.s0.b.hmny.io', {
   chainType: ChainType.Harmony,
-  chainId: ChainID.HmyMainnet,
+  chainId: ChainID.HmyTestnet,
 });
 
 const contractJson = require('./SoccerPlayers.json');
@@ -69,7 +69,7 @@ export const buyPlayerById = (params: {
         try {
           tx.from = params.signer;
           // @ts-ignore
-          const signTx = await window.harmony.signTransaction(tx);
+          const signTx = await window.onewallet.signTransaction(tx);
 
           // const [sentTx, txHash] = await signTx.sendTransaction();
 

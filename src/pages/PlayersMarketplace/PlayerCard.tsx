@@ -66,7 +66,7 @@ const PlayerCardEx = observer<IPlayerCardProps>(props => {
 
   const buyPlayerHandler = useCallback(async () => {
     if (!user.isAuthorized) {
-      if (!user.isMathWallet) {
+      if (!user.isAuthorized) {
         return actionModals.open(() => <AuthWarning />, {
           title: '',
           applyText: 'Got it',

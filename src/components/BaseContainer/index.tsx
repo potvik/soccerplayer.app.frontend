@@ -3,8 +3,8 @@ import { Box, BoxProps } from 'grommet';
 import { Head } from 'components';
 import { withTheme } from 'styled-components';
 import { IStyledChildrenProps } from 'interfaces';
-import * as styles from './styles.styl';
-import { Disclaimer } from '../DisclaimerWarning';
+// import * as styles from './styles.styl';
+// import { Disclaimer } from '../DisclaimerWarning';
 
 export const BaseContainer: React.FC<IStyledChildrenProps<
   BoxProps
@@ -14,8 +14,8 @@ export const BaseContainer: React.FC<IStyledChildrenProps<
     const { minWidth, maxWidth } = container;
     return (
       <>
-        <div className={styles.backgroundImage} />
-        <div className={styles.blur} />
+        {/*<div className={styles.backgroundImage} />*/}
+        {/*<div className={styles.blur} />*/}
         <div
           style={{
             minHeight: '100%',
@@ -23,7 +23,7 @@ export const BaseContainer: React.FC<IStyledChildrenProps<
             position: 'absolute',
             top: 0,
             width: '100vw',
-            // backgroundColor: palette.Basic100,
+            backgroundColor: '#f7f8f9', // palette.Basic100,
           }}
         >
           <Head />
@@ -35,7 +35,7 @@ export const BaseContainer: React.FC<IStyledChildrenProps<
             }}
             {...props}
           >
-            <Disclaimer />
+            {/*<Disclaimer />*/}
             {children}
           </Box>
         </div>

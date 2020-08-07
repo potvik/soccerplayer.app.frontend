@@ -12,12 +12,10 @@ import { useStores } from '../../stores';
 import { Button } from '../Base/components/Button';
 import { AuthWarning } from '../AuthWarning';
 import { formatWithTwoDecimals, ones } from '../../utils';
-import * as styles from './styles.styl';
-import { Info } from '../Info';
 
 const MainLogo = styled.img`
-  width: 62px;
-  height: 62px;
+  width: auto;
+  height: 32px;
 `;
 
 export const Head: React.FC<IStyledChildrenProps<BoxProps>> = withTheme(
@@ -59,35 +57,12 @@ export const Head: React.FC<IStyledChildrenProps<BoxProps>> = withTheme(
             </Box>
             <Box>
               <Title size="small" color="BlackTxt" bold>
-                Harmony Soccer Players
+
               </Title>
             </Box>
           </Box>
 
           <Box direction="row" align="center">
-            <Box
-              direction="row"
-              align="center"
-              className={styles.howTo}
-              onClick={() => {
-                actionModals.open(() => <Info />, {
-                  title: '',
-                  applyText: 'Close',
-                  closeText: '',
-                  noValidation: true,
-                  width: '700px',
-                  showOther: true,
-                  onApply: () => Promise.resolve(),
-                });
-              }}
-            >
-              <Text size="18px">About</Text>
-              <Icon
-                glyph="Info"
-                size="25px"
-                style={{ marginLeft: 4, marginTop: -26 }}
-              />
-            </Box>
 
             {/*<Box style={{ flex: '1 1 100%' }} />*/}
 
@@ -126,9 +101,9 @@ export const Head: React.FC<IStyledChildrenProps<BoxProps>> = withTheme(
                 style={{ marginRight: 2, marginTop: 2 }}
               >
                 <Button
-                  style={{ width: 120 }}
+                  style={{ width: 180 }}
                   onClick={() => {
-                    if (!user.isMathWallet) {
+                    if (!user.isOneWallet) {
                       actionModals.open(() => <AuthWarning />, {
                         title: '',
                         applyText: 'Got it',
@@ -143,7 +118,7 @@ export const Head: React.FC<IStyledChildrenProps<BoxProps>> = withTheme(
                     }
                   }}
                 >
-                  Sign in
+                  Connect Wallet
                 </Button>
               </Box>
             )}

@@ -37,6 +37,7 @@ interface ITitleProps {
   style?: React.CSSProperties;
   pad?: TEdgeSize;
   margin?: TEdgeSize;
+  className?: string;
 }
 
 const TextWrap = styled.div<ITitleProps>`

@@ -11,8 +11,8 @@ export class UserStoreEx {
   public status: statusFetching;
   redirectUrl: string;
 
-  private mathwallet: any;
-  @observable public isMathWallet = false;
+  private onewallet: any;
+  @observable public isOneWallet = false;
 
   @observable public sessionType: 'mathwallet' | 'ledger' | 'wallet';
   @observable public address: string;
@@ -21,9 +21,9 @@ export class UserStoreEx {
   constructor() {
     setInterval(async () => {
       // @ts-ignore
-      this.isMathWallet = window.harmony && window.harmony.isMathWallet;
+      this.isOneWallet = window.onewallet && window.onewallet.isOneWallet;
       // @ts-ignore
-      this.mathwallet = window.harmony;
+      this.onewallet = window.onewallet;
 
       if (this.address) {
         const res = await blockchain.getBalance(this.address);
@@ -32,9 +32,9 @@ export class UserStoreEx {
     }, 3000);
 
     // @ts-ignore
-    this.isMathWallet = window.harmony && window.harmony.isMathWallet;
+    this.isOneWallet = window.onewallet && window.onewallet.isOneWallet;
     // @ts-ignore
-    this.mathwallet = window.harmony;
+    this.onewallet = window.onewallet;
 
     const session = localStorage.getItem('harmony_session');
 
@@ -52,7 +52,7 @@ export class UserStoreEx {
   }
 
   @action public signIn() {
-    return this.mathwallet.getAccount().then(account => {
+    return this.onewallet.getAccount().then(account => {
       this.sessionType = `mathwallet`;
       this.address = account.address;
       this.isAuthorized = true;
@@ -68,8 +68,8 @@ export class UserStoreEx {
   }
 
   @action public signOut() {
-    if (this.sessionType === 'mathwallet' && this.isMathWallet) {
-      return this.mathwallet
+    if (this.sessionType === 'mathwallet' && this.isOneWallet) {
+      return this.onewallet
         .forgetIdentity()
         .then(() => {
           this.sessionType = null;
@@ -98,8 +98,8 @@ export class UserStoreEx {
   }
 
   @action public signTransaction(txn: any) {
-    if (this.sessionType === 'mathwallet' && this.isMathWallet) {
-      return this.mathwallet.signTransaction(txn);
+    if (this.sessionType === 'mathwallet' && this.isOneWallet) {
+      return this.onewallet.signTransaction(txn);
     }
   }
 

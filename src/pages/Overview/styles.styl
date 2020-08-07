@@ -1,0 +1,57 @@
+.widget {
+  width: 460px;
+  min-width 460px
+  margin 40px 10px 0px 10px
+
+  //@media (max-width 1230px) {
+  //  width: 460px;
+  //}
+  //
+  //@media (max-width 1050px) {
+  //  margin 40px 10px 0px 10px
+  //}
+  //
+  //@media (max-width 800px) {
+  //  width: 540px;
+  //}
+
+  .container {
+    background white
+    margin-top 12px
+    padding 0px 30px
+    border-radius 5px
+    border 1px solid #dedede
+
+    .row {
+      flex-direction row
+      justify-content space-between
+      align-items center
+      padding 20px 0px
+
+      &.first {
+        padding-bottom 0px
+      }
+
+      .priceColumn {
+        flex-direction column
+        align-items flex-start
+        justify-content center
+        margin-right 24px
+
+        .smallText {
+          font-size 14px
+          color rgb(173, 173, 173)
+          line-height 14px
+        }
+      }
+
+      &.underline {
+        border-bottom  1px solid #dedede
+      }
+
+      button {
+        width 100px
+      }
+    }
+  }
+}
