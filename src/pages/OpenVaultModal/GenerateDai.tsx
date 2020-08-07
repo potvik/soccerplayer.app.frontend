@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Box } from 'grommet';
 import { Text, Title } from 'components/Base';
 import { Form, isRequired, MobxForm, NumberInput } from 'components/Form';
-import { observable } from 'mobx';
+import { computed, observable } from 'mobx';
 import { inject, observer } from 'mobx-react';
 import { formatWithTwoDecimals, moreThanZero, ones } from 'utils';
 import { IStores, useStores } from 'stores';
@@ -18,6 +18,11 @@ export class GenerateDai extends React.Component<IStores> {
     amountDai: 0,
   };
 
+  @computed
+  get maxDai() {
+    return this.formData.amountOne * 0.5
+  }
+
   validateFields = async () => {
     this.formRef.validateFields().then(async data => {
       console.log(data);
@@ -30,7 +35,7 @@ export class GenerateDai extends React.Component<IStores> {
     return (
       <Box direction="column" pad="xlarge">
         <Box direction="column" align="center">
-          <Title bold={true}>Deposit ETH and Generate Dai</Title>
+          <Title bold={true}>Deposit GEM and Generate Dai</Title>
           <Box margin={{ vertical: 'medium' }}>
             <Text>
               Different collateral types have different risk parameters and
@@ -52,23 +57,23 @@ export class GenerateDai extends React.Component<IStores> {
             >
               <Box direction="column" gap="10px">
                 <Text bold={true}>
-                  How much ONE would you like to lock in your Vault?
+                  How much GEM would you like to lock in your Vault?
                 </Text>
                 <Text>
-                  The amount of ONE you lock up determines how much Dai you can
+                  The amount of GEM you lock up determines how much Dai you can
                   generate.
                 </Text>
                 <Box direction="row" align="baseline">
                   <NumberInput
                     name="amountOne"
                     style={{ width: '260px', marginRight: 12 }}
-                    placeholder="0 ONE"
+                    placeholder="0 GEM"
                     rules={[isRequired, moreThanZero]}
                   />
-                  <Text bold={true}>ONE</Text>
+                  <Text bold={true}>GEM</Text>
                 </Box>
                 <Text size="small" bold={true}>
-                  YOUR BALANCE {formatWithTwoDecimals(ones(user.balance))} ONEs
+                  YOUR BALANCE {formatWithTwoDecimals(ones(user.balance))} GEMs
                 </Text>
               </Box>
 
@@ -89,7 +94,7 @@ export class GenerateDai extends React.Component<IStores> {
                   <Text bold={true}>DAI</Text>
                 </Box>
                 <Text bold={true} size="small">
-                  MAX AVAIL TO GENERATE 0.0000 DAI
+                  MAX AVAIL TO GENERATE {formatWithTwoDecimals(this.maxDai)} DAI
                 </Text>
               </Box>
             </Box>

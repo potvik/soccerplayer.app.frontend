@@ -12,9 +12,18 @@ export class OpenVault extends StoreConstructor {
   @observable public actionStatus: statusFetching = 'init';
   @observable public txId: string;
   @observable public error: string;
+  @observable public hasVault: boolean = false;
 
   constructor(stores: IStores) {
     super(stores);
+  }
+
+  @observable feeds = {
+    сollateralizationRatio: 192.3,
+    liquidationPrice: 0.008,
+    currentPrice: 0.006,
+    stabilityFee: 0.006,
+    maxDaiAvailable: 22000,
   }
 
   @action.bound

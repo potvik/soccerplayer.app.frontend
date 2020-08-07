@@ -34,6 +34,7 @@ export const WalletBalances = observer(() => {
       <Box className={styles.container}>
         <AssetRow asset="ONE" value={formatWithTwoDecimals(ones(0))} />
         <AssetRow asset="DAI" value={formatWithTwoDecimals(ones(0))} />
+        <AssetRow asset="GEM" value={formatWithTwoDecimals(ones(0))} />
       </Box>
     </Box>
   );

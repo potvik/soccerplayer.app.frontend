@@ -21,7 +21,9 @@ export const OpenVault = observer(() => {
           noValidation: true,
           width: '500px',
           showOther: true,
-          onApply: () => Promise.resolve(),
+          onApply: () => {
+            return Promise.resolve();
+          },
         });
       } else {
         await user.signIn();
@@ -35,7 +37,11 @@ export const OpenVault = observer(() => {
       noValidation: true,
       width: '1000px',
       showOther: true,
-      onApply: () => openVault.open(),
+      onApply: () => {
+        openVault.hasVault = true;
+
+        return Promise.resolve();
+      },
       onClose: () => openVault.clear(),
     });
   }, []);
