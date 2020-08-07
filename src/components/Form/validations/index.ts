@@ -8,7 +8,7 @@ const webSitePattern = /^((https?|s?ftp):\/\/)?(((([a-z]|\d|-|\.|_|~|[\u00A0-\uD
 export const isRequired = {
   ...createValidate(
     v => v === undefined || v === null || isEmptyString(v),
-    'Пожалуйста, заполните поле!'
+    'This field is required!'
   ),
   validateType: 'requiredValidator',
 };

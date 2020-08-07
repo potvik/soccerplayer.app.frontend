@@ -4,6 +4,7 @@ import { observer } from 'mobx-react-lite';
 import { Title, Text, Button } from 'components/Base';
 import cn from 'classnames';
 import * as styles from './wallet-balances.styl';
+import { formatWithTwoDecimals, ones } from 'utils';
 
 const AssetRow = props => {
   return (
@@ -31,8 +32,8 @@ export const WalletBalances = observer(() => {
       <Title>Wallet Balances</Title>
 
       <Box className={styles.container}>
-        <AssetRow asset="ONE" value={1000} />
-        <AssetRow asset="DAI" value={333} />
+        <AssetRow asset="ONE" value={formatWithTwoDecimals(ones(0))} />
+        <AssetRow asset="DAI" value={formatWithTwoDecimals(ones(0))} />
       </Box>
     </Box>
   );

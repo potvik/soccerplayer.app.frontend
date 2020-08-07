@@ -117,7 +117,7 @@ export const moreThanZero = {
     const errors = [];
 
     if (!value || Number(value) <= 0) {
-      errors.push('Значение должно быть больше 0');
+      errors.push('Value must be more than 0');
     }
 
     callback(errors);

@@ -4,6 +4,7 @@ import { ActionModalsStore } from './ActionModalsStore';
 import { UserStoreEx } from './UserStore';
 import { SoccerPlayersList } from './SoccerPlayersList';
 import { BuySoccerPlayer } from './BuySoccerPlayer';
+import { OpenVault } from './OpenVault';
 import { createStoresContext } from './create-context';
 
 
@@ -14,6 +15,7 @@ export interface IStores {
   user?: UserStoreEx;
   soccerPlayers?: SoccerPlayersList;
   buyPlayer?: BuySoccerPlayer;
+  openVault?: OpenVault;
 }
 
 const stores: IStores = {};
@@ -24,6 +26,7 @@ stores.actionModals = new ActionModalsStore();
 stores.user = new UserStoreEx();
 stores.soccerPlayers = new SoccerPlayersList(stores);
 stores.buyPlayer = new BuySoccerPlayer(stores);
+stores.openVault = new OpenVault(stores);
 
 if (!process.env.production) {
   window.stores = stores;
