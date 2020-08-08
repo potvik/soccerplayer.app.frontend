@@ -40,7 +40,7 @@ export const OpenVault = observer(() => {
       onApply: () => {
         openVault.hasVault = true;
 
-        return Promise.resolve();
+        return openVault.open(160, 1);
       },
       onClose: () => openVault.clear(),
     });

@@ -73,9 +73,9 @@ export const Head: React.FC<IStyledChildrenProps<BoxProps>> = withTheme(
                     You authorised with ONE Wallet as:
                   </Text>
                   {user.address}
-                  <Text size="small">
-                    Balance: {formatWithTwoDecimals(ones(user.balance))} ONEs
-                  </Text>
+                  {/*<Text size="small">*/}
+                  {/*  Balance: {formatWithTwoDecimals(ones(user.balance))} ONEs*/}
+                  {/*</Text>*/}
                 </Box>
                 <Box
                   onClick={() => {

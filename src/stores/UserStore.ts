@@ -19,6 +19,7 @@ export class UserStoreEx {
 
   @observable public balance: string = '0';
   @observable public balanceDai: string = '0';
+  @observable public balanceGem: string = '0';
 
   constructor() {
     setInterval(async () => {
@@ -68,8 +69,9 @@ export class UserStoreEx {
         let res = await blockchain.getBalance(this.address);
         this.balance = res && res.result;
 
-        res = await blockchain.getBalanceDai(this.address);
-        this.balanceDai = res;
+        this.balanceDai = await blockchain.getBalanceDai(this.address);
+
+        this.balanceGem = await blockchain.getBalanceGem(this.address);
       } catch (e) {
         console.error(e);
       }
@@ -84,6 +86,9 @@ export class UserStoreEx {
           this.sessionType = null;
           this.address = null;
           this.isAuthorized = false;
+
+          this.balanceGem = '0';
+          this.balanceDai = '0';
           this.balance = '0';
 
           this.syncLocalStorage();

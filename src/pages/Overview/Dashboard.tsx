@@ -23,7 +23,7 @@ export const Dashboard = observer(() => {
 
             <Box direction="row">
               <Box className={styles.priceColumn}>
-                <Text>0.006 USDT</Text>
+                <Text>0.009 USDT</Text>
               </Box>
             </Box>
           </Box>
@@ -46,7 +46,7 @@ export const Dashboard = observer(() => {
         <Box className={styles.container}>
           <Box className={cn(styles.row, styles.first)}>
             <Text size="large" bold={true}>
-              200.44%
+              160%
             </Text>
           </Box>
 
@@ -81,8 +81,8 @@ export const Dashboard = observer(() => {
 
             <Box direction="row">
               <Box className={styles.priceColumn}>
-                <Text>1000 ONE</Text>
-                <Text className={styles.smallText}>10 USD</Text>
+                <Text>1600 ONE</Text>
+                <Text className={styles.smallText}>14 USD</Text>
               </Box>
               <Button onClick={() => {}}>Deposit</Button>
             </Box>
@@ -94,7 +94,7 @@ export const Dashboard = observer(() => {
             <Box direction="row">
               <Box className={styles.priceColumn}>
                 <Text>1000 ONE</Text>
-                <Text className={styles.smallText}>10 USD</Text>
+                <Text className={styles.smallText}>9 USD</Text>
               </Box>
               <Button onClick={() => {}}>Withdraw</Button>
             </Box>
@@ -111,7 +111,7 @@ export const Dashboard = observer(() => {
 
             <Box direction="row">
               <Box className={styles.priceColumn}>
-                <Text>20.00 DAI</Text>
+                <Text>100.00 DAI</Text>
               </Box>
               <Button onClick={() => {}}>Pay back</Button>
             </Box>
@@ -122,7 +122,7 @@ export const Dashboard = observer(() => {
 
             <Box direction="row">
               <Box className={styles.priceColumn}>
-                <Text>6.46 DAI</Text>
+                <Text>2000 DAI</Text>
               </Box>
               <Button onClick={() => {}}>Generate</Button>
             </Box>

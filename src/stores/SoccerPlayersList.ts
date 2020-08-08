@@ -49,9 +49,9 @@ export class SoccerPlayersList extends StoreConstructor {
 
     // this.status = 'success';
 
-    setInterval(() => {
-      this.getList();
-    }, 7000);
+    // setInterval(() => {
+    //   this.getList();
+    // }, 7000);
   }
 
   sortFunction = sort => (itemA, itemB) => {

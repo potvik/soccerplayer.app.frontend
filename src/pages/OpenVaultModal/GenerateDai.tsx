@@ -1,14 +1,22 @@
 import * as React from 'react';
 import { Box } from 'grommet';
-import { Text, Title } from 'components/Base';
+import { Icon, Text, Title } from 'components/Base';
 import { Form, isRequired, MobxForm, NumberInput } from 'components/Form';
 import { computed, observable } from 'mobx';
 import { inject, observer } from 'mobx-react';
-import { formatWithTwoDecimals, moreThanZero, ones } from 'utils';
+import {
+  formatWithTwoDecimals,
+  moreThanZero,
+  ones,
+  truncateAddressString,
+} from 'utils';
 import { IStores, useStores } from 'stores';
 import { Feeds } from './Feeds';
+import * as styles from './card.styl';
+import { Spinner } from '../../ui/Spinner';
+import { EXPLORER_URL } from '../../blockchain';
 
-@inject('user', 'actionModals', 'buyPlayer')
+@inject('user', 'actionModals', 'openVault')
 @observer
 export class GenerateDai extends React.Component<IStores> {
   formRef: MobxForm;
@@ -20,7 +28,7 @@ export class GenerateDai extends React.Component<IStores> {
 
   @computed
   get maxDai() {
-    return this.formData.amountOne * 0.5
+    return 22000; //this.formData.amountOne * 0.5
   }
 
   validateFields = async () => {
@@ -30,7 +38,27 @@ export class GenerateDai extends React.Component<IStores> {
   };
 
   render() {
-    const { user } = this.props;
+    const { user, openVault } = this.props;
+
+    let icon = () => <Icon style={{ width: 50 }} glyph="RightArrow" />;
+    let description = 'Approval';
+
+    switch (openVault.actionStatus) {
+      case 'fetching':
+        icon = () => <Spinner />;
+        description = 'Sending';
+        break;
+
+      case 'error':
+        icon = () => <Icon size="50" style={{ width: 50 }} glyph="Alert" />;
+        description = openVault.error;
+        break;
+
+      case 'success':
+        icon = () => <Icon size="50" style={{ width: 50 }} glyph="CheckMark" />;
+        description = 'Success';
+        break;
+    }
 
     return (
       <Box direction="column" pad="xlarge">
@@ -102,6 +130,30 @@ export class GenerateDai extends React.Component<IStores> {
 
           <Feeds />
         </Box>
+        {openVault.actionStatus !== 'init' ? (
+          <Box
+            direction="column"
+            align="center"
+            justify="center"
+            fill={true}
+            pad={{ vertical: 'medium' }}
+            style={{ background: '#dedede40' }}
+          >
+            {icon()}
+            <Box className={styles.description}>
+              <Text>{description}</Text>
+              {openVault.txId ? (
+                <a
+                  style={{ marginTop: 10 }}
+                  href={EXPLORER_URL + `/tx/${openVault.txId}`}
+                  target="_blank"
+                >
+                  Tx id: {truncateAddressString(openVault.txId)}
+                </a>
+              ) : null}
+            </Box>
+          </Box>
+        ) : null}
       </Box>
     );
   }

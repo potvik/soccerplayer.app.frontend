@@ -19,16 +19,49 @@ export class OpenVault extends StoreConstructor {
   }
 
   @observable feeds = {
-    сollateralizationRatio: 192.3,
+    сollateralizationRatio: 150,
     liquidationPrice: 0.008,
     currentPrice: 0.006,
-    stabilityFee: 0.006,
+    stabilityFee: 2.5,
     maxDaiAvailable: 22000,
-  }
+  };
 
   @action.bound
-  open() {
+  open(gemAmount: number, daiAmount: number) {
     this.actionStatus = 'fetching';
+
+    return new Promise(async (resolve, reject) => {
+      try {
+        // if (
+        //   Number(this.stores.user.balance) <
+        //   Number(this.currentPlayer.sellingPrice)
+        // ) {
+        //   throw new Error('Your balance is not enough to buy');
+        // }
+
+        // await blockchain.buyGem(
+        //   this.stores.user.address,
+        //   Number(gemAmount * 1e18),
+        // );
+        await blockchain.borrow(this.stores.user.address, gemAmount, daiAmount);
+
+        this.actionStatus = 'success';
+
+        setTimeout(() => resolve(), 2000);
+        //
+        // this.error = 'Transaction failed';
+        //
+        // this.actionStatus = 'error';
+        // reject();
+      } catch (e) {
+        console.error(e);
+        this.error = e.message;
+
+        this.actionStatus = 'error';
+
+        reject(e.message);
+      }
+    });
   }
 
   @action.bound

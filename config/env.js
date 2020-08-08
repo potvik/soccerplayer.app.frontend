@@ -110,6 +110,8 @@ function getClientEnvironment(publicUrl) {
         VOW: process.env.VOW,
         MKR: process.env.MKR,
 
+        PAYMENT: process.env.PAYMENT,
+
         ADMIN: process.env.ADMIN,
         PRIVATE_KEY: process.env.PRIVATE_KEY,
       },

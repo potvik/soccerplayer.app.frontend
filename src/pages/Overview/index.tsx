@@ -18,7 +18,7 @@ export const Overview = observer(() => {
         <Box direction="row" align="start" justify="between" fill={true}>
           <Box direction="column" fill={true} justify="center" wrap>
             {hasVault ? (
-              <DisableWrap disabled={true}>
+              <DisableWrap disabled={false}>
                 <Dashboard />
               </DisableWrap>
             ) : null}
