@@ -49,10 +49,12 @@ export const borrow = async (address, gemAmount, daiAmount, setCurrentStep) => {
         gemAmount,
       ).estimateGas(options1);
 
-      await gemContract.methods['approve(address,uint256)'](
+      let res = await gemContract.methods['approve(address,uint256)'](
         process.env.GEMJOIN,
         gemAmount,
-      ).send({ ...options2, gasLimit: hexToNumber(gas) }); // user must approve GEMJOIN to withdraw gems
+      ).send({ ...options2, gasLimit: 6721900 }); // user must approve GEMJOIN to withdraw gems
+
+      console.log(1, res.transaction.txStatus)
 
       //////////// STEP 2 ////////////
       setCurrentStep(2);
@@ -61,9 +63,11 @@ export const borrow = async (address, gemAmount, daiAmount, setCurrentStep) => {
         .join(addrHex, gemAmount)
         .estimateGas(options1);
 
-      await gemJoinContract.methods
+      res = await gemJoinContract.methods
         .join(addrHex, gemAmount)
-        .send({ ...options2, gasLimit: hexToNumber(gas) });
+        .send({ ...options2, gasLimit: 6721900 });
+
+      console.log(2, res.transaction.txStatus)
 
       //////////// STEP 3 ////////////
       setCurrentStep(3);
@@ -72,9 +76,11 @@ export const borrow = async (address, gemAmount, daiAmount, setCurrentStep) => {
       //   .frob(ilk, addrHex, addrHex, addrHex, gemAmount, daiAmount)
       //   .estimateGas(options1);
 
-      await vatContract.methods
+      res = await vatContract.methods
         .frob(ilk, addrHex, addrHex, addrHex, gemAmount, daiAmount)
         .send({ ...options2, gasLimit: 6721900 });
+
+      console.log(3, res.transaction.txStatus)
 
       //////////// STEP 4 ////////////
       setCurrentStep(4);
@@ -83,9 +89,11 @@ export const borrow = async (address, gemAmount, daiAmount, setCurrentStep) => {
       //   .hope(process.env.DAIJOIN)
       //   .estimateGas(options1);
 
-      await vatContract.methods
+      res = await vatContract.methods
         .hope(process.env.DAIJOIN)
-        .send({ ...options2, gasLimit: 25000 });
+        .send({ ...options2, gasLimit: 6721900 });
+
+      console.log(4, res.transaction.txStatus)
 
       //////////// STEP 5 ////////////
       setCurrentStep(5);
@@ -94,9 +102,11 @@ export const borrow = async (address, gemAmount, daiAmount, setCurrentStep) => {
         .exit(addrHex, daiAmount)
         .estimateGas(options1);
 
-      await daiJoinContract.methods
+      res = await daiJoinContract.methods
         .exit(addrHex, daiAmount)
-        .send({ ...options2, gasLimit: hexToNumber(gas) });
+        .send({ ...options2, gasLimit: 6721900 });
+
+      console.log(5, res.transaction.txStatus)
 
       resolve(true);
     } catch (e) {
