@@ -32,7 +32,7 @@ export class UserStoreEx {
       this.onewallet = window.onewallet;
 
       // await this.getBalances();
-      await this.getOneBalance();
+      // await this.getOneBalance();
     }, 3000);
 
     setInterval(() => this.getBalances(), 1 * 10 * 1000);
