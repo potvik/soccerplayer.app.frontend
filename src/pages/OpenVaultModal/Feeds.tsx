@@ -4,7 +4,8 @@ import { observer } from 'mobx-react-lite';
 import { Text } from 'components/Base';
 import cn from 'classnames';
 import * as styles from './feeds.styl';
-import { useStores } from '../../stores';
+import { useStores } from 'stores';
+import { formatWithSixDecimals } from 'utils';
 
 const AssetRow = props => {
   return (
@@ -12,7 +13,14 @@ const AssetRow = props => {
       <Box margin={{ bottom: '2px' }}>
         <Text bold={true}>{props.label}</Text>
       </Box>
-      <Text>{props.value}</Text>
+      <Box direction="row">
+        <Text>{props.value}</Text>
+        {props.after && (
+          <Text style={{ marginLeft: 5 }} color="Basic500">
+            {props.after}
+          </Text>
+        )}
+      </Box>
     </Box>
   );
 };
@@ -26,14 +34,15 @@ export const Feeds = observer(() => {
         <AssetRow
           label="Your Collateralization Ratio"
           value={openVault.feeds.сollateralizationRatio + '%'}
+          after="(min: 150%)"
         />
         <AssetRow
           label="Your Liquidation Price"
-          value={'$' + openVault.feeds.liquidationPrice}
+          value={'$' + formatWithSixDecimals(openVault.feeds.liquidationPrice)}
         />
         <AssetRow
           label="Current ONE Price"
-          value={'$' + openVault.feeds.currentPrice}
+          value={'$' + formatWithSixDecimals(openVault.feeds.currentPrice)}
         />
         <AssetRow
           label="Stability Fee"

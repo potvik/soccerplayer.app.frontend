@@ -12,8 +12,17 @@ const twoDecimalsFormatter = new Intl.NumberFormat('en-US', {
   maximumFractionDigits: 2,
 });
 
+const sixDecimalsFormatter = new Intl.NumberFormat('en-US', {
+  minimumFractionDigits: 6,
+  maximumFractionDigits: 6,
+});
+
 export function formatWithTwoDecimals(value: number | string) {
   return twoDecimalsFormatter.format(Number(value));
+}
+
+export function formatWithSixDecimals(value: number | string) {
+  return sixDecimalsFormatter.format(Number(value));
 }
 
 export function formatWithTwoDecimalsRub(value: number) {

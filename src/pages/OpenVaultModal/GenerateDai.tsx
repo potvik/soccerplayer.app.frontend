@@ -10,7 +10,7 @@ import {
   ones,
   truncateAddressString,
 } from 'utils';
-import { IStores, useStores } from 'stores';
+import { IStores } from 'stores';
 import { Feeds } from './Feeds';
 import * as styles from './card.styl';
 import { Spinner } from '../../ui/Spinner';
@@ -21,20 +21,27 @@ import { EXPLORER_URL } from '../../blockchain';
 export class GenerateDai extends React.Component<IStores> {
   formRef: MobxForm;
 
-  @observable formData = {
-    amountOne: 0,
-    amountDai: 0,
-  };
-
   @computed
   get maxDai() {
     return 22000; //this.formData.amountOne * 0.5
   }
 
-  validateFields = async () => {
-    this.formRef.validateFields().then(async data => {
-      console.log(data);
-    });
+  componentDidMount = () => {
+    const { openVault } = this.props;
+
+    // @ts-ignore
+    this.props.onValidate.callback = () => {
+      if (
+        openVault.feeds.сollateralizationRatio <
+        openVault.minCollateralizationRatio
+      ) {
+        openVault.actionStatus = 'error';
+        openVault.error = 'Min Collateralization Ratio is 150%';
+        return Promise.reject();
+      }
+
+      return this.formRef.validateFields();
+    };
   };
 
   render() {
@@ -74,7 +81,7 @@ export class GenerateDai extends React.Component<IStores> {
         <Box direction="row" margin={{ vertical: 'large' }}>
           <Form
             ref={ref => (this.formRef = ref)}
-            data={this.formData}
+            data={this.props.openVault.formData}
             {...({} as any)}
           >
             <Box
@@ -93,7 +100,7 @@ export class GenerateDai extends React.Component<IStores> {
                 </Text>
                 <Box direction="row" align="baseline">
                   <NumberInput
-                    name="amountOne"
+                    name="amount"
                     style={{ width: '260px', marginRight: 12 }}
                     placeholder="0 ONE"
                     rules={[isRequired, moreThanZero]}

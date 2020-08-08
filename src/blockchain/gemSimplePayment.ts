@@ -10,19 +10,27 @@ let contract = hmy.contracts.createContract(abi, contractAddr);
 contract.wallet.createAccount();
 
 export const buyGem = async (address, amount) => {
-  connectToOneWallet(contract.wallet, address);
+  return new Promise(async (resolve, reject) => {
+    try {
+      connectToOneWallet(contract.wallet, address, reject);
 
-  const hexAmount = '0x' + Number(amount).toString(16);
+      const hexAmount = '0x' + Number(amount).toString(16);
 
-  const options = { ...options2, value: hexAmount };
+      const options = { ...options2, value: hexAmount };
 
-  const response = await contract.methods
-    .deposit(hexToNumber(hexAmount))
-    .send(options);
+      const response = await contract.methods
+        .deposit(hexToNumber(hexAmount))
+        .send(options);
 
-  if (response.transaction.txStatus === 'REJECTED') {
-    throw new Error('buyGem tx - rejected');
-  }
+      if (response.transaction.txStatus === 'REJECTED') {
+        throw new Error('buyGem tx - rejected');
+      }
 
-  return response;
+      resolve(response);
+    } catch (e) {
+      console.error(e);
+
+      reject(e);
+    }
+  });
 };

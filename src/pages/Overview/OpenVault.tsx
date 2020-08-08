@@ -37,11 +37,7 @@ export const OpenVault = observer(() => {
       noValidation: true,
       width: '1000px',
       showOther: true,
-      onApply: () => {
-        openVault.hasVault = true;
-
-        return openVault.open(160, 1);
-      },
+      onApply: data => openVault.open(data.amount, data.amountDai),
       onClose: () => openVault.clear(),
     });
   }, []);

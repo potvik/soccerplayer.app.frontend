@@ -25,7 +25,7 @@ export const options2 = { gasPrice: 1000000000, gasLimit: 6721900 };
 
 export const allJson = require('./out/dapp.sol.json');
 
-export const connectToOneWallet = (wallet, address) => {
+export const connectToOneWallet = (wallet, address, reject) => {
   wallet.defaultSigner = address;
 
   wallet.signTransaction = async tx => {
@@ -37,10 +37,9 @@ export const connectToOneWallet = (wallet, address) => {
 
       return signTx;
     } catch (e) {
-      console.error(e);
-      throw new Error(e.message);
+      reject(e);
     }
 
     return null;
   };
-}
+};

@@ -34,22 +34,32 @@ let vatContract = hmy.contracts.createContract(
 let ilk = hexlify(toUtf8Bytes('HarmonyERC20'));
 
 export const borrow = async (address, gemAmount, daiAmount) => {
-  connectToOneWallet(gemContract.wallet, address);
+  return new Promise(async (resolve, reject) => {
+    try {
+      connectToOneWallet(gemContract.wallet, address, reject);
 
-  const addrHex = hmy.crypto.getAddress(address).checksum;
+      const addrHex = hmy.crypto.getAddress(address).checksum;
 
-  await gemContract.methods['approve(address,uint256)'](
-    process.env.GEMJOIN,
-    gemAmount,
-  ).send(options2); // user must approve GEMJOIN to withdraw gems
+      await gemContract.methods['approve(address,uint256)'](
+        process.env.GEMJOIN,
+        gemAmount,
+      ).send(options2); // user must approve GEMJOIN to withdraw gems
 
-  await gemJoinContract.methods.join(addrHex, gemAmount).send(options2);
+      await gemJoinContract.methods.join(addrHex, gemAmount).send(options2);
 
-  await vatContract.methods
-    .frob(ilk, addrHex, addrHex, addrHex, gemAmount, daiAmount)
-    .send(options2);
+      await vatContract.methods
+        .frob(ilk, addrHex, addrHex, addrHex, gemAmount, daiAmount)
+        .send(options2);
 
-  await vatContract.methods.hope(process.env.DAIJOIN).send(options2);
+      await vatContract.methods.hope(process.env.DAIJOIN).send(options2);
 
-  await daiJoinContract.methods.exit(addrHex, daiAmount).send(options2);
+      await daiJoinContract.methods.exit(addrHex, daiAmount).send(options2);
+
+      resolve(true);
+    } catch (e) {
+      console.error(e);
+
+      reject(e);
+    }
+  });
 };
