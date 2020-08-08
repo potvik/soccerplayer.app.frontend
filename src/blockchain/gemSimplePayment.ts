@@ -1,6 +1,6 @@
 import { connectToOneWallet, hmy, options1, options2 } from './sdk';
 // GEM SimplePayment //
-const { hexToNumber } = require('@harmony-js/utils');
+const { hexToNumber, numberToHex } = require('@harmony-js/utils');
 
 const contractJson = require('./out/SimplePayment.json');
 const abi = contractJson.abi;
@@ -14,20 +14,23 @@ export const buyGem = async (address, amount) => {
     try {
       connectToOneWallet(contract.wallet, address, reject);
 
-      const hexAmount = '0x' + Number(amount).toString(16);
+      const ONE = '000000000000000000';
+
+      const amountHex = numberToHex(amount.toString() + ONE);
+      const plus1Hex = numberToHex((amount + 1).toString() + ONE);
 
       const gas = await contract.methods
-        .deposit(hexToNumber(hexAmount))
+        .deposit(hexToNumber(amountHex))
         .estimateGas(options1);
 
       const options = {
         ...options2,
-        value: hexAmount,
+        value: plus1Hex,
         gasLimit: hexToNumber(gas),
       };
 
       const response = await contract.methods
-        .deposit(hexToNumber(hexAmount))
+        .deposit(hexToNumber(amountHex))
         .send(options);
 
       if (response.transaction.txStatus === 'REJECTED') {
