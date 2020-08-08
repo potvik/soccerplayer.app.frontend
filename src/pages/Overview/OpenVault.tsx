@@ -41,6 +41,8 @@ export const OpenVault = observer(() => {
       onClose: () => {
         openVault.clear();
         user.getBalances();
+
+        setTimeout(() => user.getBalances(), 4000);
       },
     });
   }, []);
