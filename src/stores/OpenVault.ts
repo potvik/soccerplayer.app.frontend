@@ -70,7 +70,7 @@ export class OpenVault extends StoreConstructor {
         liquidationPrice: (dai * this.liquidationRatio) / ones,
         currentPrice: this.currentOnePrice,
         stabilityFee: 2.5,
-        maxDaiAvailable: (ones) / 150,
+        maxDaiAvailable: ones / 150,
       };
     } else {
       return {
@@ -78,7 +78,7 @@ export class OpenVault extends StoreConstructor {
         liquidationPrice: this.currentOnePrice,
         currentPrice: this.currentOnePrice,
         stabilityFee: 2.5,
-        maxDaiAvailable: ones ? (ones) / 150 : 0,
+        maxDaiAvailable: ones ? ones / 150 : 0,
       };
     }
   }
@@ -98,7 +98,7 @@ export class OpenVault extends StoreConstructor {
         liquidationPrice: (dai * this.liquidationRatio) / ones,
         currentPrice: this.currentOnePrice,
         stabilityFee: 2.5,
-        maxDaiAvailable: (ones) / 150,
+        maxDaiAvailable: ones / 150,
         ableToWithDraw: (maxDai - dai) * 150,
         ableToGenerate: maxDai - dai,
       };
@@ -128,10 +128,7 @@ export class OpenVault extends StoreConstructor {
           throw new Error('Your balance is not enough to buy');
         }
 
-        await blockchain.buyGem(
-          this.stores.user.address,
-          Number(gemAmount * 1e18),
-        );
+        await blockchain.buyGem(this.stores.user.address, gemAmount);
 
         await blockchain.borrow(
           this.stores.user.address,
