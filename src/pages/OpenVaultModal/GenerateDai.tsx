@@ -12,6 +12,7 @@ import {
 } from 'utils';
 import { IStores } from 'stores';
 import { Feeds } from './Feeds';
+import { Steps } from './Steps';
 import * as styles from './card.styl';
 import { Spinner } from '../../ui/Spinner';
 import { EXPLORER_URL } from '../../blockchain';
@@ -53,7 +54,7 @@ export class GenerateDai extends React.Component<IStores> {
     switch (openVault.actionStatus) {
       case 'fetching':
         icon = () => <Spinner />;
-        description = 'Sending';
+        description = '' + openVault.steps[openVault.currentStep];
         break;
 
       case 'error':
@@ -78,7 +79,7 @@ export class GenerateDai extends React.Component<IStores> {
             </Text>
           </Box>
         </Box>
-        <Box direction="row" margin={{ vertical: 'large' }}>
+        <Box direction="row" margin={{ top: 'medium' }}>
           <Form
             ref={ref => (this.formRef = ref)}
             data={this.props.openVault.formData}
@@ -90,7 +91,14 @@ export class GenerateDai extends React.Component<IStores> {
               align="start"
               margin={{ vertical: '20px' }}
             >
-              <Box direction="column" gap="10px">
+              <Box
+                direction="column"
+                gap="10px"
+                style={{
+                  display:
+                    openVault.actionStatus === 'fetching' ? 'none' : 'flex',
+                }}
+              >
                 <Text bold={true}>
                   How much ONE would you like to lock in your Vault?
                 </Text>
@@ -104,6 +112,7 @@ export class GenerateDai extends React.Component<IStores> {
                     style={{ width: '260px', marginRight: 12 }}
                     placeholder="0 ONE"
                     rules={[isRequired, moreThanZero]}
+                    disabled={openVault.actionStatus === 'fetching'}
                   />
                   <Text bold={true}>ONE</Text>
                 </Box>
@@ -112,7 +121,15 @@ export class GenerateDai extends React.Component<IStores> {
                 </Text>
               </Box>
 
-              <Box direction="column" margin={{ top: 'xlarge' }} gap="10px">
+              <Box
+                direction="column"
+                margin={{ top: 'xlarge' }}
+                gap="10px"
+                style={{
+                  display:
+                    openVault.actionStatus === 'fetching' ? 'none' : 'flex',
+                }}
+              >
                 <Text bold={true}>
                   How much Dai would you like to generate?
                 </Text>
@@ -125,6 +142,7 @@ export class GenerateDai extends React.Component<IStores> {
                     style={{ width: '260px', marginRight: 12 }}
                     placeholder="0 DAI"
                     rules={[isRequired, moreThanZero]}
+                    disabled={openVault.actionStatus === 'fetching'}
                   />
                   <Text bold={true}>DAI</Text>
                 </Box>
@@ -132,35 +150,39 @@ export class GenerateDai extends React.Component<IStores> {
                   MAX AVAIL TO GENERATE {formatWithTwoDecimals(this.maxDai)} DAI
                 </Text>
               </Box>
+
+              {openVault.actionStatus === 'fetching' ? <Steps /> : null}
+
+              {openVault.actionStatus !== 'init' ? (
+                <Box
+                  direction="column"
+                  align="center"
+                  justify="center"
+                  fill={true}
+                  pad={{ vertical: 'medium' }}
+                  margin={{ top: '30px' }}
+                  style={{ background: '#dedede40' }}
+                >
+                  {icon()}
+                  <Box className={styles.description}>
+                    <Text>{description}</Text>
+                    {openVault.txId ? (
+                      <a
+                        style={{ marginTop: 10 }}
+                        href={EXPLORER_URL + `/tx/${openVault.txId}`}
+                        target="_blank"
+                      >
+                        Tx id: {truncateAddressString(openVault.txId)}
+                      </a>
+                    ) : null}
+                  </Box>
+                </Box>
+              ) : null}
             </Box>
           </Form>
 
           <Feeds />
         </Box>
-        {openVault.actionStatus !== 'init' ? (
-          <Box
-            direction="column"
-            align="center"
-            justify="center"
-            fill={true}
-            pad={{ vertical: 'medium' }}
-            style={{ background: '#dedede40' }}
-          >
-            {icon()}
-            <Box className={styles.description}>
-              <Text>{description}</Text>
-              {openVault.txId ? (
-                <a
-                  style={{ marginTop: 10 }}
-                  href={EXPLORER_URL + `/tx/${openVault.txId}`}
-                  target="_blank"
-                >
-                  Tx id: {truncateAddressString(openVault.txId)}
-                </a>
-              ) : null}
-            </Box>
-          </Box>
-        ) : null}
       </Box>
     );
   }

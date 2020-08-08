@@ -5,7 +5,7 @@ import { Text } from 'components/Base';
 import cn from 'classnames';
 import * as styles from './feeds.styl';
 import { useStores } from 'stores';
-import { formatWithSixDecimals } from 'utils';
+import { formatWithSixDecimals, formatWithTwoDecimals } from 'utils';
 
 const AssetRow = props => {
   return (
@@ -33,7 +33,9 @@ export const Feeds = observer(() => {
       <Box className={styles.container}>
         <AssetRow
           label="Your Collateralization Ratio"
-          value={openVault.feeds.сollateralizationRatio + '%'}
+          value={
+            formatWithTwoDecimals(openVault.feeds.сollateralizationRatio) + '%'
+          }
           after="(min: 150%)"
         />
         <AssetRow
@@ -50,8 +52,27 @@ export const Feeds = observer(() => {
         />
         <AssetRow
           label="Max Dai available to Generate"
-          value={openVault.feeds.maxDaiAvailable + ' Dai'}
+          value={
+            formatWithTwoDecimals(openVault.feeds.maxDaiAvailable) + ' Dai'
+          }
         />
+
+        <Box
+          direction="column"
+          pad={{ top: 'small' }}
+          margin={{ top: 'small' }}
+          style={{ borderTop: '1px solid #dedede' }}
+        >
+          <AssetRow
+            label="ONE amount (will be locked)"
+            value={formatWithTwoDecimals(openVault.formData.amount)}
+          />
+
+          <AssetRow
+            label="DAI amount (will be generate)"
+            value={formatWithTwoDecimals(openVault.formData.amountDai)}
+          />
+        </Box>
       </Box>
     </Box>
   );

@@ -33,25 +33,35 @@ let vatContract = hmy.contracts.createContract(
 
 let ilk = hexlify(toUtf8Bytes('HarmonyERC20'));
 
-export const borrow = async (address, gemAmount, daiAmount) => {
+export const borrow = async (address, gemAmount, daiAmount, setCurrentStep) => {
   return new Promise(async (resolve, reject) => {
     try {
       connectToOneWallet(gemContract.wallet, address, reject);
 
       const addrHex = hmy.crypto.getAddress(address).checksum;
 
+      setCurrentStep(1);
+
       await gemContract.methods['approve(address,uint256)'](
         process.env.GEMJOIN,
         gemAmount,
       ).send(options2); // user must approve GEMJOIN to withdraw gems
 
+      setCurrentStep(2);
+
       await gemJoinContract.methods.join(addrHex, gemAmount).send(options2);
+
+      setCurrentStep(3);
 
       await vatContract.methods
         .frob(ilk, addrHex, addrHex, addrHex, gemAmount, daiAmount)
         .send(options2);
 
+      setCurrentStep(4);
+
       await vatContract.methods.hope(process.env.DAIJOIN).send(options2);
+
+      setCurrentStep(5);
 
       await daiJoinContract.methods.exit(addrHex, daiAmount).send(options2);
 

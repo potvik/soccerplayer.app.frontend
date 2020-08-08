@@ -14,8 +14,19 @@ export class OpenVault extends StoreConstructor {
   @observable public error: string;
 
   @computed get hasVault() {
-    return !!Number(this.stores.user.vat.ink)
+    return !!Number(this.stores.user.vat.ink);
   }
+
+  @observable public currentStep = 0;
+
+  steps = [
+    'Converting ONEs to collateralizable assets',
+    'Approve collateralization contract to withdraw specified amount of assets',
+    'Approve collateralization contract to add user collateral to the system',
+    'Approve accounting contract to perform CDP manipulations to add user collaterals and debts',
+    "Approve DAI contract to access the accounting system on user's behalf",
+    'Approve DAI contract to mint DAI for the user',
+  ];
 
   constructor(stores: IStores) {
     super(stores);
@@ -101,6 +112,7 @@ export class OpenVault extends StoreConstructor {
   @action.bound
   open(gemAmount: number, daiAmount: number) {
     this.actionStatus = 'fetching';
+    this.currentStep = 0;
 
     return new Promise(async (resolve, reject) => {
       try {
@@ -116,7 +128,12 @@ export class OpenVault extends StoreConstructor {
           Number(gemAmount * 1e18),
         );
 
-        await blockchain.borrow(this.stores.user.address, gemAmount, daiAmount);
+        await blockchain.borrow(
+          this.stores.user.address,
+          gemAmount,
+          daiAmount,
+          num => (this.currentStep = num),
+        );
 
         this.actionStatus = 'success';
 
@@ -149,5 +166,6 @@ export class OpenVault extends StoreConstructor {
       amount: 0,
       amountDai: 0,
     };
+    this.currentStep = 0;
   }
 }
