@@ -1,7 +1,8 @@
-import { allJson, connectToOneWallet, hmy, options2 } from './sdk';
+import { allJson, connectToOneWallet, hmy, options1, options2 } from './sdk';
 
 const { toUtf8Bytes } = require('@harmony-js/contract');
 const { hexlify } = require('@harmony-js/crypto');
+const { hexToNumber } = require('@harmony-js/utils');
 
 let gemContract = hmy.contracts.createContract(
   JSON.parse(allJson.contracts['lib/ds-token/src/token.sol:DSToken'].abi),
@@ -40,30 +41,62 @@ export const borrow = async (address, gemAmount, daiAmount, setCurrentStep) => {
 
       const addrHex = hmy.crypto.getAddress(address).checksum;
 
+      //////////// STEP 1 ////////////
       setCurrentStep(1);
+
+      let gas = await gemContract.methods['approve(address,uint256)'](
+        process.env.GEMJOIN,
+        gemAmount,
+      ).estimateGas(options1);
 
       await gemContract.methods['approve(address,uint256)'](
         process.env.GEMJOIN,
         gemAmount,
-      ).send(options2); // user must approve GEMJOIN to withdraw gems
+      ).send({ ...options2, gasLimit: hexToNumber(gas) }); // user must approve GEMJOIN to withdraw gems
 
+      //////////// STEP 2 ////////////
       setCurrentStep(2);
 
-      await gemJoinContract.methods.join(addrHex, gemAmount).send(options2);
+      gas = await gemJoinContract.methods
+        .join(addrHex, gemAmount)
+        .estimateGas(options1);
 
+      await gemJoinContract.methods
+        .join(addrHex, gemAmount)
+        .send({ ...options2, gasLimit: hexToNumber(gas) });
+
+      //////////// STEP 3 ////////////
       setCurrentStep(3);
+
+      // gas = await vatContract.methods
+      //   .frob(ilk, addrHex, addrHex, addrHex, gemAmount, daiAmount)
+      //   .estimateGas(options1);
 
       await vatContract.methods
         .frob(ilk, addrHex, addrHex, addrHex, gemAmount, daiAmount)
-        .send(options2);
+        .send({ ...options2, gasLimit: 6721900 });
 
+      //////////// STEP 4 ////////////
       setCurrentStep(4);
 
-      await vatContract.methods.hope(process.env.DAIJOIN).send(options2);
+      // gas = await vatContract.methods
+      //   .hope(process.env.DAIJOIN)
+      //   .estimateGas(options1);
 
+      await vatContract.methods
+        .hope(process.env.DAIJOIN)
+        .send({ ...options2, gasLimit: 25000 });
+
+      //////////// STEP 5 ////////////
       setCurrentStep(5);
 
-      await daiJoinContract.methods.exit(addrHex, daiAmount).send(options2);
+      gas = await daiJoinContract.methods
+        .exit(addrHex, daiAmount)
+        .estimateGas(options1);
+
+      await daiJoinContract.methods
+        .exit(addrHex, daiAmount)
+        .send({ ...options2, gasLimit: hexToNumber(gas) });
 
       resolve(true);
     } catch (e) {

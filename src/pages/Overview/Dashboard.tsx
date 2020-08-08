@@ -126,7 +126,10 @@ export const Dashboard = observer(() => {
               <Box className={styles.priceColumn}>
                 <Text>{formatWithTwoDecimals(ones)} ONE</Text>
                 <Text className={styles.smallText}>
-                  {formatWithTwoDecimals(Number(ones) * openVault.currentOnePrice)} USD
+                  {formatWithTwoDecimals(
+                    Number(ones) * openVault.currentOnePrice,
+                  )}{' '}
+                  USDT
                 </Text>
               </Box>
               <Button onClick={() => openVaultHandler()}>Deposit</Button>
@@ -138,10 +141,19 @@ export const Dashboard = observer(() => {
 
             <Box direction="row">
               <Box className={styles.priceColumn}>
-                <Text>??? ONE</Text>
-                <Text className={styles.smallText}>??? USD</Text>
+                <Text>
+                  {formatWithTwoDecimals(totalFeeds.ableToWithDraw)} ONE
+                </Text>
+                <Text className={styles.smallText}>
+                  {formatWithTwoDecimals(
+                    totalFeeds.ableToWithDraw * openVault.currentOnePrice,
+                  )}{' '}
+                  USDT
+                </Text>
               </Box>
-              <Button disabled={true} onClick={() => {}}>Withdraw</Button>
+              <Button disabled={true} onClick={() => {}}>
+                Withdraw
+              </Button>
             </Box>
           </Box>
         </Box>
@@ -158,7 +170,9 @@ export const Dashboard = observer(() => {
               <Box className={styles.priceColumn}>
                 <Text>{formatWithTwoDecimals(dai)} DAI</Text>
               </Box>
-              <Button disabled={true} onClick={() => {}}>Pay back</Button>
+              <Button disabled={true} onClick={() => {}}>
+                Pay back
+              </Button>
             </Box>
           </Box>
 
@@ -167,9 +181,13 @@ export const Dashboard = observer(() => {
 
             <Box direction="row">
               <Box className={styles.priceColumn}>
-                <Text>??? DAI</Text>
+                <Text>
+                  {formatWithTwoDecimals(totalFeeds.ableToGenerate)} DAI
+                </Text>
               </Box>
-              <Button disabled={true} onClick={() => {}}>Generate</Button>
+              <Button disabled={true} onClick={() => {}}>
+                Generate
+              </Button>
             </Box>
           </Box>
         </Box>

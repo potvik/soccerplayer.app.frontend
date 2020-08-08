@@ -70,7 +70,7 @@ export class OpenVault extends StoreConstructor {
         liquidationPrice: (dai * this.liquidationRatio) / ones,
         currentPrice: this.currentOnePrice,
         stabilityFee: 2.5,
-        maxDaiAvailable: (ones * this.currentOnePrice) / rate,
+        maxDaiAvailable: (ones) / 150,
       };
     } else {
       return {
@@ -78,7 +78,7 @@ export class OpenVault extends StoreConstructor {
         liquidationPrice: this.currentOnePrice,
         currentPrice: this.currentOnePrice,
         stabilityFee: 2.5,
-        maxDaiAvailable: 22000,
+        maxDaiAvailable: ones ? (ones) / 150 : 0,
       };
     }
   }
@@ -91,12 +91,16 @@ export class OpenVault extends StoreConstructor {
     if (ones && dai) {
       const rate = ones / dai;
 
+      const maxDai = ones / 150;
+
       return {
         сollateralizationRatio: rate,
         liquidationPrice: (dai * this.liquidationRatio) / ones,
         currentPrice: this.currentOnePrice,
         stabilityFee: 2.5,
-        maxDaiAvailable: (ones * this.currentOnePrice) / rate,
+        maxDaiAvailable: (ones) / 150,
+        ableToWithDraw: (maxDai - dai) * 150,
+        ableToGenerate: maxDai - dai,
       };
     } else {
       return {
@@ -105,6 +109,8 @@ export class OpenVault extends StoreConstructor {
         currentPrice: this.currentOnePrice,
         stabilityFee: 2.5,
         maxDaiAvailable: 22000,
+        ableToWithDraw: 0,
+        ableToGenerate: 0,
       };
     }
   }
@@ -116,12 +122,11 @@ export class OpenVault extends StoreConstructor {
 
     return new Promise(async (resolve, reject) => {
       try {
-        // if (
-        //   Number(this.stores.user.balance) <
-        //   Number(this.currentPlayer.sellingPrice)
-        // ) {
-        //   throw new Error('Your balance is not enough to buy');
-        // }
+        if (
+          Number(this.stores.user.balance) < Number(this.formData.amount * 1e18)
+        ) {
+          throw new Error('Your balance is not enough to buy');
+        }
 
         await blockchain.buyGem(
           this.stores.user.address,

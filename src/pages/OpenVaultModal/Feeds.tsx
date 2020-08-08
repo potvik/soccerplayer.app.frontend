@@ -40,11 +40,13 @@ export const Feeds = observer(() => {
         />
         <AssetRow
           label="Your Liquidation Price"
-          value={'$' + formatWithSixDecimals(openVault.feeds.liquidationPrice)}
+          value={
+            formatWithSixDecimals(openVault.feeds.liquidationPrice) + ' USDT'
+          }
         />
         <AssetRow
           label="Current ONE Price"
-          value={'$' + formatWithSixDecimals(openVault.feeds.currentPrice)}
+          value={formatWithSixDecimals(openVault.feeds.currentPrice) + ' USDT'}
         />
         <AssetRow
           label="Stability Fee"

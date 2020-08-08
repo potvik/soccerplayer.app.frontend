@@ -38,7 +38,10 @@ export const OpenVault = observer(() => {
       width: '1000px',
       showOther: true,
       onApply: data => openVault.open(data.amount, data.amountDai),
-      onClose: () => openVault.clear(),
+      onClose: () => {
+        openVault.clear();
+        user.getBalances();
+      },
     });
   }, []);
 

@@ -24,7 +24,8 @@ export class GenerateDai extends React.Component<IStores> {
 
   @computed
   get maxDai() {
-    return 22000; //this.formData.amountOne * 0.5
+    // return 22000; //this.formData.amountOne * 0.5
+    return this.props.openVault.feeds.maxDaiAvailable
   }
 
   componentDidMount = () => {
@@ -116,8 +117,8 @@ export class GenerateDai extends React.Component<IStores> {
                   />
                   <Text bold={true}>ONE</Text>
                 </Box>
-                <Text size="small" bold={true}>
-                  YOUR BALANCE {formatWithTwoDecimals(ones(user.balance))} ONEs
+                <Text size="small">
+                  YOUR BALANCE <b>{formatWithTwoDecimals(ones(user.balance))} ONEs</b>
                 </Text>
               </Box>
 
@@ -146,8 +147,8 @@ export class GenerateDai extends React.Component<IStores> {
                   />
                   <Text bold={true}>DAI</Text>
                 </Box>
-                <Text bold={true} size="small">
-                  MAX AVAIL TO GENERATE {formatWithTwoDecimals(this.maxDai)} DAI
+                <Text size="small">
+                  MAX AVAIL TO GENERATE <b>{formatWithTwoDecimals(this.maxDai)} DAI</b>
                 </Text>
               </Box>
 

@@ -31,8 +31,11 @@ export class UserStoreEx {
       // @ts-ignore
       this.onewallet = window.onewallet;
 
-      await this.getBalances();
+      // await this.getBalances();
+      await this.getOneBalance();
     }, 3000);
+
+    setInterval(() => this.getBalances(), 1 * 60 * 1000);
 
     // @ts-ignore
     this.isOneWallet = window.onewallet && window.onewallet.isOneWallet;
@@ -82,6 +85,13 @@ export class UserStoreEx {
       } catch (e) {
         console.error(e);
       }
+    }
+  };
+
+  @action public getOneBalance = async () => {
+    if (this.address) {
+      let res = await blockchain.getBalance(this.address);
+      this.balance = res && res.result;
     }
   };
 

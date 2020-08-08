@@ -1,4 +1,4 @@
-import { connectToOneWallet, hmy, options2 } from './sdk';
+import { connectToOneWallet, hmy, options1, options2 } from './sdk';
 // GEM SimplePayment //
 const { hexToNumber } = require('@harmony-js/utils');
 
@@ -16,7 +16,15 @@ export const buyGem = async (address, amount) => {
 
       const hexAmount = '0x' + Number(amount).toString(16);
 
-      const options = { ...options2, value: hexAmount };
+      const gas = await contract.methods
+        .deposit(hexToNumber(hexAmount))
+        .estimateGas(options1);
+
+      const options = {
+        ...options2,
+        value: hexAmount,
+        gasLimit: hexToNumber(gas),
+      };
 
       const response = await contract.methods
         .deposit(hexToNumber(hexAmount))

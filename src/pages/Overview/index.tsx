@@ -13,7 +13,7 @@ export const Overview = observer(() => {
   const { openVault, user } = useStores();
   const hasVault = openVault.hasVault;
 
-  if (!user.vatInit) {
+  if (!user.vatInit && user.isAuthorized) {
     return (
       <BaseContainer>
         <PageContainer>
