@@ -35,7 +35,7 @@ export class UserStoreEx {
       await this.getOneBalance();
     }, 3000);
 
-    setInterval(() => this.getBalances(), 1 * 60 * 1000);
+    setInterval(() => this.getBalances(), 1 * 10 * 1000);
 
     // @ts-ignore
     this.isOneWallet = window.onewallet && window.onewallet.isOneWallet;
