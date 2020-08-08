@@ -20,6 +20,9 @@ export class UserStoreEx {
   @observable public balance: string = '0';
   @observable public balanceDai: string = '0';
   @observable public balanceGem: string = '0';
+  @observable public vat = { ink: '0', art: '0' };
+
+  @observable vatInit = false;
 
   constructor() {
     setInterval(async () => {
@@ -72,6 +75,10 @@ export class UserStoreEx {
         this.balanceDai = await blockchain.getBalanceDai(this.address);
 
         this.balanceGem = await blockchain.getBalanceGem(this.address);
+
+        this.vat = await blockchain.getVault(this.address);
+
+        this.vatInit = true;
       } catch (e) {
         console.error(e);
       }
@@ -90,6 +97,8 @@ export class UserStoreEx {
           this.balanceGem = '0';
           this.balanceDai = '0';
           this.balance = '0';
+
+          this.vat = { ink: '0', art: '0' };
 
           this.syncLocalStorage();
 

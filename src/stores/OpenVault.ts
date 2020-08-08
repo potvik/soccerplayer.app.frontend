@@ -12,7 +12,10 @@ export class OpenVault extends StoreConstructor {
   @observable public actionStatus: statusFetching = 'init';
   @observable public txId: string;
   @observable public error: string;
-  @observable public hasVault: boolean = false;
+
+  @computed get hasVault() {
+    return !!Number(this.stores.user.vat.ink)
+  }
 
   constructor(stores: IStores) {
     super(stores);
@@ -69,6 +72,32 @@ export class OpenVault extends StoreConstructor {
     }
   }
 
+  @computed
+  get totalFeeds() {
+    const ones = parseInt(this.stores.user.vat.ink);
+    const dai = parseInt(this.stores.user.vat.art);
+
+    if (ones && dai) {
+      const rate = ones / dai;
+
+      return {
+        сollateralizationRatio: rate,
+        liquidationPrice: (dai * this.liquidationRatio) / ones,
+        currentPrice: this.currentOnePrice,
+        stabilityFee: 2.5,
+        maxDaiAvailable: (ones * this.currentOnePrice) / rate,
+      };
+    } else {
+      return {
+        сollateralizationRatio: 150,
+        liquidationPrice: this.currentOnePrice,
+        currentPrice: this.currentOnePrice,
+        stabilityFee: 2.5,
+        maxDaiAvailable: 22000,
+      };
+    }
+  }
+
   @action.bound
   open(gemAmount: number, daiAmount: number) {
     this.actionStatus = 'fetching';
@@ -90,8 +119,6 @@ export class OpenVault extends StoreConstructor {
         await blockchain.borrow(this.stores.user.address, gemAmount, daiAmount);
 
         this.actionStatus = 'success';
-
-        this.hasVault = true;
 
         setTimeout(() => resolve(), 2000);
         //

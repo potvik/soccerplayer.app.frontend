@@ -7,10 +7,21 @@ import { OpenVault } from './OpenVault';
 import { Dashboard } from './Dashboard';
 import { useStores } from 'stores';
 import { DisableWrap } from '../../components/Base/components/DisableWrap';
+import { Loader } from '../../components/Base/components/Loader';
 
 export const Overview = observer(() => {
   const { openVault, user } = useStores();
   const hasVault = openVault.hasVault;
+
+  if (!user.vatInit) {
+    return (
+      <BaseContainer>
+        <PageContainer>
+          <Loader />
+        </PageContainer>
+      </BaseContainer>
+    );
+  }
 
   return (
     <BaseContainer>
