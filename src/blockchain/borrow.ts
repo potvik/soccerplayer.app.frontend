@@ -56,6 +56,10 @@ export const borrow = async (address, gemAmount, daiAmount, setCurrentStep) => {
 
       console.log(1, res.transaction.txStatus)
 
+      if (res.transaction.txStatus !== 'CONFIRMED') {
+        throw new Error('step 2 tx - rejected');
+      }
+
       //////////// STEP 2 ////////////
       setCurrentStep(2);
 
@@ -68,6 +72,10 @@ export const borrow = async (address, gemAmount, daiAmount, setCurrentStep) => {
         .send({ ...options2, gasLimit: 6721900 });
 
       console.log(2, res.transaction.txStatus)
+
+      if (res.transaction.txStatus !== 'CONFIRMED') {
+        throw new Error('step 3 tx - rejected');
+      }
 
       //////////// STEP 3 ////////////
       setCurrentStep(3);
@@ -82,6 +90,10 @@ export const borrow = async (address, gemAmount, daiAmount, setCurrentStep) => {
 
       console.log(3, res.transaction.txStatus)
 
+      if (res.transaction.txStatus !== 'CONFIRMED') {
+        throw new Error('step 4 tx - rejected');
+      }
+
       //////////// STEP 4 ////////////
       setCurrentStep(4);
 
@@ -95,6 +107,10 @@ export const borrow = async (address, gemAmount, daiAmount, setCurrentStep) => {
 
       console.log(4, res.transaction.txStatus)
 
+      if (res.transaction.txStatus !== 'CONFIRMED') {
+        throw new Error('step 5 tx - rejected');
+      }
+
       //////////// STEP 5 ////////////
       setCurrentStep(5);
 
@@ -107,6 +123,10 @@ export const borrow = async (address, gemAmount, daiAmount, setCurrentStep) => {
         .send({ ...options2, gasLimit: 6721900 });
 
       console.log(5, res.transaction.txStatus)
+
+      if (res.transaction.txStatus !== 'CONFIRMED') {
+        throw new Error('step 6 tx - rejected');
+      }
 
       resolve(true);
     } catch (e) {
