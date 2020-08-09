@@ -154,7 +154,8 @@ export const Dashboard = observer(() => {
                 </Text>
               </Box>
               <Button
-                disabled={!Number(totalFeeds.ableToWithDraw)}
+                // disabled={!Number(totalFeeds.ableToWithDraw)}
+                disabled={true}
                 onClick={() => {
                   openVault.setCurrentAction(
                     ACTIONS_TYPE.WITHDRAWAL_ONE,
