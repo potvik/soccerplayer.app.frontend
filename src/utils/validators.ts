@@ -40,6 +40,21 @@ export const maxLength = (length: number, msg?: string): ValidatorFunc => (
   callback(errors);
 };
 
+export const maxAmount = (amount: number, msg?: string): ValidatorFunc => (
+  _,
+  value,
+  callback,
+) => {
+  const errors = [];
+
+  if (value && Number(value) > amount) {
+    const defaultMsg = `Exceeded the maximum amount`;
+    errors.push(msg || defaultMsg);
+  }
+
+  callback(errors);
+};
+
 export const isTheSameAs = (fieldName: string, err: string) => {
   return {
     ...createValidate(

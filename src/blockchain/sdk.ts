@@ -1,5 +1,6 @@
 const { Harmony } = require('@harmony-js/core');
 const { ChainID, ChainType } = require('@harmony-js/utils');
+const { hexToNumber } = require('@harmony-js/utils');
 
 export const EXPLORER_URL = 'https://explorer.harmony.one/#';
 
@@ -37,4 +38,39 @@ export const connectToOneWallet = (wallet, address, reject) => {
 
     return null;
   };
+};
+
+export const checkResponse = (res, stepNumber) => {
+  if (res && res.transaction && res.transaction.txStatus === 'CONFIRMED') {
+    return true;
+  }
+
+  throw new Error(`step ${stepNumber} tx - rejected`);
+};
+
+export const sendMethods = async (methods, reject, setStep) => {
+  for (let i = 0; i < methods.length; i++) {
+    try {
+      const method = methods[i];
+
+      setStep(i);
+
+      const options = { gasPrice: 1000000000, gasLimit: 6721900 };
+
+      // if (method && method.estimateGas) {
+      //   const gas = await method.estimateGas(options1);
+      //   options.gasLimit = hexToNumber(gas);
+      // }
+
+      const res = await method.send(options);
+
+      checkResponse(res, i + 1);
+
+      console.log('action confirmed', i + 1);
+    } catch (e) {
+      console.error(e);
+
+      return reject(e);
+    }
+  }
 };

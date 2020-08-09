@@ -9,6 +9,8 @@ import { formatWithSixDecimals, formatWithTwoDecimals } from '../../utils';
 import { useCallback } from 'react';
 import { AuthWarning } from '../../components/AuthWarning';
 import { GenerateDai } from '../OpenVaultModal/GenerateDai';
+import { ACTIONS_TYPE } from '../../stores/OpenVault';
+import { MakerActionModal } from '../MakerActionModal';
 
 export const Dashboard = observer(() => {
   const { openVault, user, actionModals } = useStores();
@@ -170,7 +172,30 @@ export const Dashboard = observer(() => {
               <Box className={styles.priceColumn}>
                 <Text>{formatWithTwoDecimals(dai)} DAI</Text>
               </Box>
-              <Button disabled={true} onClick={() => {}}>
+              <Button
+                disabled={!Number(dai)}
+                onClick={() => {
+                  openVault.setCurrentAction(
+                    ACTIONS_TYPE.PAY_BACK_DAI,
+                    Number(dai),
+                  );
+
+                  actionModals.open(MakerActionModal, {
+                    title: '',
+                    applyText: 'Pay back',
+                    closeText: 'Cancel',
+                    noValidation: true,
+                    width: '600px',
+                    showOther: true,
+                    onApply: data => openVault.paybackDai(data.amount),
+                    onClose: () => {
+                      openVault.clear();
+                      user.getBalances();
+                      // setTimeout(() => user.getBalances(), 4000);
+                    },
+                  });
+                }}
+              >
                 Pay back
               </Button>
             </Box>
@@ -185,7 +210,30 @@ export const Dashboard = observer(() => {
                   {formatWithTwoDecimals(totalFeeds.ableToGenerate)} DAI
                 </Text>
               </Box>
-              <Button disabled={true} onClick={() => {}}>
+              <Button
+                disabled={!Number(totalFeeds.ableToGenerate)}
+                onClick={() => {
+                  openVault.setCurrentAction(
+                    ACTIONS_TYPE.GENERATE_DAI,
+                    Number(totalFeeds.ableToGenerate),
+                  );
+
+                  actionModals.open(MakerActionModal, {
+                    title: '',
+                    applyText: 'Generate Dai',
+                    closeText: 'Cancel',
+                    noValidation: true,
+                    width: '600px',
+                    showOther: true,
+                    onApply: data => openVault.generateDai(data.amount),
+                    onClose: () => {
+                      openVault.clear();
+                      user.getBalances();
+                      // setTimeout(() => user.getBalances(), 4000);
+                    },
+                  });
+                }}
+              >
                 Generate
               </Button>
             </Box>

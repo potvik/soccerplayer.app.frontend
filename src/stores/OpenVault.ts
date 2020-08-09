@@ -5,6 +5,12 @@ import { StoreConstructor } from './core/StoreConstructor';
 import { IPlayerCard } from './SoccerPlayersList';
 import * as blockchain from '../blockchain';
 
+export enum ACTIONS_TYPE {
+  PAY_BACK_DAI = 'PAY_BACK_DAI',
+  GENERATE_DAI = 'GENERATE_DAI',
+  WITHDRAWAL_ONE = 'WITHDRAWAL_ONE',
+}
+
 export class OpenVault extends StoreConstructor {
   @observable public currentPlayer: IPlayerCard;
 
@@ -18,6 +24,23 @@ export class OpenVault extends StoreConstructor {
   }
 
   @observable public currentStep = 0;
+
+  @observable public currentAction: ACTIONS_TYPE;
+  @observable public currentActionStep: number = 0;
+  @observable public maxAmount: number = 0;
+  @observable public currentActionStatus: statusFetching = 'init';
+
+  stepTitles: Record<ACTIONS_TYPE, string> = {
+    PAY_BACK_DAI: 'Pay Back Dai',
+    GENERATE_DAI: 'Generate Dai',
+    WITHDRAWAL_ONE: 'Withdrawal ONE',
+  };
+
+  actionSteps: Record<ACTIONS_TYPE, string[]> = {
+    PAY_BACK_DAI: ['Step 1', 'Step 2', 'Step 3'],
+    GENERATE_DAI: ['Step 1', 'Step 2', 'Step 3'],
+    WITHDRAWAL_ONE: ['Step 1', 'Step 2', 'Step 3'],
+  };
 
   steps = [
     'Converting ONEs to collateralizable assets',
@@ -88,10 +111,10 @@ export class OpenVault extends StoreConstructor {
     const ones = parseInt(this.stores.user.vat.ink);
     const dai = parseInt(this.stores.user.vat.art);
 
+    const maxDai = ones ? ones / 150 : 0;
+
     if (ones && dai) {
       const rate = ones / dai;
-
-      const maxDai = ones / 150;
 
       return {
         сollateralizationRatio: rate,
@@ -109,10 +132,69 @@ export class OpenVault extends StoreConstructor {
         currentPrice: this.currentOnePrice,
         stabilityFee: 2.5,
         maxDaiAvailable: 22000,
-        ableToWithDraw: 0,
-        ableToGenerate: 0,
+        ableToWithDraw: (maxDai - dai) * 150,
+        ableToGenerate: maxDai - dai,
       };
     }
+  }
+
+  @action.bound
+  setCurrentAction(action: ACTIONS_TYPE, maxAmount: number) {
+    this.currentAction = action;
+    this.maxAmount = maxAmount;
+  }
+
+  @action.bound
+  setCurrentActionStep(step: number) {
+    this.currentActionStep = step;
+  }
+
+  callAction = action => {
+    return new Promise(async (resolve, reject) => {
+      this.actionStatus = 'fetching';
+
+      try {
+        if (Number(this.maxAmount) < Number(this.formData.amount)) {
+          throw new Error('Max amount is ' + this.maxAmount);
+        }
+
+        await action();
+
+        this.actionStatus = 'success';
+
+        setTimeout(() => resolve(), 2000);
+      } catch (e) {
+        console.error(e);
+
+        this.error = typeof e === 'string' ? e : e.message;
+
+        this.actionStatus = 'error';
+
+        reject(e.message);
+      }
+    });
+  };
+
+  @action.bound
+  paybackDai(daiAmount: number) {
+    return this.callAction(() =>
+      blockchain.paybackDai(
+        this.stores.user.address,
+        daiAmount,
+        this.setCurrentActionStep,
+      ),
+    );
+  }
+
+  @action.bound
+  generateDai(daiAmount: number) {
+    return this.callAction(() =>
+      blockchain.generateDai(
+        this.stores.user.address,
+        daiAmount,
+        this.setCurrentActionStep,
+      ),
+    );
   }
 
   @action.bound
@@ -169,5 +251,10 @@ export class OpenVault extends StoreConstructor {
       amountDai: 0,
     };
     this.currentStep = 0;
+
+    // this.currentAction
+    this.currentActionStep = 0;
+    this.maxAmount = 0;
+    this.currentActionStatus = 'init';
   }
 }

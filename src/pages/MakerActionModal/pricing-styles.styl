@@ -1,0 +1,55 @@
+.boxItem {
+  margin-bottom 15px
+  cursor pointer
+
+  border-radius 8px
+
+  img {
+    height 70px
+    width auto
+  }
+
+  background black
+
+  &.selected {
+    background #2330D0
+  }
+
+  .numbers {
+    display flex
+    justify-content flex-end
+  }
+}
+
+.formStyles {
+  .platformButton {
+    border 2px solid white
+    justify-content center
+    align-items center
+
+    padding 10px 20px
+    color white
+    margin-right 20px
+    margin-top 8px
+    border-radius 5px
+
+    &.selected {
+      background #2330D0
+      border 2px solid #2330D0
+    }
+  }
+}
+
+.pricingBody {
+  flex-direction row
+}
+
+@media (max-width: 900px) {
+  .pricingBody {
+    flex-direction column
+
+    > div {
+      width 100%
+    }
+  }
+}
