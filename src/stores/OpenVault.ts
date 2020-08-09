@@ -11,6 +11,7 @@ export enum ACTIONS_TYPE {
   GENERATE_DAI = 'GENERATE_DAI',
   WITHDRAWAL_ONE = 'WITHDRAWAL_ONE',
   DEPOSIT_ONE = 'DEPOSIT_ONE',
+  CLOSE_VAULT = 'CLOSE_VAULT',
 }
 
 export class OpenVault extends StoreConstructor {
@@ -37,6 +38,7 @@ export class OpenVault extends StoreConstructor {
     GENERATE_DAI: 'Generate Dai',
     WITHDRAWAL_ONE: 'Withdrawal ONE',
     DEPOSIT_ONE: 'Deposit ONE',
+    CLOSE_VAULT: 'Close Vault',
   };
 
   actionSteps: Record<ACTIONS_TYPE, string[]> = {
@@ -61,6 +63,16 @@ export class OpenVault extends StoreConstructor {
       'Approve collateralization contract to withdraw specified amount of assets',
       'Approve collateralization contract to add user collateral to the system',
       'Approve accounting contract to perform CDP manipulations to add user collaterals and debts',
+    ],
+
+    CLOSE_VAULT: [
+      "Approve DAI contract to access the accounting system on user's behalf",
+      'Approve DAI contract to burn DAI for the user',
+      'Approve accounting contract to perform CDP manipulations',
+      'Approve accounting contract to perform CDP manipulations',
+      'Approve collateralization contract to transfer back the collaterals',
+      'Approve payment contract to convert collaterals back to ONEs',
+      'Approve transaction to withdraw ONEs to users account',
     ],
   };
 
@@ -104,8 +116,8 @@ export class OpenVault extends StoreConstructor {
 
   @computed
   get feeds() {
-    const ones = parseInt(String(this.formData.amount));
-    const dai = parseInt(String(this.formData.amountDai));
+    const ones = parseFloat(String(this.formData.amount));
+    const dai = parseFloat(String(this.formData.amountDai));
 
     if (ones && dai) {
       const rate = ones / dai;
@@ -130,8 +142,8 @@ export class OpenVault extends StoreConstructor {
 
   @computed
   get totalFeeds() {
-    const ones = parseInt(this.stores.user.vat.ink);
-    const dai = parseInt(this.stores.user.vat.art);
+    const ones = parseFloat(this.stores.user.vat.ink);
+    const dai = parseFloat(this.stores.user.vat.art);
 
     const maxDai = ones ? ones / 150 : 0;
 
@@ -239,6 +251,32 @@ export class OpenVault extends StoreConstructor {
         this.stores.user.address,
         gemAmount,
         this.setCurrentActionStep,
+      );
+    });
+  }
+
+  @action.bound
+  closeVault() {
+    const daiAmount = parseFloat(this.stores.user.vat.art);
+    const oneAmount = parseFloat(this.stores.user.vat.ink);
+
+    return this.callAction(async () => {
+      if (daiAmount) {
+        await blockchain.paybackDai(
+          this.stores.user.address,
+          daiAmount,
+          this.setCurrentActionStep,
+        );
+      }
+
+      this.setCurrentActionStep(3);
+
+      const setCurrentActionStep = n => this.setCurrentActionStep(n + 3);
+
+      await blockchain.withdrawOne(
+        this.stores.user.address,
+        oneAmount,
+        setCurrentActionStep,
       );
     });
   }

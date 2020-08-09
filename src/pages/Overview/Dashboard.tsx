@@ -56,7 +56,7 @@ export const Dashboard = observer(() => {
 
         <Box className={styles.container}>
           <Box className={cn(styles.row, styles.first)}>
-            <Text size="large" bold={true}>
+            <Text size="large" bold={true} color="rgb(0, 173, 232)">
               {formatWithSixDecimals(totalFeeds.liquidationPrice)} USDT
             </Text>
           </Box>
@@ -90,7 +90,7 @@ export const Dashboard = observer(() => {
 
         <Box className={styles.container}>
           <Box className={cn(styles.row, styles.first)}>
-            <Text size="large" bold={true}>
+            <Text size="large" bold={true} color="rgb(0, 173, 232)">
               {formatWithTwoDecimals(totalFeeds.сollateralizationRatio)} %
             </Text>
           </Box>

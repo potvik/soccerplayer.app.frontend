@@ -1,21 +1,37 @@
 .walletBalances {
-  width: 500px;
+  width: 300px;
   min-width 300px
+  margin-left 40px
 
   .container {
     background white
-    margin-top 12px
-    padding 0px 30px
+    padding 10px 30px
     border-radius 5px
     border 1px solid #dedede
   }
 }
 
+.stepsContainer {
+  .stepRow {
+    margin-bottom 16px
+
+    &.active {
+      color rgb(23 189 224);
+    }
+
+    &.completed {
+      color #495057
+    }
+
+    color #dedede
+  }
+}
+
 .walletBalancesRow {
-  flex-direction row
+  flex-direction column
   justify-content space-between
-  align-items center
-  padding 15px 0px
+  align-items start
+  padding 10px 0px
 
   &.first {
     padding-bottom 0px

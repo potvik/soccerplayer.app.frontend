@@ -52,6 +52,7 @@ export const OpenVault = observer(() => {
       <Title bold={true}>Open your first Vault to start generating Dai.</Title>
 
       <Button
+        bgColor="rgb(0, 173, 232)"
         style={{ width: '180px' }}
         margin={{ top: 'medium' }}
         onClick={() => {
