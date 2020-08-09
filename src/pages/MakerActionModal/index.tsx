@@ -37,7 +37,11 @@ export class MakerActionModal extends React.Component<IStores> {
     switch (openVault.actionStatus) {
       case 'fetching':
         icon = () => <Spinner />;
-        description = '' + openVault.steps[openVault.currentStep];
+        description =
+          '' +
+          openVault.actionSteps[openVault.currentAction][
+            openVault.currentActionStep
+          ];
         break;
 
       case 'error':

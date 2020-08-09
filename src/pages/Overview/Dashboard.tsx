@@ -153,7 +153,30 @@ export const Dashboard = observer(() => {
                   USDT
                 </Text>
               </Box>
-              <Button disabled={true} onClick={() => {}}>
+              <Button
+                disabled={!Number(totalFeeds.ableToWithDraw)}
+                onClick={() => {
+                  openVault.setCurrentAction(
+                    ACTIONS_TYPE.WITHDRAWAL_ONE,
+                    Number(totalFeeds.ableToWithDraw),
+                  );
+
+                  actionModals.open(MakerActionModal, {
+                    title: '',
+                    applyText: 'Withdraw One',
+                    closeText: 'Cancel',
+                    noValidation: true,
+                    width: '600px',
+                    showOther: true,
+                    onApply: data => openVault.withdrawOne(data.amount),
+                    onClose: () => {
+                      openVault.clear();
+                      user.getBalances();
+                      // setTimeout(() => user.getBalances(), 4000);
+                    },
+                  });
+                }}
+              >
                 Withdraw
               </Button>
             </Box>

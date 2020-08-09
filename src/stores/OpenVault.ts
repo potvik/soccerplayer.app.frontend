@@ -39,7 +39,7 @@ export class OpenVault extends StoreConstructor {
   actionSteps: Record<ACTIONS_TYPE, string[]> = {
     PAY_BACK_DAI: ['Step 1', 'Step 2', 'Step 3'],
     GENERATE_DAI: ['Step 1', 'Step 2', 'Step 3'],
-    WITHDRAWAL_ONE: ['Step 1', 'Step 2', 'Step 3'],
+    WITHDRAWAL_ONE: ['Step 1', 'Step 2'],
   };
 
   steps = [
@@ -190,6 +190,17 @@ export class OpenVault extends StoreConstructor {
   generateDai(daiAmount: number) {
     return this.callAction(() =>
       blockchain.generateDai(
+        this.stores.user.address,
+        daiAmount,
+        this.setCurrentActionStep,
+      ),
+    );
+  }
+
+  @action.bound
+  withdrawOne(daiAmount: number) {
+    return this.callAction(() =>
+      blockchain.withdrawOne(
         this.stores.user.address,
         daiAmount,
         this.setCurrentActionStep,
