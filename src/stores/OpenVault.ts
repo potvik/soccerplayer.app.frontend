@@ -12,6 +12,7 @@ export enum ACTIONS_TYPE {
   WITHDRAWAL_ONE = 'WITHDRAWAL_ONE',
   DEPOSIT_ONE = 'DEPOSIT_ONE',
   CLOSE_VAULT = 'CLOSE_VAULT',
+  WITHDRAWAL_GEM = 'WITHDRAWAL_GEM',
 }
 
 export class OpenVault extends StoreConstructor {
@@ -39,6 +40,7 @@ export class OpenVault extends StoreConstructor {
     WITHDRAWAL_ONE: 'Withdrawal ONE',
     DEPOSIT_ONE: 'Deposit ONE',
     CLOSE_VAULT: 'Close Vault',
+    WITHDRAWAL_GEM: 'Withdrawal unblocked ONEs',
   };
 
   actionSteps: Record<ACTIONS_TYPE, string[]> = {
@@ -55,6 +57,10 @@ export class OpenVault extends StoreConstructor {
     WITHDRAWAL_ONE: [
       'Approve accounting contract to perform CDP manipulations',
       'Approve collateralization contract to transfer back the collaterals',
+      'Approve payment contract to convert collaterals back to ONEs',
+      'Approve transaction to withdraw ONEs to users account',
+    ],
+    WITHDRAWAL_GEM: [
       'Approve payment contract to convert collaterals back to ONEs',
       'Approve transaction to withdraw ONEs to users account',
     ],
@@ -235,6 +241,17 @@ export class OpenVault extends StoreConstructor {
   withdrawOne(daiAmount: number) {
     return this.callAction(() =>
       blockchain.withdrawOne(
+        this.stores.user.address,
+        daiAmount,
+        this.setCurrentActionStep,
+      ),
+    );
+  }
+
+  @action.bound
+  withdrawGem(daiAmount: number) {
+    return this.callAction(() =>
+      blockchain.withdrawGem(
         this.stores.user.address,
         daiAmount,
         this.setCurrentActionStep,

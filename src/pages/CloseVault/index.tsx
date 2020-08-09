@@ -55,6 +55,9 @@ export class CloseVaultModal extends React.Component<IStores> {
         break;
     }
 
+    const displayForm =
+      openVault.actionStatus === 'init' || openVault.actionStatus === 'error';
+
     return (
       <Box direction="column" pad="xlarge">
         <Box direction="column" align="center">
@@ -78,8 +81,7 @@ export class CloseVaultModal extends React.Component<IStores> {
                 direction="column"
                 gap="10px"
                 style={{
-                  display:
-                    openVault.actionStatus === 'fetching' ? 'none' : 'flex',
+                  display: !displayForm ? 'none' : 'flex',
                 }}
               >
                 <Text bold={true}>{''}</Text>
@@ -90,7 +92,7 @@ export class CloseVaultModal extends React.Component<IStores> {
                 )} locked ONEs will withdraw`}</Text>
               </Box>
 
-              {openVault.actionStatus === 'fetching' ? <Steps /> : null}
+              {!displayForm ? <Steps /> : null}
 
               {openVault.actionStatus !== 'init' ? (
                 <Box

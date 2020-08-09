@@ -8,8 +8,11 @@ import { formatWithTwoDecimals, ones } from 'utils';
 import { useStores } from '../../stores';
 import { ACTIONS_TYPE } from '../../stores/OpenVault';
 import { CloseVaultModal } from '../CloseVault';
+import { MakerActionModal } from '../MakerActionModal';
 
-const AssetRow = props => {
+const AssetRow = observer<any>(props => {
+  const { user, actionModals, openVault } = useStores();
+
   return (
     <Box
       className={cn(
@@ -21,18 +24,44 @@ const AssetRow = props => {
         <Text bold={false}>{props.asset}</Text>
       </Box>
 
-      <Box direction="row">
-        <Box className={styles.priceColumn} margin={{ right: '0px' }}>
+      <Box direction="column" align="end">
+        <Box className={styles.priceColumn}>
           <Text bold={true}>{props.value}</Text>
         </Box>
 
-        {/*<Button style={{ width: '60px' }} transparent={true} onClick={() => {}}>*/}
-        {/*  Send*/}
-        {/*</Button>*/}
+        {props.last && !!Number(user.balanceGem) ? (
+          <Button
+            style={{ width: '60px', margin: '-10px 0' }}
+            transparent={true}
+            onClick={() => {
+              openVault.setCurrentAction(
+                ACTIONS_TYPE.WITHDRAWAL_GEM,
+                parseFloat(user.balanceGem),
+              );
+
+              actionModals.open(MakerActionModal, {
+                title: '',
+                applyText: 'Withdraw One',
+                closeText: 'Cancel',
+                noValidation: true,
+                width: '600px',
+                showOther: true,
+                onApply: data => openVault.withdrawGem(data.amount),
+                onClose: () => {
+                  openVault.clear();
+                  user.getBalances();
+                  // setTimeout(() => user.getBalances(), 4000);
+                },
+              });
+            }}
+          >
+            Withdraw
+          </Button>
+        ) : null}
       </Box>
     </Box>
   );
-};
+});
 
 export const WalletBalances = observer(() => {
   const { user, openVault, actionModals } = useStores();
@@ -46,10 +75,12 @@ export const WalletBalances = observer(() => {
           asset="Available balance"
           value={formatWithTwoDecimals(ones(user.balance)) + ' ONE'}
         />
+
         <AssetRow
           asset="Outstanding Dai debt"
           value={formatWithTwoDecimals(user.balanceDai) + ' DAI'}
         />
+
         <AssetRow
           asset="Unlocked ONEs"
           value={formatWithTwoDecimals(user.balanceGem) + ' ONE'}

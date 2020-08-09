@@ -66,3 +66,25 @@ export const withdrawOne = async (address, gemAmount, setStep) => {
     }
   });
 };
+
+export const withdrawGem = async (address, gemAmount, setStep) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      connectToOneWallet(gemContract.wallet, address, reject);
+      connectToOneWallet(contractDS.wallet, address, reject);
+
+      const methods = [
+        contractDS.methods['approve(address)'](process.env.PAYMENT),
+        gemContract.methods.withdraw(String(gemAmount) + ONE),
+      ];
+
+      await sendMethods(methods, reject, setStep);
+
+      resolve(true);
+    } catch (e) {
+      console.error(e);
+
+      reject(e);
+    }
+  });
+};
