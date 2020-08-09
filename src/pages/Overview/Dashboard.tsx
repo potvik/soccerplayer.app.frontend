@@ -6,9 +6,9 @@ import * as styles from './styles.styl';
 import cn from 'classnames';
 import { useStores } from '../../stores';
 import { formatWithSixDecimals, formatWithTwoDecimals } from '../../utils';
-import { useCallback } from 'react';
-import { AuthWarning } from '../../components/AuthWarning';
-import { GenerateDai } from '../OpenVaultModal/GenerateDai';
+// import { useCallback } from 'react';
+// import { AuthWarning } from '../../components/AuthWarning';
+// import { GenerateDai } from '../OpenVaultModal/GenerateDai';
 import { ACTIONS_TYPE } from '../../stores/OpenVault';
 import { MakerActionModal } from '../MakerActionModal';
 
@@ -18,36 +18,36 @@ export const Dashboard = observer(() => {
   const { ink: ones, art: dai } = user.vat;
   const { totalFeeds } = openVault;
 
-  const openVaultHandler = useCallback(async () => {
-    if (!user.isAuthorized) {
-      if (!user.isOneWallet) {
-        return actionModals.open(() => <AuthWarning />, {
-          title: '',
-          applyText: 'Got it',
-          closeText: '',
-          noValidation: true,
-          width: '500px',
-          showOther: true,
-          onApply: () => {
-            return Promise.resolve();
-          },
-        });
-      } else {
-        await user.signIn();
-      }
-    }
-
-    actionModals.open(GenerateDai, {
-      title: '',
-      applyText: 'Open Vault',
-      closeText: 'Cancel',
-      noValidation: true,
-      width: '1000px',
-      showOther: true,
-      onApply: data => openVault.open(data.amount, data.amountDai),
-      onClose: () => openVault.clear(),
-    });
-  }, []);
+  // const openVaultHandler = useCallback(async () => {
+  //   if (!user.isAuthorized) {
+  //     if (!user.isOneWallet) {
+  //       return actionModals.open(() => <AuthWarning />, {
+  //         title: '',
+  //         applyText: 'Got it',
+  //         closeText: '',
+  //         noValidation: true,
+  //         width: '500px',
+  //         showOther: true,
+  //         onApply: () => {
+  //           return Promise.resolve();
+  //         },
+  //       });
+  //     } else {
+  //       await user.signIn();
+  //     }
+  //   }
+  //
+  //   actionModals.open(GenerateDai, {
+  //     title: '',
+  //     applyText: 'Open Vault',
+  //     closeText: 'Cancel',
+  //     noValidation: true,
+  //     width: '1000px',
+  //     showOther: true,
+  //     onApply: data => openVault.open(data.amount, data.amountDai),
+  //     onClose: () => openVault.clear(),
+  //   });
+  // }, []);
 
   return (
     <Box direction="row" justify="between" margin={{ top: '28px' }} wrap>
@@ -134,7 +134,31 @@ export const Dashboard = observer(() => {
                   USDT
                 </Text>
               </Box>
-              <Button onClick={() => openVaultHandler()}>Deposit</Button>
+              <Button
+                onClick={() => {
+                  openVault.setCurrentAction(
+                    ACTIONS_TYPE.DEPOSIT_ONE,
+                    Number(user.balance) / 1e18,
+                  );
+
+                  actionModals.open(MakerActionModal, {
+                    title: '',
+                    applyText: 'Deposit One',
+                    closeText: 'Cancel',
+                    noValidation: true,
+                    width: '600px',
+                    showOther: true,
+                    onApply: data => openVault.depositOne(data.amount),
+                    onClose: () => {
+                      openVault.clear();
+                      user.getBalances();
+                      // setTimeout(() => user.getBalances(), 4000);
+                    },
+                  });
+                }}
+              >
+                Deposit
+              </Button>
             </Box>
           </Box>
 
@@ -154,8 +178,7 @@ export const Dashboard = observer(() => {
                 </Text>
               </Box>
               <Button
-                // disabled={!Number(totalFeeds.ableToWithDraw)}
-                disabled={true}
+                disabled={!Number(totalFeeds.ableToWithDraw)}
                 onClick={() => {
                   openVault.setCurrentAction(
                     ACTIONS_TYPE.WITHDRAWAL_ONE,

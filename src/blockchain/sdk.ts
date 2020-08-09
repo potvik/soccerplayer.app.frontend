@@ -21,6 +21,10 @@ export const options2 = { gasPrice: 1000000000, gasLimit: 21000 };
 
 export const allJson = require('./out/dapp.sol.json');
 
+export const contractJson = require("./out/SimplePayment.json");
+
+export const ONE = "000000000000000000";
+
 export const connectToOneWallet = (wallet, address, reject) => {
   wallet.defaultSigner = address;
 

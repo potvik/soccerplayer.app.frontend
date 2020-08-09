@@ -4,11 +4,13 @@ import { statusFetching } from '../constants';
 import { StoreConstructor } from './core/StoreConstructor';
 import { IPlayerCard } from './SoccerPlayersList';
 import * as blockchain from '../blockchain';
+import { ONE } from '../blockchain';
 
 export enum ACTIONS_TYPE {
   PAY_BACK_DAI = 'PAY_BACK_DAI',
   GENERATE_DAI = 'GENERATE_DAI',
   WITHDRAWAL_ONE = 'WITHDRAWAL_ONE',
+  DEPOSIT_ONE = 'DEPOSIT_ONE',
 }
 
 export class OpenVault extends StoreConstructor {
@@ -34,12 +36,32 @@ export class OpenVault extends StoreConstructor {
     PAY_BACK_DAI: 'Pay Back Dai',
     GENERATE_DAI: 'Generate Dai',
     WITHDRAWAL_ONE: 'Withdrawal ONE',
+    DEPOSIT_ONE: 'Deposit ONE',
   };
 
   actionSteps: Record<ACTIONS_TYPE, string[]> = {
-    PAY_BACK_DAI: ['Step 1', 'Step 2', 'Step 3'],
-    GENERATE_DAI: ['Step 1', 'Step 2', 'Step 3'],
-    WITHDRAWAL_ONE: ['Step 1', 'Step 2'],
+    PAY_BACK_DAI: [
+      "Approve DAI contract to access the accounting system on user's behalf",
+      'Approve DAI contract to burn DAI for the user',
+      'Approve accounting contract to perform CDP manipulations',
+    ],
+    GENERATE_DAI: [
+      'Approve accounting contract to perform CDP manipulations',
+      "Approve DAI contract to access the accounting system on user's behalf",
+      'Approve DAI contract to mint DAI for the user',
+    ],
+    WITHDRAWAL_ONE: [
+      'Approve accounting contract to perform CDP manipulations',
+      'Approve collateralization contract to transfer back the collaterals',
+      'Approve payment contract to convert collaterals back to ONEs',
+      'Approve transaction to withdraw ONEs to users account',
+    ],
+    DEPOSIT_ONE: [
+      'Converting ONEs to collateralizable assets',
+      'Approve collateralization contract to withdraw specified amount of assets',
+      'Approve collateralization contract to add user collateral to the system',
+      'Approve accounting contract to perform CDP manipulations to add user collaterals and debts',
+    ],
   };
 
   steps = [
@@ -206,6 +228,19 @@ export class OpenVault extends StoreConstructor {
         this.setCurrentActionStep,
       ),
     );
+  }
+
+  @action.bound
+  depositOne(gemAmount: number) {
+    return this.callAction(async () => {
+      await blockchain.buyGem(this.stores.user.address, gemAmount);
+
+      await blockchain.depositOne(
+        this.stores.user.address,
+        gemAmount,
+        this.setCurrentActionStep,
+      );
+    });
   }
 
   @action.bound

@@ -5,3 +5,4 @@ export * from './borrow';
 export * from './payback_dai';
 export * from './generate_dai';
 export * from './withdraw_gem';
+export * from './deposit_gem';
