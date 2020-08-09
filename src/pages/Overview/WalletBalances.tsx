@@ -51,8 +51,8 @@ export const WalletBalances = observer(() => {
           value={formatWithTwoDecimals(user.balanceDai) + ' DAI'}
         />
         <AssetRow
-          asset="Collateralized ONE"
-          value={formatWithTwoDecimals(user.balanceGem) + ' ONE-A'}
+          asset="Unlocked ONEs"
+          value={formatWithTwoDecimals(user.balanceGem) + ' ONE'}
           last={true}
         />
       </Box>
