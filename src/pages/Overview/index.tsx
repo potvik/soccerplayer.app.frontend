@@ -8,6 +8,7 @@ import { Dashboard } from './Dashboard';
 import { useStores } from 'stores';
 import { DisableWrap } from '../../components/Base/components/DisableWrap';
 import { Loader } from '../../components/Base/components/Loader';
+import * as styles from './wallet-balances.styl';
 
 export const Overview = observer(() => {
   const { openVault, user } = useStores();
@@ -26,7 +27,13 @@ export const Overview = observer(() => {
   return (
     <BaseContainer>
       <PageContainer>
-        <Box direction="row" align="start" justify="between" fill={true}>
+        <Box
+          direction="row"
+          align="start"
+          justify="between"
+          fill={true}
+          className={styles.base}
+        >
           <Box direction="column" fill={true} justify="center" wrap>
             {hasVault ? (
               <DisableWrap disabled={false}>
@@ -36,8 +43,7 @@ export const Overview = observer(() => {
           </Box>
 
           <Box
-            margin={{ left: 'large', top: '60px' }}
-            style={{ minWidth: 300 }}
+            className={styles.walletBalancesContainer}
           >
             <DisableWrap disabled={!user.isAuthorized}>
               <WalletBalances />

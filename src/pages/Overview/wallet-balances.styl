@@ -42,3 +42,50 @@
     width 100px
   }
 }
+
+.base {
+  flex-direction row
+}
+
+.closeButton {
+  width 100%
+}
+
+.walletBalancesContainer {
+  margin-left 32px
+  margin-top 60px
+  min-width 300px
+}
+
+@media (max-width 1300px) {
+  .base {
+    flex-direction column-reverse
+    padding-right 20px
+  }
+
+  .closeButton {
+    width 100%
+    align-items flex-end
+
+    button {
+      max-width 400px
+    }
+  }
+
+  .walletBalancesContainer, .walletBalances {
+    width 100%
+    margin-left 5px
+    margin-top 20px
+  }
+}
+
+@media (max-width 800px) {
+  .closeButton {
+    width 100%
+    align-items: normal
+
+    button {
+      max-width 100%
+    }
+  }
+}

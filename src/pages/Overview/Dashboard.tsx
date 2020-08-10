@@ -50,7 +50,7 @@ export const Dashboard = observer(() => {
   // }, []);
 
   return (
-    <Box direction="row" justify="between" margin={{ top: '28px' }} wrap>
+    <Box direction="row" justify="between" className={styles.widgetBase} wrap>
       <Box direction="column" className={styles.widget}>
         <Title>Liquidation price</Title>
 

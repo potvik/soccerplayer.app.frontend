@@ -66,6 +66,8 @@ const AssetRow = observer<any>(props => {
 export const WalletBalances = observer(() => {
   const { user, openVault, actionModals } = useStores();
 
+  const hasGem = !!parseFloat(user.balanceGem);
+
   return (
     <Box direction="column" className={styles.walletBalances}>
       <Title>Wallet Balances</Title>
@@ -79,17 +81,20 @@ export const WalletBalances = observer(() => {
         <AssetRow
           asset="Outstanding Dai debt"
           value={formatWithTwoDecimals(user.balanceDai) + ' DAI'}
+          last={!hasGem}
         />
 
-        <AssetRow
-          asset="Unlocked ONEs"
-          value={formatWithTwoDecimals(user.balanceGem) + ' ONE'}
-          last={true}
-        />
+        {hasGem ? (
+          <AssetRow
+            asset="Unlocked ONEs"
+            value={formatWithTwoDecimals(user.balanceGem) + ' ONE'}
+            last={true}
+          />
+        ) : null}
       </Box>
 
       {openVault.hasVault ? (
-        <Box margin={{ vertical: 'small' }}>
+        <Box margin={{ vertical: 'small' }} className={styles.closeButton}>
           <Button
             bgColor="rgb(0, 173, 232)"
             style={{ width: '100%' }}
