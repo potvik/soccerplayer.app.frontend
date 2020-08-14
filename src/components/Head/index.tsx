@@ -15,7 +15,7 @@ import { formatWithTwoDecimals, ones } from '../../utils';
 
 const MainLogo = styled.img`
   width: auto;
-  height: 32px;
+  height: 39px;
 `;
 
 export const Head: React.FC<IStyledChildrenProps<BoxProps>> = withTheme(
@@ -27,14 +27,14 @@ export const Head: React.FC<IStyledChildrenProps<BoxProps>> = withTheme(
     return (
       <Box
         style={{
-          // background: palette.StandardWhite,
-          background: '#f6f7fb',
+          background: palette.StandardWhite,
+          // background: '#f6f7fb',
           overflow: 'visible',
           position: 'absolute',
           top: 0,
           width: '100%',
           zIndex: 100,
-          boxShadow: '0px 0px 20px rgba(0, 0, 0, 0.2)',
+          // boxShadow: '0px 0px 20px rgba(0, 0, 0, 0.2)',
         }}
       >
         <Box
@@ -53,11 +53,11 @@ export const Head: React.FC<IStyledChildrenProps<BoxProps>> = withTheme(
         >
           <Box direction="row" align="center">
             <Box align="center" margin={{ right: 'small' }}>
-              <MainLogo src="main_logo.png" />
+              <MainLogo src="main_logo.svg" />
             </Box>
             <Box>
-              <Title size="small" color="BlackTxt" bold>
-
+              <Title size="medium" color="BlackTxt" bold>
+                BUSD Bridge
               </Title>
             </Box>
           </Box>

@@ -49,6 +49,8 @@ const TextWrap = styled.div<ITitleProps>`
 
   ${props => props.pad && getPaddingCSS(props.pad, props.theme)}
   ${props => props.margin && getMarginCSS(props.margin, props.theme)}
+  
+  letter-spacing: 0.5px;
 `;
 
 export class Text extends React.Component<ITitleProps> {

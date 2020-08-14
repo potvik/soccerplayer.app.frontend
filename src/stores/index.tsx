@@ -5,8 +5,8 @@ import { UserStoreEx } from './UserStore';
 import { SoccerPlayersList } from './SoccerPlayersList';
 import { BuySoccerPlayer } from './BuySoccerPlayer';
 import { OpenVault } from './OpenVault';
+import { Exchange } from './Exchange';
 import { createStoresContext } from './create-context';
-
 
 export interface IStores {
   routing?: RouterStore;
@@ -16,6 +16,7 @@ export interface IStores {
   soccerPlayers?: SoccerPlayersList;
   buyPlayer?: BuySoccerPlayer;
   openVault?: OpenVault;
+  exchange?: Exchange;
 }
 
 const stores: IStores = {};
@@ -27,6 +28,7 @@ stores.user = new UserStoreEx();
 stores.soccerPlayers = new SoccerPlayersList(stores);
 stores.buyPlayer = new BuySoccerPlayer(stores);
 stores.openVault = new OpenVault(stores);
+stores.exchange = new Exchange(stores);
 
 if (!process.env.production) {
   window.stores = stores;

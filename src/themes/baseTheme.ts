@@ -75,7 +75,8 @@ const palette: IPalette = {
 
   Green: '#19B97C',
   Black: '#405965',
-  BlackTxt: '#495057',
+  // BlackTxt: '#495057',
+  BlackTxt: '#212D5E',
 };
 
 export const baseTheme: any = {

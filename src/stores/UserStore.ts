@@ -1,7 +1,7 @@
 import { action, observable } from 'mobx';
 import { IStores } from 'stores';
 import { statusFetching } from '../constants';
-import * as blockchain from '../blockchain';
+import * as blockchain from '../blockchain-bridge';
 
 const defaults = {};
 
@@ -35,7 +35,7 @@ export class UserStoreEx {
       // await this.getOneBalance();
     }, 3000);
 
-    setInterval(() => this.getBalances(), 1 * 10 * 1000);
+    setInterval(() => this.getOneBalance(), 1 * 10 * 1000);
 
     // @ts-ignore
     this.isOneWallet = window.onewallet && window.onewallet.isOneWallet;
@@ -51,7 +51,7 @@ export class UserStoreEx {
       this.sessionType = sessionObj.sessionType;
       this.isAuthorized = true;
 
-      this.getBalances();
+      this.getOneBalance();
     }
   }
 
@@ -63,7 +63,7 @@ export class UserStoreEx {
 
       this.syncLocalStorage();
 
-      this.getBalances();
+      this.getOneBalance();
 
       return Promise.resolve();
     });

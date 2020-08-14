@@ -4,7 +4,7 @@ import { Head } from 'components';
 import { withTheme } from 'styled-components';
 import { IStyledChildrenProps } from 'interfaces';
 // import * as styles from './styles.styl';
-import { Disclaimer } from '../DisclaimerWarning';
+// import { Disclaimer } from '../DisclaimerWarning';
 
 export const BaseContainer: React.FC<IStyledChildrenProps<
   BoxProps
@@ -23,7 +23,7 @@ export const BaseContainer: React.FC<IStyledChildrenProps<
             position: 'absolute',
             top: 0,
             width: '100vw',
-            backgroundColor: '#f7f8f9', // palette.Basic100,
+            backgroundColor: '#F2F3F8', // palette.Basic100,
           }}
         >
           <Head />
@@ -35,7 +35,7 @@ export const BaseContainer: React.FC<IStyledChildrenProps<
             }}
             {...props}
           >
-            <Disclaimer />
+            {/*<Disclaimer />*/}
             {children}
           </Box>
         </div>

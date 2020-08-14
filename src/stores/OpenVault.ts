@@ -4,7 +4,6 @@ import { statusFetching } from '../constants';
 import { StoreConstructor } from './core/StoreConstructor';
 import { IPlayerCard } from './SoccerPlayersList';
 import * as blockchain from '../blockchain';
-import { ONE } from '../blockchain';
 
 export enum ACTIONS_TYPE {
   PAY_BACK_DAI = 'PAY_BACK_DAI',
