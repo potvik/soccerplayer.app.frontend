@@ -24,6 +24,9 @@ export const BaseContainer: React.FC<IStyledChildrenProps<
             top: 0,
             width: '100vw',
             backgroundColor: '#F2F3F8', // palette.Basic100,
+            backgroundImage: "url('logo_background.svg')",
+            backgroundPosition: '0 100%',
+            backgroundRepeat: 'no-repeat',
           }}
         >
           <Head />

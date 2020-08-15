@@ -43,9 +43,9 @@ export class Exchange extends StoreConstructor {
   }
 
   defaultTransaction = {
-    from: '',
-    to: '',
-    amount: '',
+    oneAddress: '',
+    ethAddress: '0xb3359449767895d4a3c96025303c36149f28a575',
+    amount: '4500000',
   };
 
   stepsConfig: Array<IStepConfig> = [
@@ -54,7 +54,10 @@ export class Exchange extends StoreConstructor {
       buttons: [
         {
           title: 'Continue',
-          onClick: () => (this.stepNumber = this.stepNumber + 1),
+          onClick: () => {
+            this.stepNumber = this.stepNumber + 1;
+            this.transaction.oneAddress = this.stores.user.address;
+          },
           validate: true,
         },
       ],
@@ -99,6 +102,7 @@ export class Exchange extends StoreConstructor {
 
   @action.bound
   setMode(mode: EXCHANGE_MODE) {
+    this.clear()
     this.mode = mode;
   }
 
@@ -111,10 +115,15 @@ export class Exchange extends StoreConstructor {
   async sendONEtoAddress() {
     this.actionStatus = 'fetching';
 
+    this.txHash =
+      '0xfaab89bb4385c464e6869c0132bdbc1f32181e621e699ef0b91f7b41bfa21129';
+
+    return;
+
     const res = await blockchain.sendTx(
       this.transaction.amount,
       this.stores.user.address,
-      this.transaction.to,
+      this.transaction.ethAddress,
     );
 
     this.txHash = res.txhash;
@@ -134,5 +143,6 @@ export class Exchange extends StoreConstructor {
     this.error = '';
     this.txHash = '';
     this.actionStatus = 'init';
+    this.stepNumber = 0
   }
 }

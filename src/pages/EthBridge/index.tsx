@@ -7,7 +7,7 @@ import * as styles from './styles.styl';
 import { Exchange } from '../Exchange';
 import { EXCHANGE_MODE } from 'stores/Exchange';
 import cn from 'classnames';
-import { Text } from 'components/Base';
+import { Text, Title } from 'components/Base';
 
 const LargeButton = (props: {
   title: string;
@@ -50,6 +50,16 @@ export const EthBridge = observer(() => {
           fill={true}
           className={styles.base}
         >
+          {/*<Box*/}
+          {/*  direction="row"*/}
+          {/*  justify="center"*/}
+          {/*  margin={{ top: 'large' }}*/}
+          {/*>*/}
+          {/*  <Title size="medium" color="BlackTxt" bold>*/}
+          {/*    BUSD Bridge*/}
+          {/*  </Title>*/}
+          {/*</Box>*/}
+
           <Box
             direction="row"
             justify="between"

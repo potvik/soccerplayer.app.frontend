@@ -62,6 +62,31 @@ export class Exchange extends React.Component<
         break;
     }
 
+    const Status = () => (
+      <Box
+        direction="column"
+        align="center"
+        justify="center"
+        fill={true}
+        pad={{ vertical: 'medium' }}
+        style={{ background: '#dedede40' }}
+      >
+        {icon()}
+        <Box className={styles.description} margin={{ top: 'medium' }}>
+          <Text>{description}</Text>
+          {/*{exchange.txHash ? (*/}
+          {/*  <a*/}
+          {/*    style={{ marginTop: 10 }}*/}
+          {/*    href={EXPLORER_URL + `/tx/${exchange.txHash}`}*/}
+          {/*    target="_blank"*/}
+          {/*  >*/}
+          {/*    Tx id: {truncateAddressString(exchange.txHash)}*/}
+          {/*  </a>*/}
+          {/*) : null}*/}
+        </Box>
+      </Box>
+    );
+
     return (
       <Box direction="column" pad="xlarge" className={styles.exchangeContainer}>
         <Form
@@ -94,7 +119,7 @@ export class Exchange extends React.Component<
               <Box direction="column" fill={true}>
                 <Input
                   label="ETH Address"
-                  name="to"
+                  name="ethAddress"
                   style={{ width: '100%' }}
                   placeholder="Your address"
                   rules={[isRequired]}
@@ -104,32 +129,13 @@ export class Exchange extends React.Component<
           ) : null}
         </Form>
 
-        {exchange.step.id === EXCHANGE_STEPS.CONFIRMATION ? <Details /> : null}
-
-        {exchange.actionStatus !== 'init' ? (
-          <Box
-            direction="column"
-            align="center"
-            justify="center"
-            fill={true}
-            pad={{ vertical: 'medium' }}
-            margin={{ top: '30px' }}
-            style={{ background: '#dedede40' }}
-          >
-            {icon()}
-            <Box className={styles.description} margin={{ top: 'medium' }}>
-              <Text>{description}</Text>
-              {exchange.txHash ? (
-                <a
-                  style={{ marginTop: 10 }}
-                  href={EXPLORER_URL + `/tx/${exchange.txHash}`}
-                  target="_blank"
-                >
-                  Tx id: {truncateAddressString(exchange.txHash)}
-                </a>
-              ) : null}
-            </Box>
-          </Box>
+        {exchange.step.id === EXCHANGE_STEPS.CONFIRMATION ? (
+          <Details showTotal={true} />
+        ) : null}
+        {exchange.step.id === EXCHANGE_STEPS.SENDING ? (
+          <Details>
+            <Status />
+          </Details>
         ) : null}
 
         <Box
