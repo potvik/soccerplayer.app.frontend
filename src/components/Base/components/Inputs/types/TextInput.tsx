@@ -83,9 +83,9 @@ const InputWrap = styled.div<IInputWrapProps>`
   border-top-right-radius: ${props => getInputBorderRadius(props, 'TopRight')};
   border-bottom-left-radius: ${props => getInputBorderRadius(props, 'BottomLeft')};
   border-bottom-right-radius: ${props => getInputBorderRadius(props, 'BottomRight')};
-  padding: 12px;
+  padding: 14px;
   margin: ${props => (props.margin ? props.margin : '')};
-  font-size: 14px;
+  font-size: 16px;
   box-sizing: border-box;
   width: ${props => getSize(props.size, props.theme)};
 

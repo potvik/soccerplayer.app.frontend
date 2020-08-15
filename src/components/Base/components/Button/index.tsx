@@ -93,7 +93,8 @@ const StyledButton = styled.button<IStyledButtonProps & any>`
   padding: ${props => props.theme.styled.button.padding || ''};
   border-radius: 4px;
   font-family: ${props => props.theme.fontBase};
-  font-size: ${props => props.fontSize || '15px'};
+  font-size: ${props => props.fontSize || '18px'};
+  letter-spacing: 0.5px;
   line-height: 16px;
   width: ${props => getSize(props.size, props.theme)};
   text-align: center;

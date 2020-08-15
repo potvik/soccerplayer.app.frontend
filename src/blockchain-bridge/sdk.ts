@@ -6,7 +6,7 @@ export const EXPLORER_URL = 'https://explorer.harmony.one/#';
 
 export const hmy = new Harmony(
   // let's assume we deploy smart contract to this end-point URL
-  'https://api.s0.b.hmny.io',
+  'https://api.s0.t.hmny.io',
   {
     chainType: ChainType.Harmony,
     chainId: ChainID.HmyMainnet,

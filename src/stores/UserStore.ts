@@ -56,17 +56,22 @@ export class UserStoreEx {
   }
 
   @action public signIn() {
-    return this.onewallet.getAccount().then(account => {
-      this.sessionType = `mathwallet`;
-      this.address = account.address;
-      this.isAuthorized = true;
+    return this.onewallet
+      .getAccount()
+      .then(account => {
+        this.sessionType = `mathwallet`;
+        this.address = account.address;
+        this.isAuthorized = true;
 
-      this.syncLocalStorage();
+        this.syncLocalStorage();
 
-      this.getOneBalance();
+        this.getOneBalance();
 
-      return Promise.resolve();
-    });
+        return Promise.resolve();
+      })
+      .catch(e => {
+        this.onewallet.forgetIdentity();
+      });
   }
 
   @action public getBalances = async () => {

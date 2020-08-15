@@ -1,5 +1,5 @@
 import { StoreConstructor } from './core/StoreConstructor';
-import { action, observable } from 'mobx';
+import { action, computed, observable } from 'mobx';
 import * as blockchain from '../blockchain-bridge';
 import { statusFetching } from '../constants';
 
@@ -15,12 +15,28 @@ export enum EXCHANGE_STEPS {
   RESULT = 'RESULT',
 }
 
+export interface IStepConfig {
+  id: EXCHANGE_STEPS;
+  buttons: Array<{
+    title: string;
+    onClick: () => void;
+    validate?: boolean;
+    transparent?: boolean;
+  }>;
+  title?: string;
+}
+
 export class Exchange extends StoreConstructor {
   @observable mode: EXCHANGE_MODE = EXCHANGE_MODE.ONE_TO_ETH;
   @observable error = '';
   @observable txHash = '';
   @observable actionStatus: statusFetching = 'init';
-  @observable step: EXCHANGE_STEPS = EXCHANGE_STEPS.BASE;
+  @observable stepNumber = 0;
+
+  @computed
+  get step() {
+    return this.stepsConfig[this.stepNumber];
+  }
 
   constructor(stores) {
     super(stores);
@@ -32,16 +48,58 @@ export class Exchange extends StoreConstructor {
     amount: '',
   };
 
+  stepsConfig: Array<IStepConfig> = [
+    {
+      id: EXCHANGE_STEPS.BASE,
+      buttons: [
+        {
+          title: 'Continue',
+          onClick: () => (this.stepNumber = this.stepNumber + 1),
+          validate: true,
+        },
+      ],
+    },
+    {
+      id: EXCHANGE_STEPS.CONFIRMATION,
+      buttons: [
+        {
+          title: 'Back',
+          onClick: () => (this.stepNumber = this.stepNumber - 1),
+          transparent: true,
+        },
+        {
+          title: 'Confirm',
+          onClick: () => {
+            this.stepNumber = this.stepNumber + 1;
+            this.sendONEtoAddress();
+          },
+        },
+      ],
+    },
+    {
+      id: EXCHANGE_STEPS.SENDING,
+      buttons: [],
+    },
+    {
+      id: EXCHANGE_STEPS.RESULT,
+      buttons: [
+        {
+          title: 'Close',
+          transparent: true,
+          onClick: () => {
+            this.clear();
+            this.stepNumber = 0;
+          },
+        },
+      ],
+    },
+  ];
+
   @observable transaction = this.defaultTransaction;
 
   @action.bound
   setMode(mode: EXCHANGE_MODE) {
     this.mode = mode;
-  }
-
-  @action.bound
-  setStep(step: EXCHANGE_STEPS) {
-    this.step = step;
   }
 
   @action.bound
@@ -64,10 +122,11 @@ export class Exchange extends StoreConstructor {
     if (res.error) {
       this.error = res.message;
       this.actionStatus = 'error';
-      return;
+    } else {
+      this.actionStatus = 'success';
     }
 
-    this.actionStatus = 'success';
+    this.stepNumber = this.stepsConfig.length - 1;
   }
 
   clear() {

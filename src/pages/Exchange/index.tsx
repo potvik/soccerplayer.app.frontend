@@ -1,10 +1,16 @@
 import * as React from 'react';
 import { Box } from 'grommet';
 import * as styles from './styles.styl';
-import { Form, isRequired, MobxForm, NumberInput } from 'components/Form';
+import {
+  Form,
+  Input,
+  isRequired,
+  MobxForm,
+  NumberInput,
+} from 'components/Form';
 import { inject, observer } from 'mobx-react';
 import { IStores } from 'stores';
-import { Title, Text, Icon } from 'components/Base';
+import { Button, Icon, Text } from 'components/Base';
 import {
   formatWithTwoDecimals,
   moreThanZero,
@@ -13,6 +19,8 @@ import {
 } from 'utils';
 import { EXPLORER_URL } from '../../blockchain-bridge';
 import { Spinner } from 'ui/Spinner';
+import { EXCHANGE_STEPS } from '../../stores/Exchange';
+import { Details } from './Details';
 
 @inject('user', 'exchange')
 @observer
@@ -20,6 +28,16 @@ export class Exchange extends React.Component<
   Pick<IStores, 'user'> & Pick<IStores, 'exchange'>
 > {
   formRef: MobxForm;
+
+  onClickHandler = (needValidate: boolean, callback: () => void) => {
+    if (needValidate) {
+      this.formRef.validateFields().then(() => {
+        callback();
+      });
+    } else {
+      callback();
+    }
+  };
 
   render() {
     const { user, exchange } = this.props;
@@ -51,80 +69,88 @@ export class Exchange extends React.Component<
           data={this.props.exchange.transaction}
           {...({} as any)}
         >
-          <Box direction="column" justify="between" align="start" fill={true}>
-            <Box
-              direction="column"
-              gap="10px"
-              style={{
-                display: exchange.actionStatus === 'fetching' ? 'none' : 'flex',
-              }}
-              fill={true}
-            >
-              <NumberInput
-                label="BUSD Amount"
-                name="amount"
-                type="decimal"
-                placeholder="0 ONE"
-                style={{ width: '100%' }}
-                rules={[isRequired, moreThanZero]}
-              />
-              <Text size="small">
-                YOUR BALANCE{' '}
-                <b>{formatWithTwoDecimals(ones(user.balance))} ONEs</b>
-              </Text>
-            </Box>
-
-            <Box
-              direction="column"
-              margin={{ top: 'xlarge' }}
-              gap="10px"
-              style={{
-                display: exchange.actionStatus === 'fetching' ? 'none' : 'flex',
-              }}
-            >
-              <Box direction="row" align="baseline">
-                <NumberInput
-                  label="ETH Address"
-                  name="to"
-                  style={{ width: '260px', marginRight: 12 }}
-                  placeholder="Your address"
-                  rules={[isRequired]}
-                  disabled={exchange.actionStatus === 'fetching'}
-                />
-                <Text bold={true}>DAI</Text>
-              </Box>
-              {/*<Text size="small">*/}
-              {/*  MAX AVAIL TO GENERATE <b>{formatWithTwoDecimals(this.maxDai)} DAI</b>*/}
-              {/*</Text>*/}
-            </Box>
-
-            {exchange.actionStatus !== 'init' ? (
+          {exchange.step.id === EXCHANGE_STEPS.BASE ? (
+            <Box direction="column" fill={true}>
               <Box
                 direction="column"
-                align="center"
-                justify="center"
+                gap="2px"
                 fill={true}
-                pad={{ vertical: 'medium' }}
-                margin={{ top: '30px' }}
-                style={{ background: '#dedede40' }}
+                margin={{ bottom: 'large' }}
               >
-                {icon()}
-                <Box className={styles.description}>
-                  <Text>{description}</Text>
-                  {exchange.txHash ? (
-                    <a
-                      style={{ marginTop: 10 }}
-                      href={EXPLORER_URL + `/tx/${exchange.txHash}`}
-                      target="_blank"
-                    >
-                      Tx id: {truncateAddressString(exchange.txHash)}
-                    </a>
-                  ) : null}
-                </Box>
+                <NumberInput
+                  label="BUSD Amount"
+                  name="amount"
+                  type="decimal"
+                  placeholder="0 ONE"
+                  style={{ width: '100%' }}
+                  rules={[isRequired, moreThanZero]}
+                />
+                <Text size="small" style={{ textAlign: 'right' }}>
+                  <b>*Max Available</b> ={' '}
+                  {formatWithTwoDecimals(ones(user.balance))} ONEs
+                </Text>
               </Box>
-            ) : null}
-          </Box>
+
+              <Box direction="column" fill={true}>
+                <Input
+                  label="ETH Address"
+                  name="to"
+                  style={{ width: '100%' }}
+                  placeholder="Your address"
+                  rules={[isRequired]}
+                />
+              </Box>
+            </Box>
+          ) : null}
         </Form>
+
+        {exchange.step.id === EXCHANGE_STEPS.CONFIRMATION ? <Details /> : null}
+
+        {exchange.actionStatus !== 'init' ? (
+          <Box
+            direction="column"
+            align="center"
+            justify="center"
+            fill={true}
+            pad={{ vertical: 'medium' }}
+            margin={{ top: '30px' }}
+            style={{ background: '#dedede40' }}
+          >
+            {icon()}
+            <Box className={styles.description} margin={{ top: 'medium' }}>
+              <Text>{description}</Text>
+              {exchange.txHash ? (
+                <a
+                  style={{ marginTop: 10 }}
+                  href={EXPLORER_URL + `/tx/${exchange.txHash}`}
+                  target="_blank"
+                >
+                  Tx id: {truncateAddressString(exchange.txHash)}
+                </a>
+              ) : null}
+            </Box>
+          </Box>
+        ) : null}
+
+        <Box
+          direction="row"
+          margin={{ top: 'large' }}
+          justify="end"
+          align="center"
+        >
+          {exchange.step.buttons.map(conf => (
+            <Button
+              bgColor="#00ADE8"
+              style={{ width: conf.transparent ? 140 : 180 }}
+              onClick={() => {
+                this.onClickHandler(conf.validate, conf.onClick);
+              }}
+              transparent={!!conf.transparent}
+            >
+              {conf.title}
+            </Button>
+          ))}
+        </Box>
       </Box>
     );
   }
