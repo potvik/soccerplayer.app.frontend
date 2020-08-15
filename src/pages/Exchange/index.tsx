@@ -21,15 +21,38 @@ import { EXPLORER_URL } from '../../blockchain-bridge';
 import { Spinner } from 'ui/Spinner';
 import { EXCHANGE_STEPS } from '../../stores/Exchange';
 import { Details } from './Details';
+import { AuthWarning } from '../../components/AuthWarning';
 
-@inject('user', 'exchange')
+@inject('user', 'exchange', 'actionModals')
 @observer
 export class Exchange extends React.Component<
-  Pick<IStores, 'user'> & Pick<IStores, 'exchange'>
+  Pick<IStores, 'user'> &
+    Pick<IStores, 'exchange'> &
+    Pick<IStores, 'actionModals'>
 > {
   formRef: MobxForm;
 
-  onClickHandler = (needValidate: boolean, callback: () => void) => {
+  onClickHandler = async (needValidate: boolean, callback: () => void) => {
+    const { actionModals, user } = this.props;
+
+    if (!user.isAuthorized) {
+      if (!user.isOneWallet) {
+        return actionModals.open(() => <AuthWarning />, {
+          title: '',
+          applyText: 'Got it',
+          closeText: '',
+          noValidation: true,
+          width: '500px',
+          showOther: true,
+          onApply: () => {
+            return Promise.resolve();
+          },
+        });
+      } else {
+        await user.signIn();
+      }
+    }
+
     if (needValidate) {
       this.formRef.validateFields().then(() => {
         callback();

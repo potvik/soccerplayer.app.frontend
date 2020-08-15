@@ -14,6 +14,7 @@ const LargeButton = (props: {
   onClick: () => void;
   description: string;
   isActive: boolean;
+  reverse?: boolean;
 }) => {
   return (
     <Box
@@ -25,11 +26,25 @@ const LargeButton = (props: {
         props.isActive ? styles.active : '',
       )}
       onClick={props.onClick}
-      gap="5px"
+      gap="10px"
     >
-      <Text size="large" className={styles.title}>
-        {props.title}
-      </Text>
+      <Box direction={props.reverse ? "row-reverse" : "row"} align="center">
+        <Box direction="row" align="center">
+          <img className={styles.imgToken} src="eth.svg" />
+          <Text size="large" className={styles.title}>
+            ETH
+          </Text>
+        </Box>
+        <Box direction="row" margin={{ horizontal: 'medium' }} align="center">
+          <img src="right.svg" />
+        </Box>
+        <Box direction="row" align="center">
+          <img className={styles.imgToken} src="one.svg" />
+          <Text size="large" className={styles.title}>
+            ONE
+          </Text>
+        </Box>
+      </Box>
       <Text size="xsmall" color="#748695" className={styles.description}>
         {props.description}
       </Text>
@@ -74,6 +89,7 @@ export const EthBridge = observer(() => {
             />
             <LargeButton
               title="ONE -> ETH"
+              reverse={true}
               description="(ONE Wallet)"
               onClick={() => exchange.setMode(EXCHANGE_MODE.ONE_TO_ETH)}
               isActive={exchange.mode === EXCHANGE_MODE.ONE_TO_ETH}
