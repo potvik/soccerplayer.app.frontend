@@ -2,10 +2,11 @@ import { action, observable } from 'mobx';
 import { IStores } from 'stores';
 import { statusFetching } from '../constants';
 import * as blockchain from '../blockchain-bridge';
+import { StoreConstructor } from './core/StoreConstructor';
 
 const defaults = {};
 
-export class UserStoreEx {
+export class UserStoreEx extends StoreConstructor {
   public stores: IStores;
   @observable public isAuthorized: boolean;
   public status: statusFetching;
@@ -26,7 +27,9 @@ export class UserStoreEx {
 
   @observable vatInit = false;
 
-  constructor() {
+  constructor(stores) {
+    super(stores);
+
     setInterval(async () => {
       // @ts-ignore
       this.isOneWallet = window.onewallet && window.onewallet.isOneWallet;
@@ -53,6 +56,8 @@ export class UserStoreEx {
       this.sessionType = sessionObj.sessionType;
       this.isAuthorized = true;
 
+      this.stores.exchange.transaction.oneAddress = this.address;
+
       this.getOneBalance();
     }
   }
@@ -64,6 +69,8 @@ export class UserStoreEx {
         this.sessionType = `mathwallet`;
         this.address = account.address;
         this.isAuthorized = true;
+
+        this.stores.exchange.transaction.oneAddress = this.address;
 
         this.syncLocalStorage();
 

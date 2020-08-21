@@ -49,10 +49,11 @@ export const WalletBalances = observer(() => {
 
       <Box className={styles.container}>
         <Box direction="column" margin={{ bottom: 'large' }}>
-          <Box direction="row" justify="between">
-            <Box direction="row" align="baseline">
+          <Box direction="row" justify="between" margin={{ bottom: 'xsmall' }}>
+            <Box direction="row" align="center">
+              <img className={styles.imgToken} src="one.svg" />
               <Title margin={{ right: 'xsmall' }}>Harmony</Title>
-              <Text>(ONE Wallet)</Text>
+              <Text margin={{ top: '4px' }}>(ONE Wallet)</Text>
             </Box>
             {user.isAuthorized && (
               <Box
@@ -87,6 +88,8 @@ export const WalletBalances = observer(() => {
                 asset="Harmony BUSD"
                 value={formatWithTwoDecimals(user.hmyBUSDBalance)}
               />
+
+              <AssetRow asset="Harmony LINK" value={'...'} />
             </>
           ) : (
             <Box direction="row" align="baseline" justify="start">
@@ -117,10 +120,11 @@ export const WalletBalances = observer(() => {
           )}
         </Box>
 
-        <Box direction="column">
-          <Box direction="row" align="baseline">
+        <Box direction="column" margin={{ top: 'medium' }}>
+          <Box direction="row" align="center" margin={{ bottom: 'xsmall' }}>
+            <img className={styles.imgToken} src="eth.svg" />
             <Title margin={{ right: 'xsmall' }}>Ethereum</Title>
-            <Text>(Metamask)</Text>
+            <Text margin={{ top: '4px' }}>(Metamask)</Text>
           </Box>
 
           {userMetamask.isAuthorized ? (
@@ -138,8 +142,9 @@ export const WalletBalances = observer(() => {
               <AssetRow
                 asset="Ethereum BUSD"
                 value={formatWithTwoDecimals(userMetamask.ethBUSDBalance)}
-                last={true}
               />
+
+              <AssetRow asset="Ethereum LINK" value={'...'} last={true} />
             </>
           ) : (
             <Box direction="row" align="baseline" justify="start">

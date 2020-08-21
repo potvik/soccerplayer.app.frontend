@@ -52,9 +52,7 @@ async function mintToken(managerAddr, userAddr, amount, receiptId) {
   );
 
   // hmyManagerContract.wallet.setSigner(process.env.HMY_ADMIN_ADDRESS);
-  hmyManagerContract.wallet.addByPrivateKey(
-    '0x90e46ed07f15a93fb5ea1078c4164cc11a9f3ae863ba7cf68cc04d25d744dfe3',
-  );
+  hmyManagerContract.wallet.addByPrivateKey(process.env.HMY_ADMIN_PRIVATE_KEY);
 
   let options = { gasPrice: 1000000000, gasLimit: 6721900 };
 

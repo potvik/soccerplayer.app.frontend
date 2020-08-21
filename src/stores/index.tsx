@@ -24,14 +24,14 @@ export interface IStores {
 const stores: IStores = {};
 
 stores.routing = new RouterStore();
+stores.exchange = new Exchange(stores);
 stores.modal = new ModalsStore();
 stores.actionModals = new ActionModalsStore();
-stores.user = new UserStoreEx();
+stores.user = new UserStoreEx(stores);
 stores.userMetamask = new UserStoreMetamask(stores);
 stores.soccerPlayers = new SoccerPlayersList(stores);
 stores.buyPlayer = new BuySoccerPlayer(stores);
 stores.openVault = new OpenVault(stores);
-stores.exchange = new Exchange(stores);
 
 if (!process.env.production) {
   window.stores = stores;

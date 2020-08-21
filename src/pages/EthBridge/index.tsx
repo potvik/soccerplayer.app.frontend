@@ -7,7 +7,7 @@ import * as styles from './styles.styl';
 import { Exchange } from '../Exchange';
 import { EXCHANGE_MODE } from 'stores/Exchange';
 import cn from 'classnames';
-import { Text, Title } from 'components/Base';
+import { Text } from 'components/Base';
 import { WalletBalances } from './WalletBalances';
 
 const LargeButton = (props: {
@@ -59,7 +59,13 @@ export const EthBridge = observer(() => {
   return (
     <BaseContainer>
       <PageContainer>
-        <Box direction="row" wrap={true} fill={true} justify="between">
+        <Box
+          direction="row"
+          wrap={true}
+          fill={true}
+          justify="between"
+          align="start"
+        >
           <Box
             direction="column"
             align="center"

@@ -38,23 +38,24 @@ export const ethToOneBUSD = async ({
   amount,
   ethUserAddress,
   hmyUserAddress,
+  setActionStep,
 }) => {
   // user approve eth manager to lock tokens
   try {
-    console.log(1);
+    const ethAddrHex = hmy.crypto.getAddress(ethUserAddress).checksum;
+    const hmyAddrHex = hmy.crypto.getAddress(hmyUserAddress).checksum;
+
+    setActionStep(0);
 
     await eth.approveEthManger(amount);
 
-    console.log(2);
+    setActionStep(1);
 
     // wait sufficient to confirm the transaction went through
-    const lockedEvent = await eth.lockToken(hmyUserAddress, amount);
-
-    console.log(3);
+    const lockedEvent = await eth.lockToken(hmyAddrHex, amount);
 
     const expectedBlockNumber = lockedEvent.blockNumber + BLOCK_TO_FINALITY;
-
-    console.log(4);
+    let count = 1;
 
     while (true) {
       let blockNumber = await web3.eth.getBlockNumber();
@@ -62,13 +63,19 @@ export const ethToOneBUSD = async ({
         console.log(
           `Currently at block ${blockNumber}, waiting for block ${expectedBlockNumber} to be confirmed`,
         );
+
+        setActionStep(
+          2,
+          `Currently at block ${blockNumber}, waiting for block ${expectedBlockNumber} to be confirmed. (${count++} / ${BLOCK_TO_FINALITY})`,
+        );
+
         await sleep(AVG_BLOCK_TIME);
       } else {
         break;
       }
     }
 
-    console.log(5);
+    setActionStep(3);
 
     const recipient = lockedEvent.returnValues.recipient;
 
@@ -78,10 +85,10 @@ export const ethToOneBUSD = async ({
       amount,
       lockedEvent.transactionHash,
     );
-
-    console.log(6);
   } catch (e) {
     console.error(e);
+
+    throw new Error(e.message);
   }
 };
 

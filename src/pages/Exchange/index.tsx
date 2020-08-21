@@ -13,6 +13,7 @@ import { IStores } from 'stores';
 import { Button, Icon, Text } from 'components/Base';
 import {
   formatWithTwoDecimals,
+  maxAmount,
   moreThanZero,
   ones,
   truncateAddressString,
@@ -22,13 +23,15 @@ import { Spinner } from 'ui/Spinner';
 import { EXCHANGE_STEPS } from '../../stores/Exchange';
 import { Details } from './Details';
 import { AuthWarning } from '../../components/AuthWarning';
+import { Steps } from './Steps';
 
-@inject('user', 'exchange', 'actionModals')
+@inject('user', 'exchange', 'actionModals', 'userMetamask')
 @observer
 export class Exchange extends React.Component<
   Pick<IStores, 'user'> &
     Pick<IStores, 'exchange'> &
-    Pick<IStores, 'actionModals'>
+    Pick<IStores, 'actionModals'> &
+    Pick<IStores, 'userMetamask'>
 > {
   formRef: MobxForm;
 
@@ -63,7 +66,7 @@ export class Exchange extends React.Component<
   };
 
   render() {
-    const { user, exchange } = this.props;
+    const { user, exchange, userMetamask } = this.props;
 
     let icon = () => <Icon style={{ width: 50 }} glyph="RightArrow" />;
     let description = 'Approval';
@@ -71,7 +74,7 @@ export class Exchange extends React.Component<
     switch (exchange.actionStatus) {
       case 'fetching':
         icon = () => <Spinner />;
-        description = 'Transaction is sending';
+        description = '';
         break;
 
       case 'error':
@@ -97,6 +100,9 @@ export class Exchange extends React.Component<
         {icon()}
         <Box className={styles.description} margin={{ top: 'medium' }}>
           <Text>{description}</Text>
+          <Box margin={{ top: 'medium' }}>
+            <Steps />
+          </Box>
           {/*{exchange.txHash ? (*/}
           {/*  <a*/}
           {/*    style={{ marginTop: 10 }}*/}
@@ -129,20 +135,36 @@ export class Exchange extends React.Component<
                   label="BUSD Amount"
                   name="amount"
                   type="decimal"
-                  placeholder="0 ONE"
+                  placeholder="0"
                   style={{ width: '100%' }}
-                  rules={[isRequired, moreThanZero]}
+                  rules={[
+                    isRequired,
+                    moreThanZero,
+                    (_, value, callback) => {
+                      const errors = [];
+
+                      if (
+                        value &&
+                        Number(value) > Number(userMetamask.ethBUSDBalance)
+                      ) {
+                        const defaultMsg = `Exceeded the maximum amount`;
+                        errors.push(defaultMsg);
+                      }
+
+                      callback(errors);
+                    },
+                  ]}
                 />
                 <Text size="small" style={{ textAlign: 'right' }}>
                   <b>*Max Available</b> ={' '}
-                  {formatWithTwoDecimals(ones(user.balance))} ONEs
+                  {formatWithTwoDecimals(userMetamask.ethBUSDBalance)} BUSD
                 </Text>
               </Box>
 
               <Box direction="column" fill={true}>
                 <Input
-                  label="ETH Address"
-                  name="ethAddress"
+                  label="ONE Address"
+                  name="oneAddress"
                   style={{ width: '100%' }}
                   placeholder="Your address"
                   rules={[isRequired]}
@@ -155,7 +177,14 @@ export class Exchange extends React.Component<
         {exchange.step.id === EXCHANGE_STEPS.CONFIRMATION ? (
           <Details showTotal={true} />
         ) : null}
+
         {exchange.step.id === EXCHANGE_STEPS.SENDING ? (
+          <Details>
+            <Status />
+          </Details>
+        ) : null}
+
+        {exchange.step.id === EXCHANGE_STEPS.RESULT ? (
           <Details>
             <Status />
           </Details>

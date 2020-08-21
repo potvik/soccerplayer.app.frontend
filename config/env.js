@@ -115,6 +115,7 @@ function getClientEnvironment(publicUrl) {
         // ADMIN: process.env.ADMIN,
         PRIVATE_KEY: process.env.PRIVATE_KEY,
         HMY_ADMIN_ADDRESS: process.env.HMY_ADMIN_ADDRESS,
+        HMY_ADMIN_PRIVATE_KEY: process.env.HMY_ADMIN_PRIVATE_KEY,
 
         ETH_BUSD_CONTRACT: process.env.ETH_BUSD_CONTRACT,
         ETH_MANAGER_CONTRACT: process.env.ETH_MANAGER_CONTRACT,

@@ -16,9 +16,9 @@ export class UserStoreMetamask extends StoreConstructor {
   private provider: any;
 
   @observable public ethAddress: string;
-  @observable public ethBalance: string;
-  @observable public ethBUSDBalance: string;
-  @observable public ethLinkBalance: string;
+  @observable public ethBalance: string = '0';
+  @observable public ethBUSDBalance: string = '0';
+  @observable public ethLinkBalance: string = '0';
 
   constructor(stores) {
     super(stores);

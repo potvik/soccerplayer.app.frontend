@@ -15,6 +15,11 @@ export enum EXCHANGE_STEPS {
   RESULT = 'RESULT',
 }
 
+enum ACTIONS_TYPE {
+  ETH_TO_ONE_BUSD = 'ETH_TO_ONE_BUSD',
+  ONE_TO_ETH_BUSD = 'ONE_TO_ETH_BUSD',
+}
+
 export interface IStepConfig {
   id: EXCHANGE_STEPS;
   buttons: Array<{
@@ -30,7 +35,7 @@ const hmyAddr = '0x203fc3cA24D4194A4CD1614Fec186a7951Bb0244';
 const ethAddr = '0x0FBb9C31eabc2EdDbCF59c03E76ada36f5AB8723';
 
 export class Exchange extends StoreConstructor {
-  @observable mode: EXCHANGE_MODE = EXCHANGE_MODE.ONE_TO_ETH;
+  @observable mode: EXCHANGE_MODE = EXCHANGE_MODE.ETH_TO_ONE;
   @observable error = '';
   @observable txHash = '';
   @observable actionStatus: statusFetching = 'init';
@@ -45,10 +50,36 @@ export class Exchange extends StoreConstructor {
     super(stores);
   }
 
+  @observable currentAction: ACTIONS_TYPE = ACTIONS_TYPE.ETH_TO_ONE_BUSD;
+  @observable currentActionStep = 0;
+
+  @action.bound
+  setCurrentActionStep(step: number, value?: string) {
+    this.currentActionStep = step;
+
+    if (value) {
+      this.actionSteps[this.currentAction][step] = value;
+    }
+  }
+
+  @observable actionSteps: Record<ACTIONS_TYPE, any[]> = {
+    ETH_TO_ONE_BUSD: [
+      'User approve Eth manager to lock tokens',
+      'Wait sufficient to confirm the transaction went through',
+      `Wait while 13 blocks will be confirmed`,
+      'Mint One Tokens',
+    ],
+    ONE_TO_ETH_BUSD: [
+      'Approve accounting contract to perform CDP manipulations',
+      "Approve DAI contract to access the accounting system on user's behalf",
+      'Approve DAI contract to mint DAI for the user',
+    ],
+  };
+
   defaultTransaction = {
     oneAddress: '',
-    ethAddress: '0xb3359449767895d4a3c96025303c36149f28a575',
-    amount: '4500000',
+    ethAddress: '',
+    amount: '0',
   };
 
   stepsConfig: Array<IStepConfig> = [
@@ -59,7 +90,8 @@ export class Exchange extends StoreConstructor {
           title: 'Continue',
           onClick: () => {
             this.stepNumber = this.stepNumber + 1;
-            this.transaction.oneAddress = this.stores.user.address;
+            // this.transaction.oneAddress = this.stores.user.address;
+            this.transaction.ethAddress = this.stores.userMetamask.ethAddress;
           },
           validate: true,
         },
@@ -77,7 +109,7 @@ export class Exchange extends StoreConstructor {
           title: 'Confirm',
           onClick: () => {
             this.stepNumber = this.stepNumber + 1;
-            this.sendONEtoAddress();
+            this.sendEthToOne();
           },
         },
       ],
@@ -107,6 +139,16 @@ export class Exchange extends StoreConstructor {
   setMode(mode: EXCHANGE_MODE) {
     this.clear();
     this.mode = mode;
+
+    if (this.mode === EXCHANGE_MODE.ETH_TO_ONE) {
+      this.currentAction = ACTIONS_TYPE.ETH_TO_ONE_BUSD;
+      this.transaction.oneAddress = this.stores.user.address;
+    }
+
+    if (this.mode === EXCHANGE_MODE.ONE_TO_ETH) {
+      this.currentAction = ACTIONS_TYPE.ONE_TO_ETH_BUSD;
+      this.transaction.ethAddress = this.stores.userMetamask.ethAddress;
+    }
   }
 
   @action.bound
@@ -152,17 +194,23 @@ export class Exchange extends StoreConstructor {
 
   @action.bound
   async sendEthToOne() {
-    console.log('before ------');
-    await this.get_BUSD_Balances();
+    try {
+      this.actionStatus = 'fetching';
 
-    await blockchain.ethToOneBUSD({
-      amount: 10,
-      hmyUserAddress: hmyAddr,
-      ethUserAddress: ethAddr,
-    });
+      await blockchain.ethToOneBUSD({
+        amount: this.transaction.amount,
+        hmyUserAddress: this.transaction.oneAddress,
+        ethUserAddress: this.transaction.ethAddress,
+        setActionStep: this.setCurrentActionStep,
+      });
 
-    console.log('after ------');
-    await this.get_BUSD_Balances();
+      this.actionStatus = 'success';
+    } catch (e) {
+      this.error = e.message;
+      this.actionStatus = 'error';
+    }
+
+    this.stepNumber = this.stepsConfig.length - 1;
   }
 
   clear() {
