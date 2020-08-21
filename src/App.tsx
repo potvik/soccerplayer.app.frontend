@@ -6,6 +6,8 @@ import { Redirect, Route, Switch } from 'react-router';
 import { ActionModals } from './components/ActionModals';
 import { EthBridge } from './pages/EthBridge';
 
+import './blockchain-bridge/metamask'
+
 export const App: React.FC = () => (
   <Providers>
     <React.Suspense fallback={<div />}>

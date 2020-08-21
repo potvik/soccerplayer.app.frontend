@@ -97,23 +97,33 @@ function getClientEnvironment(publicUrl) {
           `${process.env.BACKEND_USER}:${process.env.BACKEND_PASSWORD}`,
         ).toString('base64'),
 
-        VAT: process.env.VAT,
-        CAT: process.env.CAT,
-        SPOTTER: process.env.SPOTTER,
-        FLIPPER: process.env.FLIPPER,
-        GEM: process.env.GEM,
-        GEMJOIN: process.env.GEMJOIN,
-        DAI: process.env.DAI,
-        DAIJOIN: process.env.DAIJOIN,
-        FLAPPER: process.env.FLAPPER,
-        FLOPPER: process.env.FLOPPER,
-        VOW: process.env.VOW,
-        MKR: process.env.MKR,
-
-        PAYMENT: process.env.PAYMENT,
-
-        ADMIN: process.env.ADMIN,
+        // VAT: process.env.VAT,
+        // CAT: process.env.CAT,
+        // SPOTTER: process.env.SPOTTER,
+        // FLIPPER: process.env.FLIPPER,
+        // GEM: process.env.GEM,
+        // GEMJOIN: process.env.GEMJOIN,
+        // DAI: process.env.DAI,
+        // DAIJOIN: process.env.DAIJOIN,
+        // FLAPPER: process.env.FLAPPER,
+        // FLOPPER: process.env.FLOPPER,
+        // VOW: process.env.VOW,
+        // MKR: process.env.MKR,
+        //
+        // PAYMENT: process.env.PAYMENT,
+        //
+        // ADMIN: process.env.ADMIN,
         PRIVATE_KEY: process.env.PRIVATE_KEY,
+        HMY_ADMIN_ADDRESS: process.env.HMY_ADMIN_ADDRESS,
+
+        ETH_BUSD_CONTRACT: process.env.ETH_BUSD_CONTRACT,
+        ETH_MANAGER_CONTRACT: process.env.ETH_MANAGER_CONTRACT,
+        HMY_BUSD_CONTRACT: process.env.HMY_BUSD_CONTRACT,
+        HMY_MANAGER_CONTRACT: process.env.HMY_MANAGER_CONTRACT,
+
+        ETH_NODE_URL: process.env.ETH_NODE_URL,
+        ETH_GAS_PRICE: process.env.ETH_GAS_PRICE,
+        ETH_GAS_LIMIT: process.env.ETH_GAS_LIMIT,
       },
     );
   // Stringify all values so we can feed into Webpack DefinePlugin

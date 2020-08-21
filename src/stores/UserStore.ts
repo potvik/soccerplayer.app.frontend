@@ -18,6 +18,8 @@ export class UserStoreEx {
   @observable public address: string;
 
   @observable public balance: string = '0';
+  @observable public hmyBUSDBalance: string = '0';
+
   @observable public balanceDai: string = '0';
   @observable public balanceGem: string = '0';
   @observable public vat = { ink: '0', art: '0' };
@@ -35,7 +37,7 @@ export class UserStoreEx {
       // await this.getOneBalance();
     }, 3000);
 
-    setInterval(() => this.getOneBalance(), 1 * 10 * 1000);
+    setInterval(() => this.getBalances(), 3 * 1000);
 
     // @ts-ignore
     this.isOneWallet = window.onewallet && window.onewallet.isOneWallet;
@@ -80,11 +82,13 @@ export class UserStoreEx {
         let res = await blockchain.getBalance(this.address);
         this.balance = res && res.result;
 
-        this.balanceDai = await blockchain.getBalanceDai(this.address);
+        this.hmyBUSDBalance = await blockchain.getHmyBalanceBUSD(this.address);
 
-        this.balanceGem = await blockchain.getBalanceGem(this.address);
-
-        this.vat = await blockchain.getVault(this.address);
+        // this.balanceDai = await blockchain.getBalanceDai(this.address);
+        //
+        // this.balanceGem = await blockchain.getBalanceGem(this.address);
+        //
+        // this.vat = await blockchain.getVault(this.address);
 
         this.vatInit = true;
       } catch (e) {
@@ -101,7 +105,9 @@ export class UserStoreEx {
   };
 
   @action public signOut() {
-    if (this.sessionType === 'mathwallet' && this.isOneWallet) {
+    if (this.isOneWallet) {
+      this.isAuthorized = false;
+
       return this.onewallet
         .forgetIdentity()
         .then(() => {
@@ -109,11 +115,11 @@ export class UserStoreEx {
           this.address = null;
           this.isAuthorized = false;
 
-          this.balanceGem = '0';
-          this.balanceDai = '0';
-          this.balance = '0';
-
-          this.vat = { ink: '0', art: '0' };
+          // this.balanceGem = '0';
+          // this.balanceDai = '0';
+          // this.balance = '0';
+          //
+          // this.vat = { ink: '0', art: '0' };
 
           this.syncLocalStorage();
 

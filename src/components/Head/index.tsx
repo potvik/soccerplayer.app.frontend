@@ -15,7 +15,7 @@ import { formatWithTwoDecimals, ones } from '../../utils';
 
 const MainLogo = styled.img`
   width: auto;
-  height: 39px;
+  height: 32px;
 `;
 
 export const Head: React.FC<IStyledChildrenProps<BoxProps>> = withTheme(
@@ -53,17 +53,16 @@ export const Head: React.FC<IStyledChildrenProps<BoxProps>> = withTheme(
         >
           <Box direction="row" align="center">
             <Box align="center" margin={{ right: 'small' }}>
-              <MainLogo src="main_logo.svg" />
+              <MainLogo src="main_logo.png" />
             </Box>
             <Box>
               <Title size="medium" color="BlackTxt" bold>
-                BUSD Bridge
+                {/*BUSD Bridge*/}
               </Title>
             </Box>
           </Box>
 
-          <Box direction="row" align="center">
-
+          <Box direction="row" align="center" style={{ visibility: 'hidden' }}>
             {/*<Box style={{ flex: '1 1 100%' }} />*/}
 
             {user.isAuthorized ? (

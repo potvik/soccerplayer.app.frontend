@@ -26,6 +26,9 @@ export interface IStepConfig {
   title?: string;
 }
 
+const hmyAddr = '0x203fc3cA24D4194A4CD1614Fec186a7951Bb0244';
+const ethAddr = '0x0FBb9C31eabc2EdDbCF59c03E76ada36f5AB8723';
+
 export class Exchange extends StoreConstructor {
   @observable mode: EXCHANGE_MODE = EXCHANGE_MODE.ONE_TO_ETH;
   @observable error = '';
@@ -102,7 +105,7 @@ export class Exchange extends StoreConstructor {
 
   @action.bound
   setMode(mode: EXCHANGE_MODE) {
-    this.clear()
+    this.clear();
     this.mode = mode;
   }
 
@@ -138,11 +141,35 @@ export class Exchange extends StoreConstructor {
     this.stepNumber = this.stepsConfig.length - 1;
   }
 
+  @action.bound
+  async get_BUSD_Balances() {
+    let hmyBUSD = await blockchain.getHmyBalanceBUSD(hmyAddr);
+    let ethBUSD = await blockchain.getEthBalanceBUSD(ethAddr);
+
+    console.log('hmy balance: ', hmyBUSD.toString());
+    console.log('eth balance: ', ethBUSD);
+  }
+
+  @action.bound
+  async sendEthToOne() {
+    console.log('before ------');
+    await this.get_BUSD_Balances();
+
+    await blockchain.ethToOneBUSD({
+      amount: 10,
+      hmyUserAddress: hmyAddr,
+      ethUserAddress: ethAddr,
+    });
+
+    console.log('after ------');
+    await this.get_BUSD_Balances();
+  }
+
   clear() {
     this.transaction = this.defaultTransaction;
     this.error = '';
     this.txHash = '';
     this.actionStatus = 'init';
-    this.stepNumber = 0
+    this.stepNumber = 0;
   }
 }

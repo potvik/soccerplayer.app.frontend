@@ -1,18 +1,21 @@
 import * as React from 'react';
 import { Box } from 'grommet';
 import { observer } from 'mobx-react-lite';
-import { Title, Text, Button } from 'components/Base';
+import { Title, Text, Button, Icon } from 'components/Base';
+import { Error } from 'ui';
 import cn from 'classnames';
 import * as styles from './wallet-balances.styl';
-import { formatWithTwoDecimals, ones } from 'utils';
+import {
+  formatWithTwoDecimals,
+  formatWithSixDecimals,
+  ones,
+  truncateAddressString,
+} from 'utils';
 import { useStores } from '../../stores';
-import { ACTIONS_TYPE } from '../../stores/OpenVault';
-import { CloseVaultModal } from '../CloseVault';
-import { MakerActionModal } from '../MakerActionModal';
+import { AuthWarning } from '../../components/AuthWarning';
+import { Routes } from '../../constants';
 
 const AssetRow = observer<any>(props => {
-  const { user, actionModals, openVault } = useStores();
-
   return (
     <Box
       className={cn(
@@ -28,99 +31,131 @@ const AssetRow = observer<any>(props => {
         <Box className={styles.priceColumn}>
           <Text bold={true}>{props.value}</Text>
         </Box>
-
-        {props.last && !!Number(user.balanceGem) ? (
-          <Button
-            style={{ width: '60px', margin: '-10px 0' }}
-            transparent={true}
-            onClick={() => {
-              openVault.setCurrentAction(
-                ACTIONS_TYPE.WITHDRAWAL_GEM,
-                parseFloat(user.balanceGem),
-              );
-
-              actionModals.open(MakerActionModal, {
-                title: '',
-                applyText: 'Withdraw One',
-                closeText: 'Cancel',
-                noValidation: true,
-                width: '600px',
-                showOther: true,
-                onApply: data => openVault.withdrawGem(data.amount),
-                onClose: () => {
-                  openVault.clear();
-                  user.getBalances();
-                  // setTimeout(() => user.getBalances(), 4000);
-                },
-              });
-            }}
-          >
-            Withdraw
-          </Button>
-        ) : null}
       </Box>
     </Box>
   );
 });
 
 export const WalletBalances = observer(() => {
-  const { user, openVault, actionModals } = useStores();
-
-  const hasGem = !!parseFloat(user.balanceGem);
+  const { user, userMetamask, actionModals } = useStores();
 
   return (
-    <Box direction="column" className={styles.walletBalances}>
-      <Title>Wallet Balances</Title>
+    <Box
+      direction="column"
+      className={styles.walletBalances}
+      margin={{ vertical: 'large' }}
+    >
+      {/*<Title>Wallet Info</Title>*/}
 
       <Box className={styles.container}>
-        <AssetRow
-          asset="Available balance"
-          value={formatWithTwoDecimals(ones(user.balance)) + ' ONE'}
-        />
+        <Box direction="column" margin={{ bottom: 'large' }}>
+          <Box direction="row" justify="between">
+            <Box direction="row" align="baseline">
+              <Title margin={{ right: 'xsmall' }}>Harmony</Title>
+              <Text>(ONE Wallet)</Text>
+            </Box>
+            {user.isAuthorized && (
+              <Box
+                onClick={() => {
+                  user.signOut();
+                }}
+                margin={{ left: 'medium' }}
+              >
+                <Icon
+                  glyph="Logout"
+                  size="24px"
+                  style={{ opacity: 0.5 }}
+                  color="BlackTxt"
+                />
+              </Box>
+            )}
+          </Box>
 
-        <AssetRow
-          asset="Outstanding Dai debt"
-          value={formatWithTwoDecimals(user.balanceDai) + ' DAI'}
-          last={!hasGem}
-        />
+          {user.isAuthorized ? (
+            <>
+              <AssetRow
+                asset="Harmony Address"
+                value={truncateAddressString(user.address)}
+              />
 
-        {hasGem ? (
-          <AssetRow
-            asset="Unlocked ONEs"
-            value={formatWithTwoDecimals(user.balanceGem) + ' ONE'}
-            last={true}
-          />
-        ) : null}
-      </Box>
+              <AssetRow
+                asset="Harmony ONE"
+                value={formatWithTwoDecimals(ones(user.balance))}
+              />
 
-      {openVault.hasVault ? (
-        <Box margin={{ vertical: 'small' }} className={styles.closeButton}>
-          <Button
-            bgColor="rgb(0, 173, 232)"
-            style={{ width: '100%' }}
-            onClick={() => {
-              openVault.setCurrentAction(ACTIONS_TYPE.CLOSE_VAULT, Number(0));
-
-              actionModals.open(CloseVaultModal, {
-                title: '',
-                applyText: 'Close vault',
-                closeText: 'Cancel',
-                noValidation: true,
-                width: '600px',
-                showOther: true,
-                onApply: data => openVault.closeVault(),
-                onClose: () => {
-                  openVault.clear();
-                  user.getBalances();
-                  // setTimeout(() => user.getBalances(), 4000);
-                },
-              });
-            }}
-          >
-            Close Vault and withdraw all ONE
-          </Button>
+              <AssetRow
+                asset="Harmony BUSD"
+                value={formatWithTwoDecimals(user.hmyBUSDBalance)}
+              />
+            </>
+          ) : (
+            <Box direction="row" align="baseline" justify="start">
+              <Button
+                margin={{ vertical: 'medium' }}
+                onClick={() => {
+                  if (!user.isOneWallet) {
+                    actionModals.open(() => <AuthWarning />, {
+                      title: '',
+                      applyText: 'Got it',
+                      closeText: '',
+                      noValidation: true,
+                      width: '500px',
+                      showOther: true,
+                      onApply: () => Promise.resolve(),
+                    });
+                  } else {
+                    user.signIn();
+                  }
+                }}
+              >
+                Connect ONE Wallet
+              </Button>
+              {!user.isOneWallet ? (
+                <Error error="ONE Wallet not found" />
+              ) : null}
+            </Box>
+          )}
         </Box>
-      ) : null}
+
+        <Box direction="column">
+          <Box direction="row" align="baseline">
+            <Title margin={{ right: 'xsmall' }}>Ethereum</Title>
+            <Text>(Metamask)</Text>
+          </Box>
+
+          {userMetamask.isAuthorized ? (
+            <>
+              <AssetRow
+                asset="ETH Address"
+                value={truncateAddressString(userMetamask.ethAddress)}
+              />
+
+              <AssetRow
+                asset="ETH"
+                value={formatWithSixDecimals(userMetamask.ethBalance)}
+              />
+
+              <AssetRow
+                asset="Ethereum BUSD"
+                value={formatWithTwoDecimals(userMetamask.ethBUSDBalance)}
+                last={true}
+              />
+            </>
+          ) : (
+            <Box direction="row" align="baseline" justify="start">
+              <Button
+                margin={{ vertical: 'medium' }}
+                onClick={() => {
+                  userMetamask.signIn();
+                }}
+              >
+                Connect Metamask
+              </Button>
+              {userMetamask.error ? <Error error={userMetamask.error} /> : null}
+            </Box>
+          )}
+        </Box>
+      </Box>
     </Box>
   );
 });

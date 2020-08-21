@@ -8,6 +8,7 @@ import { Exchange } from '../Exchange';
 import { EXCHANGE_MODE } from 'stores/Exchange';
 import cn from 'classnames';
 import { Text, Title } from 'components/Base';
+import { WalletBalances } from './WalletBalances';
 
 const LargeButton = (props: {
   title: string;
@@ -28,7 +29,7 @@ const LargeButton = (props: {
       onClick={props.onClick}
       gap="10px"
     >
-      <Box direction={props.reverse ? "row-reverse" : "row"} align="center">
+      <Box direction={props.reverse ? 'row-reverse' : 'row'} align="center">
         <Box direction="row" align="center">
           <img className={styles.imgToken} src="eth.svg" />
           <Text size="large" className={styles.title}>
@@ -58,53 +59,55 @@ export const EthBridge = observer(() => {
   return (
     <BaseContainer>
       <PageContainer>
-        <Box
-          direction="column"
-          align="center"
-          justify="center"
-          fill={true}
-          className={styles.base}
-        >
-          {/*<Box*/}
-          {/*  direction="row"*/}
-          {/*  justify="center"*/}
-          {/*  margin={{ top: 'large' }}*/}
-          {/*>*/}
-          {/*  <Title size="medium" color="BlackTxt" bold>*/}
-          {/*    BUSD Bridge*/}
-          {/*  </Title>*/}
-          {/*</Box>*/}
-
+        <Box direction="row" wrap={true} fill={true} justify="between">
           <Box
-            direction="row"
-            justify="between"
-            width="560px"
-            margin={{ vertical: 'large' }}
+            direction="column"
+            align="center"
+            justify="center"
+            className={styles.base}
           >
-            <LargeButton
-              title="ETH -> ONE"
-              description="(Metamask)"
-              onClick={() => exchange.setMode(EXCHANGE_MODE.ETH_TO_ONE)}
-              isActive={exchange.mode === EXCHANGE_MODE.ETH_TO_ONE}
-            />
-            <LargeButton
-              title="ONE -> ETH"
-              reverse={true}
-              description="(ONE Wallet)"
-              onClick={() => exchange.setMode(EXCHANGE_MODE.ONE_TO_ETH)}
-              isActive={exchange.mode === EXCHANGE_MODE.ONE_TO_ETH}
-            />
+            {/*<Box*/}
+            {/*  direction="row"*/}
+            {/*  justify="center"*/}
+            {/*  margin={{ top: 'large' }}*/}
+            {/*>*/}
+            {/*  <Title size="medium" color="BlackTxt" bold>*/}
+            {/*    BUSD Bridge*/}
+            {/*  </Title>*/}
+            {/*</Box>*/}
+
+            <Box
+              direction="row"
+              justify="between"
+              width="560px"
+              margin={{ vertical: 'large' }}
+            >
+              <LargeButton
+                title="ETH -> ONE"
+                description="(Metamask)"
+                onClick={() => exchange.setMode(EXCHANGE_MODE.ETH_TO_ONE)}
+                isActive={exchange.mode === EXCHANGE_MODE.ETH_TO_ONE}
+              />
+              <LargeButton
+                title="ONE -> ETH"
+                reverse={true}
+                description="(ONE Wallet)"
+                onClick={() => exchange.setMode(EXCHANGE_MODE.ONE_TO_ETH)}
+                isActive={exchange.mode === EXCHANGE_MODE.ONE_TO_ETH}
+              />
+            </Box>
+
+            <Exchange />
+
+            {/*<Box*/}
+            {/*  className={styles.walletBalancesContainer}*/}
+            {/*>*/}
+            {/*  <DisableWrap disabled={!user.isAuthorized}>*/}
+            {/*    <WalletBalances />*/}
+            {/*  </DisableWrap>*/}
+            {/*</Box>*/}
           </Box>
-
-          <Exchange />
-
-          {/*<Box*/}
-          {/*  className={styles.walletBalancesContainer}*/}
-          {/*>*/}
-          {/*  <DisableWrap disabled={!user.isAuthorized}>*/}
-          {/*    <WalletBalances />*/}
-          {/*  </DisableWrap>*/}
-          {/*</Box>*/}
+          <WalletBalances />
         </Box>
       </PageContainer>
     </BaseContainer>

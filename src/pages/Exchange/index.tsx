@@ -167,8 +167,9 @@ export class Exchange extends React.Component<
           justify="end"
           align="center"
         >
-          {exchange.step.buttons.map(conf => (
+          {exchange.step.buttons.map((conf, idx) => (
             <Button
+              key={idx}
               bgColor="#00ADE8"
               style={{ width: conf.transparent ? 140 : 180 }}
               onClick={() => {
