@@ -94,7 +94,7 @@ export class Exchange extends React.Component<
         align="center"
         justify="center"
         fill={true}
-        pad={{ vertical: 'medium' }}
+        pad="medium"
         style={{ background: '#dedede40' }}
       >
         {icon()}
