@@ -92,10 +92,34 @@ export const ethToOneBUSD = async ({
   }
 };
 
-// // user needs to approve hmy manager to burn token
-// await approveHmyManger(busdHmy, hmyManager, amount);
-//
-// // hmy burn tokens, transaction is confirmed instantaneously, no need to wait
-// let txHash = await burnToken(hmyManager, userAddr, amount);
-//
-// await unlockToken(ethManager, userAddr, amount, txHash);
+export const oneToEthBUSD = async ({
+  amount,
+  ethUserAddress,
+  hmyUserAddress,
+  setActionStep,
+}) => {
+  // user approve eth manager to lock tokens
+  try {
+    const ethAddrHex = ethUserAddress;
+    const hmyAddrHex = hmy.crypto.getAddress(hmyUserAddress).checksum;
+
+    setActionStep(0);
+
+    // user needs to approve hmy manager to burn token
+    await hmyMethos.approveHmyManger(busdHmy, hmyManager, amount);
+
+    setActionStep(1);
+
+    // hmy burn tokens, transaction is confirmed instantaneously, no need to wait
+    let txHash = await hmyMethos.burnToken(hmyManager, ethAddrHex, amount);
+
+    setActionStep(2);
+
+    await eth.unlockToken(ethAddrHex, amount, txHash);
+
+  } catch (e) {
+    console.error(e);
+
+    throw new Error(e.message);
+  }
+};

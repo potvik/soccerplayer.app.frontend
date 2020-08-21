@@ -70,9 +70,9 @@ export class Exchange extends StoreConstructor {
       'Mint One Tokens',
     ],
     ONE_TO_ETH_BUSD: [
-      'Approve accounting contract to perform CDP manipulations',
-      "Approve DAI contract to access the accounting system on user's behalf",
-      'Approve DAI contract to mint DAI for the user',
+      'User needs to approve Harmony manager to burn token',
+      'Harmony burn tokens, transaction is confirmed instantaneously',
+      'Eth manager unlock tokens',
     ],
   };
 
@@ -91,7 +91,12 @@ export class Exchange extends StoreConstructor {
           onClick: () => {
             this.stepNumber = this.stepNumber + 1;
             // this.transaction.oneAddress = this.stores.user.address;
-            this.transaction.ethAddress = this.stores.userMetamask.ethAddress;
+            switch (this.mode) {
+              case EXCHANGE_MODE.ETH_TO_ONE:
+                this.transaction.ethAddress = this.stores.userMetamask.ethAddress;
+              case EXCHANGE_MODE.ONE_TO_ETH:
+                this.transaction.oneAddress = this.stores.user.address;
+            }
           },
           validate: true,
         },
@@ -197,12 +202,23 @@ export class Exchange extends StoreConstructor {
     try {
       this.actionStatus = 'fetching';
 
-      await blockchain.ethToOneBUSD({
-        amount: this.transaction.amount,
-        hmyUserAddress: this.transaction.oneAddress,
-        ethUserAddress: this.transaction.ethAddress,
-        setActionStep: this.setCurrentActionStep,
-      });
+      if (this.mode === EXCHANGE_MODE.ETH_TO_ONE) {
+        await blockchain.ethToOneBUSD({
+          amount: this.transaction.amount,
+          hmyUserAddress: this.transaction.oneAddress,
+          ethUserAddress: this.transaction.ethAddress,
+          setActionStep: this.setCurrentActionStep,
+        });
+      }
+
+      if (this.mode === EXCHANGE_MODE.ONE_TO_ETH) {
+        await blockchain.oneToEthBUSD({
+          amount: this.transaction.amount,
+          hmyUserAddress: this.transaction.oneAddress,
+          ethUserAddress: this.transaction.ethAddress,
+          setActionStep: this.setCurrentActionStep,
+        });
+      }
 
       this.actionStatus = 'success';
     } catch (e) {

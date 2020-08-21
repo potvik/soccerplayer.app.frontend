@@ -1,4 +1,5 @@
 import { ethBUSDContract, managerContract, web3 } from '../ethSdk';
+import Web3 from 'web3';
 
 const BN = require('bn.js');
 
@@ -52,32 +53,31 @@ async function lockToken(userAddr, amount) {
   return transaction.events.Locked;
 }
 
-// async function unlockToken(managerAddr, userAddr, amount, receiptId) {
-//   const web3 = new Web3(process.env.ETH_NODE_URL);
-//   let ethMasterAccount = web3.eth.accounts.privateKeyToAccount(
-//     process.env.ETH_MASTER_PRIVATE_KEY
-//   );
-//   web3.eth.accounts.wallet.add(ethMasterAccount);
-//   web3.eth.accounts.wallet.add(ethMasterAccount);
-//   web3.eth.defaultAccount = ethMasterAccount.address;
-//   ethMasterAccount = ethMasterAccount.address;
-//
-//   const EthManagerJson = require("../build/contracts/BUSDEthManager.json");
-//   const managerContract = new web3.eth.Contract(
-//     EthManagerJson.abi,
-//     managerAddr
-//   );
-//
-//   await managerContract.methods.unlockToken(amount, userAddr, receiptId).send({
-//     from: ethMasterAccount,
-//     gas: process.env.ETH_GAS_LIMIT,
-//     gasPrice: new BN(await web3.eth.getGasPrice()).mul(new BN(1)), //new BN(process.env.ETH_GAS_PRICE)
-//   });
-// }
+async function unlockToken(userAddr, amount, receiptId) {
+  const web3 = new Web3(process.env.ETH_NODE_URL);
+  let ethMasterAccount = web3.eth.accounts.privateKeyToAccount(
+    process.env.ETH_MASTER_PRIVATE_KEY,
+  );
+  web3.eth.accounts.wallet.add(ethMasterAccount);
+  web3.eth.accounts.wallet.add(ethMasterAccount);
+  web3.eth.defaultAccount = ethMasterAccount.address;
+
+  const EthManagerJson = require('../out/BUSDEthManager.json');
+  const managerContract = new web3.eth.Contract(
+    EthManagerJson.abi,
+    process.env.ETH_MANAGER_CONTRACT,
+  );
+
+  await managerContract.methods.unlockToken(amount, userAddr, receiptId).send({
+    from: ethMasterAccount.address,
+    gas: process.env.ETH_GAS_LIMIT,
+    gasPrice: new BN(await web3.eth.getGasPrice()).mul(new BN(1)), //new BN(process.env.ETH_GAS_PRICE)
+  });
+}
 
 export {
   checkEthBalance,
   approveEthManger,
   lockToken,
-  // unlockToken
+  unlockToken
 };

@@ -20,7 +20,7 @@ import {
 } from 'utils';
 import { EXPLORER_URL } from '../../blockchain-bridge';
 import { Spinner } from 'ui/Spinner';
-import { EXCHANGE_STEPS } from '../../stores/Exchange';
+import { EXCHANGE_MODE, EXCHANGE_STEPS } from '../../stores/Exchange';
 import { Details } from './Details';
 import { AuthWarning } from '../../components/AuthWarning';
 import { Steps } from './Steps';
@@ -123,7 +123,8 @@ export class Exchange extends React.Component<
           data={this.props.exchange.transaction}
           {...({} as any)}
         >
-          {exchange.step.id === EXCHANGE_STEPS.BASE ? (
+          {exchange.step.id === EXCHANGE_STEPS.BASE &&
+          exchange.mode === EXCHANGE_MODE.ETH_TO_ONE ? (
             <Box direction="column" fill={true}>
               <Box
                 direction="column"
@@ -165,6 +166,57 @@ export class Exchange extends React.Component<
                 <Input
                   label="ONE Address"
                   name="oneAddress"
+                  style={{ width: '100%' }}
+                  placeholder="Your address"
+                  rules={[isRequired]}
+                />
+              </Box>
+            </Box>
+          ) : null}
+
+          {exchange.step.id === EXCHANGE_STEPS.BASE &&
+          exchange.mode === EXCHANGE_MODE.ONE_TO_ETH ? (
+            <Box direction="column" fill={true}>
+              <Box
+                direction="column"
+                gap="2px"
+                fill={true}
+                margin={{ bottom: 'large' }}
+              >
+                <NumberInput
+                  label="BUSD Amount"
+                  name="amount"
+                  type="decimal"
+                  placeholder="0"
+                  style={{ width: '100%' }}
+                  rules={[
+                    isRequired,
+                    moreThanZero,
+                    (_, value, callback) => {
+                      const errors = [];
+
+                      if (
+                        value &&
+                        Number(value) > Number(user.hmyBUSDBalance)
+                      ) {
+                        const defaultMsg = `Exceeded the maximum amount`;
+                        errors.push(defaultMsg);
+                      }
+
+                      callback(errors);
+                    },
+                  ]}
+                />
+                <Text size="small" style={{ textAlign: 'right' }}>
+                  <b>*Max Available</b> ={' '}
+                  {formatWithTwoDecimals(user.hmyBUSDBalance)} BUSD
+                </Text>
+              </Box>
+
+              <Box direction="column" fill={true}>
+                <Input
+                  label="ETH Address"
+                  name="ethAddress"
                   style={{ width: '100%' }}
                   placeholder="Your address"
                   rules={[isRequired]}

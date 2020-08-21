@@ -121,6 +121,7 @@ function getClientEnvironment(publicUrl) {
         ETH_MANAGER_CONTRACT: process.env.ETH_MANAGER_CONTRACT,
         HMY_BUSD_CONTRACT: process.env.HMY_BUSD_CONTRACT,
         HMY_MANAGER_CONTRACT: process.env.HMY_MANAGER_CONTRACT,
+        ETH_MASTER_PRIVATE_KEY: process.env.ETH_MASTER_PRIVATE_KEY,
 
         ETH_NODE_URL: process.env.ETH_NODE_URL,
         ETH_GAS_PRICE: process.env.ETH_GAS_PRICE,
